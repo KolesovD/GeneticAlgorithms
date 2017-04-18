@@ -33,7 +33,7 @@ public class Roulette {
 		double start = 0;
 		string res = "0";
 		for (int i = 0; i < GenerationAxis.Count; i++) {
-			GenerationAxis[i].ConfigSector(start, generation.GetGeneration[i].GetFitnesFunction);
+			GenerationAxis[i].ConfigSector(start, generation.GetGeneration[i].GetFitnessFunction);
 			start = GenerationAxis[i].End;
 			res += " - "+start;
 		}

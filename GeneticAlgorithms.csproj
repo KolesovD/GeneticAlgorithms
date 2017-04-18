@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,6 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\MyRandom.cs" />
+    <Compile Include="Generation\Individual\Plate.cs" />
+    <Compile Include="Generation\Individual\Segment.cs" />
     <Compile Include="Interfaces\IGeneration.cs" />
     <Compile Include="Interfaces\Iindividual.cs" />
     <Compile Include="Program.cs" />

@@ -4,9 +4,9 @@ namespace Assets
 {
 	namespace MyRandoms
 	{
-		public class MyRandom
+		public static class MyRandom
 		{
-			private static readonly Random rnd;
+			public static readonly Random rnd;
 
 			static MyRandom() {
 				rnd = new Random();

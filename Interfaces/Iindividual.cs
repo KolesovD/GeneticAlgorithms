@@ -1,3 +1,3 @@
 ﻿public interface Iindividual {
-	double GetFitnesFunction { get; }
+	double GetFitnessFunction { get; }
 }
