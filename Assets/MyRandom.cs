@@ -16,10 +16,10 @@ namespace Assets
 				return rnd.NextDouble();
 			}
 			public static double GetRandomDouble(double max) {
-				return rnd.NextDouble()%max;
+				return GetRandomDouble() * max;
 			}
 			public static double GetRandomDouble(double min, double max) {
-				return (rnd.NextDouble()%max)+min;
+				return rnd.NextDouble() * (max - min) + min;
 			}
 		}
 	}
