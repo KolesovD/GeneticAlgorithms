@@ -115,6 +115,16 @@ namespace LaserLineOpt
             return length;
         }
 
+        public void CreatePerfectIndividual()
+        {
+            for (int i = 0; i < 20; i+=2)
+            {
+                //all segments in on ordinat axis with length = 1. Their ends are the same.
+                _Segments.Add(new Segment(i, i, 0, i + 1, 0, true));
+            }
+            
+        }
+
         /*private double CalcIdling(Segment segment1, Segment segment2)
         {
 

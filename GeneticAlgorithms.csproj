@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Assets\MyRandom.cs" />
     <Compile Include="Generation\Individual\Plate.cs" />
+    <Compile Include="Generation\Individual\Population.cs" />
     <Compile Include="Generation\Individual\Segment.cs" />
     <Compile Include="Interfaces\IGeneration.cs" />
     <Compile Include="Interfaces\Iindividual.cs" />
