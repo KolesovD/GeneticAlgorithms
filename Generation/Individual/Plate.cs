@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Assets.MyRandoms;
 
-namespace LaserLineOpt
+namespace GeneticAlgorithms
 {
     public class Plate : Iindividual
     {
@@ -109,8 +109,8 @@ namespace LaserLineOpt
             int size = Segments.Count;
 
             for (int i = 0; i < size - 1; i++)
-            { 
-                length += (_Segments[i].End - _Segments[i+1].Start).Length();
+            {
+                length += (_Segments[i].End - _Segments[i + 1].Start).Length();
             }
             return length;
         }
