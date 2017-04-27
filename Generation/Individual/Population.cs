@@ -24,7 +24,12 @@ namespace GeneticAlgorithms.Generation.Individual
         {
             int count = 50; //Individuals count in population
             Plate perfectPlate = new Plate();
-            perfectPlate.CreatePerfectIndividual();
+
+            for (int i = 0; i < 10; i++)
+            {
+                perfectPlate.AddSegment(new Segment(i, i, 0, i + 1, 0, true));
+            }
+
             for (int i = 0; i < count; i++)
             {
                 Plate plate = new Plate(perfectPlate);
