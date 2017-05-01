@@ -46,10 +46,10 @@
   <ItemGroup>
     <Compile Include="Assets\MyRandom.cs" />
     <Compile Include="Control\Control.cs" />
+    <Compile Include="Interfaces\IPopulation.cs" />
     <Compile Include="Population\Individual\Plate.cs" />
     <Compile Include="Population\Population.cs" />
     <Compile Include="Population\Individual\Segment.cs" />
-    <Compile Include="Interfaces\IGeneration.cs" />
     <Compile Include="Interfaces\Iindividual.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

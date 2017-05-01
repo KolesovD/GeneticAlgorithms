@@ -10,7 +10,7 @@ namespace GeneticAlgorithms
     {
         private List<Iindividual> firstGeneration;
         private List<Iindividual> secondGeneration;
-        public bool currentGenerationFlag = true; //true = first is current
+        public bool currentGenerationFlag = true; //true = первая популяция является текущей
 
         public Population(List<Iindividual> firstGeneration, List<Iindividual> secondGeneration)
         {
@@ -18,10 +18,11 @@ namespace GeneticAlgorithms
             this.secondGeneration = secondGeneration;
         }
 
-        //fill both populations using plates (debug method)
+        //Заполнение популяций особями
+        //ВНИМАНИЕ!!! Отладочный метод, использующий объекты класса Plate, а не интерфейсы
         public Population(int count = 50)
         {
-            Iindividual perfectPlate = new Iindividual();
+            Plate perfectPlate = new Plate();
 
             for (int i = 0; i < 10; i++)
             {
@@ -30,7 +31,7 @@ namespace GeneticAlgorithms
 
             for (int i = 0; i < count; i++)
             {
-                Iindividual plate = new Iindividual(perfectPlate);
+                Plate plate = new Plate(perfectPlate);
                 plate.ShuffleSegments();
                 firstGeneration.Add(plate);
             }
@@ -46,7 +47,7 @@ namespace GeneticAlgorithms
 
         }
 
-        //return element by index in current population
+        //Вернуть ссылку на особь по индексу
         public Iindividual GetPlateFromCurrentPopulation(int index)
         {
             return CurrentGeneration[index];
@@ -57,11 +58,10 @@ namespace GeneticAlgorithms
 
         }
 
-        public void Crossover(Delegate del)
+        public void Crossover(Delegate crosser)
         {
 
         }
-
 
     }
 }

@@ -38,13 +38,13 @@ namespace GeneticAlgorithms
             }
         }
 
-        public void LoadByGeneration(IPopulation generation)
+        public void LoadByPopulation(IPopulation population)
         {
             double start = 0;
             string res = "0";
             for (int i = 0; i < GenerationAxis.Count; i++)
             {
-                GenerationAxis[i].ConfigSector(start, generation.GetGeneration[i].GetFitnessFunction);
+                GenerationAxis[i].ConfigSector(start, population.CurrentGeneration[i].GetFitnessFunction);
                 start = GenerationAxis[i].End;
                 res += " - " + start;
             }
