@@ -38,7 +38,7 @@ namespace GeneticAlgorithms
             }
         }
 
-        public void LoadByGeneration(IGeneration generation)
+        public void LoadByGeneration(IPopulation generation)
         {
             double start = 0;
             string res = "0";

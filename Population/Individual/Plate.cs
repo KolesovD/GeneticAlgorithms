@@ -69,6 +69,7 @@ namespace GeneticAlgorithms
         public void ShuffleSegments()
         {
             FisherYatesShuffle();
+            SetRandomDirectionsToSegments();
         }
 
         private void FisherYatesShuffle()
@@ -113,16 +114,6 @@ namespace GeneticAlgorithms
                 length += (_Segments[i].End - _Segments[i + 1].Start).Length();
             }
             return length;
-        }
-
-        public void CreatePerfectIndividual()
-        {
-            for (int i = 0; i < 20; i+=2)
-            {
-                //all segments in on ordinat axis with length = 1. Their ends are the same.
-                _Segments.Add(new Segment(i, i, 0, i + 1, 0, true));
-            }
-            
         }
 
         /*private double CalcIdling(Segment segment1, Segment segment2)
