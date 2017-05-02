@@ -8,11 +8,11 @@ namespace GeneticAlgorithms
 {
     class Population : IPopulation
     {
-        private List<Iindividual> firstGeneration;
-        private List<Iindividual> secondGeneration;
+        private List<AbstractIndividual> firstGeneration;
+        private List<AbstractIndividual> secondGeneration;
         public bool currentGenerationFlag = true; //true = первая популяция является текущей
 
-        public Population(List<Iindividual> firstGeneration, List<Iindividual> secondGeneration)
+        public Population(List<AbstractIndividual> firstGeneration, List<AbstractIndividual> secondGeneration)
         {
             this.firstGeneration = firstGeneration;
             this.secondGeneration = secondGeneration;
@@ -35,10 +35,10 @@ namespace GeneticAlgorithms
                 plate.ShuffleSegments();
                 firstGeneration.Add(plate);
             }
-            secondGeneration = new List<Iindividual>(firstGeneration);
+            secondGeneration = new List<AbstractIndividual>(firstGeneration);
         }
 
-        public List<Iindividual> CurrentGeneration
+        public List<AbstractIndividual> CurrentGeneration
         {
             get
             {
@@ -48,7 +48,7 @@ namespace GeneticAlgorithms
         }
 
         //Вернуть ссылку на особь по индексу
-        public Iindividual GetPlateFromCurrentPopulation(int index)
+        public AbstractIndividual GetPlateFromCurrentPopulation(int index)
         {
             return CurrentGeneration[index];
         }

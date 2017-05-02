@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 
-public interface IPopulation
+namespace GeneticAlgorithms
 {
-    List<Iindividual> CurrentGeneration { get; }
+    public interface IPopulation
+    {
+        List<AbstractIndividual> CurrentGeneration { get; }
+    }
 }

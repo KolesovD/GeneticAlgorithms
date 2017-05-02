@@ -7,26 +7,13 @@ using Assets.MyRandoms;
 
 namespace GeneticAlgorithms
 {
-    public class Plate : Iindividual
+    public class Plate : AbstractIndividual
     {
-        private List<Segment> _Segments;
+        public Plate() : base() { }
 
-        public Plate()
-        {
-            _Segments = new List<Segment>();
-        }
+        public Plate(List<Segment> segments) : base(segments) { }
 
-        public Plate(List<Segment> segments)
-        {
-            _Segments = segments;
-        }
-
-        public List<Segment> Segments
-        {
-            get { return _Segments; }
-        }
-
-        public double GetFitnessFunction
+        override public double GetFitnessFunction
         {
             get
             {
@@ -54,16 +41,6 @@ namespace GeneticAlgorithms
             }
 
             return str;
-        }
-
-        public void AddSegment(Segment segment)
-        {
-            Segments.Add(segment);
-        }
-
-        public int Size()
-        {
-            return Segments.Count();
         }
 
         public void ShuffleSegments()
