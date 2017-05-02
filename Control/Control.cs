@@ -17,9 +17,6 @@ namespace GeneticAlgorithms
         public double FractionOfNewIndividuals = 0.25;
         public double MutationProbability = 0.01;
 
-        public delegate Plate Crossover(Plate parent1, Plate parent2);
-        public delegate void Mutator(Plate target);
-
         public Control(int populationSize, List<Segment> segmentList, double fractionOfNewIndividuals = 0.25, double mutationProbability = 0.01)
         {
             this.populationSize = populationSize;

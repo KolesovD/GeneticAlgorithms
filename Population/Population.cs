@@ -53,14 +53,17 @@ namespace GeneticAlgorithms
             return CurrentGeneration[index];
         }
 
-        public void Mutation(Delegate mutator)
+        public void Mutation(Delegates.Mutator mutator)
         {
 
         }
 
-        public void Crossover(Delegate crosser)
-        {
+        public void Crossover(Delegates.Crossover crossover)
+        { 
 
+            //делегат возвращает AbstractIndividual
+            //использовать для создания новых особей
+            //создание из 2 особей 1 или нескольких особей по команде
         }
 
     }
