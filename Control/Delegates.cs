@@ -1,5 +1,5 @@
 ﻿namespace GeneticAlgorithms.Delegates
 {
-    public delegate Plate Crossover(Plate parent1, Plate parent2);
-    public delegate void Mutator(Plate target);
+    public delegate AbstractIndividual Crossover(AbstractIndividual parent1, AbstractIndividual parent2);
+    public delegate void Mutator(AbstractIndividual target);
 }

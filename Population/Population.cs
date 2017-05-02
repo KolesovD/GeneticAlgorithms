@@ -38,6 +38,7 @@ namespace GeneticAlgorithms
             secondGeneration = new List<AbstractIndividual>(firstGeneration);
         }
 
+        //Вернуть ссылку на текущее поколение
         public List<AbstractIndividual> CurrentGeneration
         {
             get
@@ -47,20 +48,40 @@ namespace GeneticAlgorithms
 
         }
 
-        //Вернуть ссылку на особь по индексу
+        //Вернуть ссылку на не текущее поколение
+        public List<AbstractIndividual> AnotherGeneration
+        {
+            get
+            {
+                return currentGenerationFlag ? secondGeneration : firstGeneration;
+            }
+
+        }
+
+        //Вернуть ссылку на особь по индексу из текущей популяции
         public AbstractIndividual GetPlateFromCurrentPopulation(int index)
         {
             return CurrentGeneration[index];
         }
 
-        public void Mutation(Delegates.Mutator mutator)
+        //Вернуть ссылку на особь по индексу из не текущей популяции
+        public AbstractIndividual GetIndividualFromAnotherPopulation(int index)
         {
+            return AnotherGeneration[index];
+        }
 
+        public void Mutation(Delegates.Mutator target)
+        {
+            
         }
 
         public void Crossover(Delegates.Crossover crossover)
-        { 
-
+        {
+            for (int i = 1; i < firstGeneration.Count; i++)
+            {
+                Population p = new Population();
+                crossover(p.GetPlateFromCurrentPopulation(i), p.GetPlateFromCurrentPopulation(i - 1));
+            }
             //делегат возвращает AbstractIndividual
             //использовать для создания новых особей
             //создание из 2 особей 1 или нескольких особей по команде
