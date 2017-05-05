@@ -4,7 +4,7 @@ using Assets.MyRandoms;
 
 namespace GeneticAlgorithms
 {
-
+	//класс сектора на рулетке
     public class Sector
     {
         public double Start { get; set; }
@@ -24,12 +24,12 @@ namespace GeneticAlgorithms
     public class Roulette
     {
         public List<Sector> GenerationAxis;
-        private double get_end_of_gen
+        private double get_end_of_gen //возвращает конечное значение на оси рулетки
         {
             get { return GenerationAxis[GenerationAxis.Count - 1].End; }
         }
 
-        public Roulette(int gen_lenght)
+        public Roulette(int gen_lenght) //создаёт рулетку с пустыми секторами
         {
             GenerationAxis = new List<Sector>();
             for (int i = 0; i < gen_lenght; i++)
@@ -38,19 +38,27 @@ namespace GeneticAlgorithms
             }
         }
 
-        public void LoadByPopulation(IPopulation population)
+        public void LoadByPopulation(IPopulation population) //загружает в себя индивидуальности из текущего поколения
         {
             double start = 0;
-            string res = "0";
+            //string res = "0";
             for (int i = 0; i < GenerationAxis.Count; i++)
             {
                 GenerationAxis[i].ConfigSector(start, population.CurrentGeneration[i].GetFitnessFunction);
                 start = GenerationAxis[i].End;
-                res += " - " + start;
+                //res += " - " + start;
             }
-            Console.WriteLine(res);
+            //Console.WriteLine(res);
         }
-        public int PickIndividualIndex()
+		public int[] PickIndividualsIndex(int Count) //возвращает индексы особей в кличестве Count в текущем поколении
+		{
+			int[] result = new int[Count];
+			for (int i = 0; i < Count; i++) {
+				result[i] = PickIndividualIndex();
+			}
+			return result;
+		}
+        public int PickIndividualIndex() //возвращает индекс особи в текущем поколении
         {
             double random = MyRandom.GetRandomDouble(get_end_of_gen);
             //Console.WriteLine("случайное значение {0}", random);
