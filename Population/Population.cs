@@ -82,6 +82,15 @@ namespace GeneticAlgorithms
             return AnotherGeneration[index];
         }
 
+		//Возвращает среднее значение фитнес функции в текущем поколении
+		public double СalculationFitnessFunctionOfGeneration() {
+			double result = 0;
+			for (int i = 0; i < CurrentGeneration.Count; i++) {
+				result += CurrentGeneration[i].GetFitnessFunction;
+			}
+			return result/CurrentGeneration.Count;
+		}
+
         //public void Mutation(Delegates.Mutator target)
         //{
             

@@ -1,6 +1,6 @@
 ﻿public interface Iindividual
 {
     double GetFitnessFunction { get; }
-    int Size();
+    //int Size();
 	void Shuffle();
 }
