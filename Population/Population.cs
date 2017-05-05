@@ -7,7 +7,7 @@ using GeneticAlgorithms.Delegates;
 
 namespace GeneticAlgorithms
 {
-    class Population : IPopulation
+    public class Population : IPopulation
     {
 		private ABCcontrol _core;
 		private List<Iindividual> firstGeneration;
@@ -82,22 +82,22 @@ namespace GeneticAlgorithms
             return AnotherGeneration[index];
         }
 
-        public void Mutation(Delegates.Mutator target)
-        {
+        //public void Mutation(Delegates.Mutator target)
+        //{
             
-        }
+        //}
 
-        public void Crossover(Delegates.Crossover crossover)
-        {
-            for (int i = 1; i < firstGeneration.Count; i++)
-            {
-                Population p = new Population();
-                crossover(p.GetPlateFromCurrentPopulation(i), p.GetPlateFromCurrentPopulation(i - 1));
-            }
-            //делегат возвращает AbstractIndividual
-            //использовать для создания новых особей
-            //создание из 2 особей 1 или нескольких особей по команде
-        }
+        //public void Crossover(Delegates.Crossover crossover)
+        //{
+        //    for (int i = 1; i < firstGeneration.Count; i++)
+        //    {
+        //        Population p = new Population();
+        //        crossover(p.GetPlateFromCurrentPopulation(i), p.GetPlateFromCurrentPopulation(i - 1));
+        //    }
+        //    //делегат возвращает AbstractIndividual
+        //    //использовать для создания новых особей
+        //    //создание из 2 особей 1 или нескольких особей по команде
+        //}
 
     }
 }

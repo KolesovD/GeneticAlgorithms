@@ -7,7 +7,7 @@ using GeneticAlgorithms.Delegates;
 
 namespace GeneticAlgorithms
 {
-    class ABCcontrol
+    public class ABCcontrol
     {
         private int populationSize;
 		private Roulette _Roulete;
@@ -19,6 +19,16 @@ namespace GeneticAlgorithms
         public double FractionOfNewIndividuals = 0.25;
         public double MutationProbability = 0.01;
 
+		public Roulette GetRoulette {
+			get { return _Roulete; }
+		}
+		public int GetPopulationSize {
+			get { return populationSize; }
+		}
+		public Population GetPopulation {
+			get { return _Population; }
+		}
+
 		public ABCcontrol(Loader Load, int populationSize = 50, double fractionOfNewIndividuals = 0.25, double mutationProbability = 0.01)
 		{
 			this.populationSize = populationSize;
@@ -28,6 +38,8 @@ namespace GeneticAlgorithms
 			_Population = new Population(Load, this);
 			_Roulete = new Roulette(this.populationSize);
 		}
+
+		public virtual void ProgramRuning() {}
 
 		//public void Optimize(Crossover crossover, Mutator mutator)
 		//{

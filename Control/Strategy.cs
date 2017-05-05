@@ -1,9 +1,10 @@
 ﻿using System;
+
 namespace GeneticAlgorithms
 {
 	public class Strategy : ABCcontrol
 	{
-		public Strategy() : base(new LoaderPlate()) {
+		public Strategy() : base(new LoaderPlate()/*дополнительные настройки*/) {
 			//кофигурация для конкретно этой стратегии
 		}
 

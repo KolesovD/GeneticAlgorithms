@@ -8,9 +8,11 @@ namespace GeneticAlgorithms
 {
     class Program
     {
+		static ABCcontrol Controll;
         static void Main(string[] args)
         {
-
+			Controll = new Strategy();
+			Controll.ProgramRuning();
         }
     }
 }
