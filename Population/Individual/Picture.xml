@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<picture>
+  <segment id="0" direction="true">0 0 1 1</segment>
+  <segment id="1" direction="true">1 1 2 2</segment>
+  <segment id="2" direction="true">2 2 3 3</segment>
+  <segment id="3" direction="true">3 3 4 4</segment>
+  <segment id="4" direction="true">4 4 5 5</segment>
+  <segment id="5" direction="true">5 5 6 6</segment>
+  <segment id="6" direction="true">6 6 7 7</segment>
+  <segment id="7" direction="true">7 7 8 8</segment>
+  <segment id="8" direction="true">8 8 9 9</segment>
+  <segment id="9" direction="true">9 9 10 10</segment>
+</picture>

@@ -3,43 +3,55 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GeneticAlgorithms.Delegates;
 
 namespace GeneticAlgorithms
 {
     class Population : IPopulation
     {
-        private List<AbstractIndividual> firstGeneration;
-        private List<AbstractIndividual> secondGeneration;
+		private ABCcontrol _core;
+		private List<Iindividual> firstGeneration;
+		private List<Iindividual> secondGeneration;
+
+		private Crossover Cross;
+		private Mutator Mutate;
+		private CreateNewIindividual CreateIindividual;
+		private CopyFromIindividual CopyIindividual;
+
         public bool currentGenerationFlag = true; //true = первая популяция является текущей
 
-        public Population(List<AbstractIndividual> firstGeneration, List<AbstractIndividual> secondGeneration)
+		public void LoadDelegates(Loader _Load) {
+			Cross = _Load.Crossover;
+			Mutate = _Load.Mutator;
+			CreateIindividual = _Load.CreateNewIndividual;
+			CopyIindividual = _Load.CopyFrom;
+		}
+
+        public Population(Loader _Load, ABCcontrol core, List<Iindividual> firstGeneration, List<Iindividual> secondGeneration)
         {
+			LoadDelegates(_Load);
+			_core = core;
             this.firstGeneration = firstGeneration;
             this.secondGeneration = secondGeneration;
         }
 
-        //Заполнение популяций особями
-        //ВНИМАНИЕ!!! Отладочный метод, использующий объекты класса Plate, а не интерфейсы
-        public Population(int count = 50)
+
+        public Population(Loader _Load, ABCcontrol core)
         {
-            Plate perfectPlate = new Plate();
-
-            for (int i = 0; i < 10; i++)
+            LoadDelegates(_Load);
+            _core = core;
+			Iindividual perfectPlate = CreateIindividual();
+			for (int i = 0; i<_core.GetPopulationSize; i++)
             {
-                perfectPlate.AddSegment(new Segment(i, i, i, i + 1, i + 1, true));
-            }
-
-            for (int i = 0; i < count; i++)
-            {
-                Plate plate = new Plate(perfectPlate);
-                plate.ShuffleSegments();
+				Iindividual plate = CopyIindividual(perfectPlate);
+				plate.Shuffle();
                 firstGeneration.Add(plate);
             }
-            secondGeneration = new List<AbstractIndividual>(firstGeneration);
+            secondGeneration = new List<Iindividual>(firstGeneration);
         }
 
         //Вернуть ссылку на текущее поколение
-        public List<AbstractIndividual> CurrentGeneration
+        public List<Iindividual> CurrentGeneration
         {
             get
             {
@@ -49,7 +61,7 @@ namespace GeneticAlgorithms
         }
 
         //Вернуть ссылку на не текущее поколение
-        public List<AbstractIndividual> AnotherGeneration
+        public List<Iindividual> AnotherGeneration
         {
             get
             {
@@ -59,13 +71,13 @@ namespace GeneticAlgorithms
         }
 
         //Вернуть ссылку на особь по индексу из текущей популяции
-        public AbstractIndividual GetPlateFromCurrentPopulation(int index)
+        public Iindividual GetPlateFromCurrentPopulation(int index)
         {
             return CurrentGeneration[index];
         }
 
         //Вернуть ссылку на особь по индексу из не текущей популяции
-        public AbstractIndividual GetIndividualFromAnotherPopulation(int index)
+        public Iindividual GetIndividualFromAnotherPopulation(int index)
         {
             return AnotherGeneration[index];
         }

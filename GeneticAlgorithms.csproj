@@ -45,9 +45,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\MyRandom.cs" />
-    <Compile Include="Control\Control.cs" />
+    <Compile Include="Control\ABCcontrol.cs" />
     <Compile Include="Control\Delegates.cs" />
-    <Compile Include="Interfaces\AbstractIndividual.cs" />
     <Compile Include="Interfaces\IPopulation.cs" />
     <Compile Include="Population\Individual\Plate.cs" />
     <Compile Include="Population\Population.cs" />
@@ -56,9 +55,13 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Roulette\Roulette.cs" />
+    <Compile Include="Control\Loader.cs" />
+    <Compile Include="Control\Strategy.cs" />
+    <Compile Include="Population\Individual\LoaderPlate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Population\Individual\Picture.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

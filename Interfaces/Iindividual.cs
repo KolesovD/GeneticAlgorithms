@@ -2,4 +2,5 @@
 {
     double GetFitnessFunction { get; }
     int Size();
+	void Shuffle();
 }

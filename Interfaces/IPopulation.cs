@@ -4,6 +4,6 @@ namespace GeneticAlgorithms
 {
     public interface IPopulation
     {
-        List<AbstractIndividual> CurrentGeneration { get; }
+        List<Iindividual> CurrentGeneration { get; }
     }
 }

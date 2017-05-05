@@ -1,5 +1,7 @@
 ﻿namespace GeneticAlgorithms.Delegates
 {
-    public delegate AbstractIndividual Crossover(AbstractIndividual parent1, AbstractIndividual parent2);
-    public delegate void Mutator(AbstractIndividual target);
+    public delegate Iindividual Crossover(Iindividual parent1, Iindividual parent2);
+    public delegate void Mutator(Iindividual target);
+	public delegate Iindividual CreateNewIindividual();
+	public delegate Iindividual CopyFromIindividual(Iindividual _individual);
 }
