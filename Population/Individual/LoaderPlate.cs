@@ -14,6 +14,19 @@ namespace GeneticAlgorithms
 			return new Plate(_individual as Plate);
 		}
 
+		public override Iindividual Crossover(Iindividual parent1, Iindividual parent2)
+		{
+			//тестовая версия с логом
+			//здесь пишем код кроссовера
+			Console.WriteLine("Crossover is work");
+			return parent1;
+		}
 
+		public override void Mutator(Iindividual target)
+		{
+			//тестовая версия с логом
+			//здесь пишем код мутатора
+			Console.WriteLine("Mutator is work");
+		}
 	}
 }
