@@ -4,9 +4,13 @@ namespace GeneticAlgorithms
 {
 	public class LoaderPlate : Loader
 	{
+		public override Iindividual CreateNewIndividualEmpty()
+		{
+			return new Plate(true);
+		}
 		public override Iindividual CreateNewIndividual()
 		{
-			return new Plate();
+			return new Plate(false);
 		}
 
 		public override Iindividual CopyFrom(Iindividual _individual)
