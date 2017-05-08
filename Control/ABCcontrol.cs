@@ -16,9 +16,26 @@ namespace GeneticAlgorithms
         //private Population population;
 
         //public bool AllowParentsIntoNewGenerations = true;
-        public double FractionOfNewIndividuals = 0.25;
-        public double MutationProbability = 0.01;
+        private double _FractionOfNewIndividuals = 0.25; //изменяется от 0 до 1
+        private double _MutationProbability = 0.01; //изменяется от 0 до 1
 
+		public double FractionOfNewIndividuals {
+			get { return _FractionOfNewIndividuals; }
+			set {
+				if (value < 0) { _FractionOfNewIndividuals = 0; }
+				else if (value > 1) { _FractionOfNewIndividuals = 1; }
+				else { _FractionOfNewIndividuals = value; }
+			}
+		}
+
+		public double MutationProbability {
+			get { return _MutationProbability; }
+			set { 
+				if (value < 0) { _MutationProbability = 0; }
+				else if (value > 1) { _MutationProbability = 1; }
+				else { _MutationProbability = value; }
+			}
+		}
 		public Roulette GetRoulette {
 			get { return _Roulete; }
 		}
