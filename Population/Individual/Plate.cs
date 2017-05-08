@@ -20,19 +20,25 @@ namespace GeneticAlgorithms
 			doc = XDocument.Load("../../Population/Individual/Picture.xml");
 		}
 
-		public Plate()
+		public Plate(bool is_empty)
 		{
-			_Segments = new List<Segment>();
-			foreach (XElement el in doc.Root.Elements())
+			if (is_empty == false)
 			{
-				Regex reg = new Regex(@"[0-9]+");
-				MatchCollection collect = reg.Matches(el.Value);
-				_Segments.Add(new Segment(Convert.ToInt32(el.Attribute("id").Value),
-										  Convert.ToInt32(collect[0].Value),
-										 Convert.ToInt32(collect[1].Value),
-										 Convert.ToInt32(collect[2].Value),
-										 Convert.ToInt32(collect[3].Value),
-										  Convert.ToBoolean(el.Attribute("direction").Value)));
+				_Segments = new List<Segment>();
+				foreach (XElement el in doc.Root.Elements())
+				{
+					Regex reg = new Regex(@"[0-9]+");
+					MatchCollection collect = reg.Matches(el.Value);
+					_Segments.Add(new Segment(Convert.ToInt32(el.Attribute("id").Value),
+											  Convert.ToInt32(collect[0].Value),
+											 Convert.ToInt32(collect[1].Value),
+											 Convert.ToInt32(collect[2].Value),
+											 Convert.ToInt32(collect[3].Value),
+											  Convert.ToBoolean(el.Attribute("direction").Value)));
+				}
+			}
+			else {
+				_Segments = new List<Segment>();
 			}
 		}
 
