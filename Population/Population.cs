@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GeneticAlgorithms.Delegates;
+using Assets.MyRandoms;
 
 namespace GeneticAlgorithms
 {
@@ -91,10 +92,13 @@ namespace GeneticAlgorithms
 			return result/CurrentGeneration.Count;
 		}
 
-        //public void Mutation(Delegates.Mutator target)
-        //{
-            
-        //}
+        public void Mutation() //мутирует текущее поколение в соответствии с _core.MutationProbability
+        {
+			int count = (int)((Convert.ToDouble(CurrentGeneration.Count) / 100.0d) * Convert.ToDouble(_core.MutationProbability));
+			for (int i = 0; i < count; i++) {
+				Mutate(CurrentGeneration[MyRandom.rnd.Next(CurrentGeneration.Count)]);
+			}
+        }
 
         //public void Crossover(Delegates.Crossover crossover)
         //{
