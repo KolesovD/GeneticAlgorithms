@@ -61,6 +61,14 @@ namespace GeneticAlgorithms
             Direction = _direction;
         }
 
+        public void SetDataFromSegment(Segment newSegment)
+        {
+            this.ID = newSegment.ID;
+            Point1 = newSegment.Point1;
+            Point2 = newSegment.Point2;
+            Direction = newSegment.Direction;
+        }
+
         public override string ToString()
         {
             if (Direction)

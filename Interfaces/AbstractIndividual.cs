@@ -36,5 +36,18 @@ namespace GeneticAlgorithms
         {
             return Segments.Count();
         }
+
+        public void Rewrite(List<Segment> newSegmentList)
+        {
+            for (int i = 0; i < newSegmentList.Count; i++)
+            {
+                _Segments[i].SetDataFromSegment(newSegmentList[i]);
+            }
+        }
+
+        public void Mutate(Delegates.MutationFunction Mutator)
+        {
+            Mutator(_Segments);
+        }
     }
 }

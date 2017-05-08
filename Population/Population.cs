@@ -55,7 +55,6 @@ namespace GeneticAlgorithms
             {
                 return currentGenerationFlag ? secondGeneration : firstGeneration;
             }
-
         }
 
         //Вернуть ссылку на особь по индексу из текущей популяции
