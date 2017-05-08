@@ -18,6 +18,7 @@ namespace GeneticAlgorithms
 		private Mutator Mutate;
 		private CreateNewIindividual CreateIindividual;
 		private CopyFromIindividual CopyIindividual;
+		private CreateNewIindividual CreateIindividualEmpty;
 
         public bool currentGenerationFlag = true; //true = первая популяция является текущей
 
@@ -26,6 +27,7 @@ namespace GeneticAlgorithms
 			Mutate = _Load.Mutator;
 			CreateIindividual = _Load.CreateNewIndividual;
 			CopyIindividual = _Load.CopyFrom;
+			CreateIindividualEmpty = _Load.CreateNewIndividualEmpty;
 		}
 
         public Population(Loader _Load, ABCcontrol core, List<Iindividual> firstGeneration, List<Iindividual> secondGeneration)
