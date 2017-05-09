@@ -45,9 +45,9 @@ namespace GeneticAlgorithms
             }
         }
 
-        public void Mutate(Delegates.MutationFunction Mutator)
+        public void Mutate(Delegates.Mutator mutator)
         {
-            Mutator(_Segments);
+            mutator(_Segments);
         }
     }
 }

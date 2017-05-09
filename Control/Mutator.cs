@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Assets.MyRandoms;
 
-namespace LaserLineOpt
+namespace GeneticAlgorithms
 {
     public class Mutator
     {
-        static Random rng = new Random();
-
         static void InsertRange(List<Segment> original, List<Segment> ToAdd, int position)
         {
             for (int i = position; i < position + ToAdd.Count; i++)
@@ -34,7 +33,7 @@ namespace LaserLineOpt
                 Range = segments.GetRange(start, length);
 
             }
-            else if (rng.NextDouble() < 0.5)
+            else if (MyRandom.rnd.NextDouble() < 0.5)
             {
                 Range = segments.GetRange(start - length, length);
                 start -= length;
@@ -49,35 +48,36 @@ namespace LaserLineOpt
             InsertRange(segments, Range, start);
         }
 
-        public static void FlipRandomSegments(Plate plate, double mutationProbability)
+        public static void FlipRandomSegments(List<Segment> segmentListToFlip, double mutationProbability)
         {
-            foreach (Segment segment in plate.Segments)
+            foreach (Segment segment in segmentListToFlip)
             {
-                if (rng.NextDouble() < mutationProbability)
+                if (MyRandom.rnd.NextDouble() < mutationProbability)
                 {
                     segment.ReverseDirection();
                 }
             }
         }
 
-        public static void ReverseSegmentMutation(Plate plate, double mutationProbability)
+        public static void ReverseSegmentMutation(List<Segment> segmentListToMutate)
         {
+            double mutationProbability = 0.01; //Передавать как параметр или убрать
 
-            FlipRandomSegments(plate, mutationProbability);
+            FlipRandomSegments(segmentListToMutate, mutationProbability);
 
-            double max_part_len = 0.2;
-            int max_part_elems = (int)(plate.Segments.Count * max_part_len);
+            double max_part_len = 0.2; //Константа - нехорошо
+            int max_part_elems = (int)(segmentListToMutate.Count * max_part_len);
             int part_elems;
 
-            for (int i = 0; i < plate.Segments.Count; i++)
+            for (int i = 0; i < segmentListToMutate.Count; i++)
             {
-                if (rng.NextDouble() < mutationProbability)
+                if (MyRandom.rnd.NextDouble() <= mutationProbability)
                 {
-                    part_elems = (int)(max_part_elems * rng.NextDouble());
+                    part_elems = (int)(max_part_elems * MyRandom.rnd.NextDouble());
 
                     if (part_elems < 2) part_elems = 2;
 
-                    ReverseRange(plate.Segments, i, part_elems);
+                    ReverseRange(segmentListToMutate, i, part_elems);
                 }
             }
 
