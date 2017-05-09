@@ -42,14 +42,17 @@ namespace GeneticAlgorithms
         {
             LoadDelegates(_Load);
             _core = core;
+			firstGeneration = new List<Iindividual>();
+			secondGeneration = new List<Iindividual>();
 			Iindividual perfectPlate = CreateIindividual();
 			for (int i = 0; i<_core.GetPopulationSize; i++)
             {
 				Iindividual plate = CopyIindividual(perfectPlate);
 				plate.Shuffle();
                 firstGeneration.Add(plate);
+				secondGeneration.Add(CreateIindividualEmpty());
             }
-            secondGeneration = new List<Iindividual>(firstGeneration);
+            //secondGeneration = new List<Iindividual>(firstGeneration);
         }
 
         //Вернуть ссылку на текущее поколение
