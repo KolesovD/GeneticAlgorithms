@@ -6,7 +6,8 @@ namespace GeneticAlgorithms
 		public abstract Iindividual CreateNewIndividual();
 		public abstract Iindividual CreateNewIndividualEmpty();
 		public abstract Iindividual CopyFrom(Iindividual _individual);
-		public abstract Iindividual Crossover(Iindividual parent1, Iindividual parent2);
-		public abstract void Mutator(Iindividual target);
+		//public abstract void CopyFromTo(Iindividual _from, Iindividual _to);
+		//public abstract Iindividual Crossover(Iindividual parent1, Iindividual parent2);
+		//public abstract void Mutator(Iindividual target);
 	}
 }

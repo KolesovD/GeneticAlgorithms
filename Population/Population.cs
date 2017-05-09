@@ -14,8 +14,8 @@ namespace GeneticAlgorithms
 		private List<Iindividual> firstGeneration;
 		private List<Iindividual> secondGeneration;
 
-		private Crossover Cross;
-		private Mutator Mutate;
+		//private Crossover Cross;
+		//private Mutator Mutate;
 		private CreateNewIindividual CreateIindividual;
 		private CopyFromIindividual CopyIindividual;
 		private CreateNewIindividual CreateIindividualEmpty;
@@ -23,8 +23,8 @@ namespace GeneticAlgorithms
         public bool currentGenerationFlag = true; //true = первая популяция является текущей
 
 		public void LoadDelegates(Loader _Load) {
-			Cross = _Load.Crossover;
-			Mutate = _Load.Mutator;
+			//Cross = _Load.Crossover;
+			//Mutate = _Load.Mutator;
 			CreateIindividual = _Load.CreateNewIndividual;
 			CopyIindividual = _Load.CopyFrom;
 			CreateIindividualEmpty = _Load.CreateNewIndividualEmpty;
@@ -37,7 +37,6 @@ namespace GeneticAlgorithms
             this.firstGeneration = firstGeneration;
             this.secondGeneration = secondGeneration;
         }
-
 
         public Population(Loader _Load, ABCcontrol core)
         {
@@ -94,25 +93,31 @@ namespace GeneticAlgorithms
 			return result/CurrentGeneration.Count;
 		}
 
-        public void Mutation() //мутирует текущее поколение в соответствии с _core.MutationProbability
+        public void Mutation(Mutator MutateDelegate) //мутирует текущее поколение в соответствии с _core.MutationProbability
         {
 			int count = (int)((Convert.ToDouble(CurrentGeneration.Count) / 100.0d) * Convert.ToDouble(_core.MutationProbability));
 			for (int i = 0; i < count; i++) {
-				Mutate(CurrentGeneration[MyRandom.rnd.Next(CurrentGeneration.Count)]);
+				MutateDelegate(CurrentGeneration[MyRandom.rnd.Next(CurrentGeneration.Count)]);
 			}
         }
 
-        //public void Crossover(Delegates.Crossover crossover)
-        //{
-        //    for (int i = 1; i < firstGeneration.Count; i++)
-        //    {
-        //        Population p = new Population();
-        //        crossover(p.GetPlateFromCurrentPopulation(i), p.GetPlateFromCurrentPopulation(i - 1));
-        //    }
-        //    //делегат возвращает AbstractIndividual
-        //    //использовать для создания новых особей
-        //    //создание из 2 особей 1 или нескольких особей по команде
-        //}
+        public void Crossover(Crossover crossover) //получает из рулетки особи из текущего поколения и формирует неактивное поколение
+        {
+			_core.GetRoulette.LoadByPopulation(this);
+
+			for (int i = 0; i < AnotherGeneration.Count; i++) {
+				crossover(GetIndividualFromAnotherPopulation(_core.GetRoulette.PickIndividualIndex()), GetIndividualFromAnotherPopulation(_core.GetRoulette.PickIndividualIndex()), AnotherGeneration[i]);
+			}
+
+            //for (int i = 1; i < firstGeneration.Count; i++)
+            //{
+            //    Population p = new Population();
+            //    crossover(p.GetPlateFromCurrentPopulation(i), p.GetPlateFromCurrentPopulation(i - 1));
+            //}
+            //делегат возвращает AbstractIndividual
+            //использовать для создания новых особей
+            //создание из 2 особей 1 или нескольких особей по команде
+        }
 
     }
 }
