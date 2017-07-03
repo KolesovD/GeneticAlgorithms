@@ -13,12 +13,6 @@ namespace GeneticAlgorithms
         private List<AbstractIndividual> secondGeneration;
         public bool currentGenerationFlag = true; //true = первая популяция является текущей
 
-        public Population(List<AbstractIndividual> firstGeneration, List<AbstractIndividual> secondGeneration)
-        {
-            this.firstGeneration = firstGeneration;
-            this.secondGeneration = secondGeneration;
-        }
-
         //Заполнение популяций особями
         //ВНИМАНИЕ!!! Отладочный метод, использующий объекты класса Plate, а не интерфейсы
         public Population(int count = 50)
@@ -72,27 +66,21 @@ namespace GeneticAlgorithms
 
         public void Mutation(Delegates.Mutator mutator, double mutationProbability) //Использовать mutationProbability
         {
-            /*
-            for (int i = 0; i < firstGeneration.Count; i++) //Проход по всем особям, но мутация некоторых из них возможна несколько раз
-            {
-                if (MyRandom.rnd.NextDouble() <= mutationProbability)
-                {
-                    CurrentGeneration[MyRandom.rnd.Next(firstGeneration.Count)].Mutate(mutator);
-                }
-            }
-            */
-
             foreach (AbstractIndividual individual in CurrentGeneration)
             {
                 individual.Mutate(mutator);
             }
         }
 
-        public void Crossover(Delegates.Crossover crossover) //Здесь должно быть дохуя параметров кроссинговера - откуда брать, куда класть, сколько, пропорции и т.д. (и не должно быть этого комментария)
+        public void Crossover(Delegates.Crossover crossover, int[] indexesForCrossover)
         {
-            //делегат возвращает AbstractIndividual
-            //использовать для создания новых особей
-            //создание из 2 особей 1 или нескольких особей по команде
+            int j = 0;
+            for (int i = 0; i < indexesForCrossover.Length/2; i++)
+            {
+                crossover(CurrentGeneration[indexesForCrossover[i]], CurrentGeneration[indexesForCrossover[i + 1]], AnotherGeneration[j]);
+                crossover(CurrentGeneration[indexesForCrossover[i+1]], CurrentGeneration[indexesForCrossover[i]], AnotherGeneration[++j]);
+                j++;
+            }
         }
 
     }

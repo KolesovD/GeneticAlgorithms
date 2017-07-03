@@ -50,10 +50,11 @@ namespace GeneticAlgorithms
             }
             Console.WriteLine(res);
         }
+
         public int PickIndividualIndex()
         {
             double random = MyRandom.GetRandomDouble(get_end_of_gen);
-            Console.WriteLine("случайное значение {0}", random);
+            //Console.WriteLine("случайное значение {0}", random);
             int step = 0;
 
             int start = 0;
@@ -78,9 +79,10 @@ namespace GeneticAlgorithms
                 {
                     start = index + 1;
                 }
-
+                /*
                 Console.WriteLine("шаг № {0}, диапазон сушности по индексу № {3}: {1} - {2}\n" +
                                   "диапазон текущего массива {4} - {5}", step, res_start, res_end, index, start, end);
+                */
             } while (!(res_start < random && res_end > random));
             return index;
         }

@@ -8,23 +8,24 @@ namespace GeneticAlgorithms
 {
     class Control
     {
-        private int populationSize;
+        private int generationSize;
         private Plate startingPlate;
-        //private Population population;
+        private Population population;
+        private Roulette roulette;
+
 
         public bool AllowParentsIntoNewGenerations = true;
         public int CurrentGenerationNumber = 0;
         public double FractionOfNewIndividuals = 0.25;
         public double MutationProbability = 0.01;
 
-        public Control(int populationSize, List<Segment> segmentList, double fractionOfNewIndividuals = 0.25, double mutationProbability = 0.01)
+        public Control(int generationSize, double fractionOfNewIndividuals = 0.25, double mutationProbability = 0.01)
         {
-            this.populationSize = populationSize;
+            this.generationSize = generationSize;
             this.FractionOfNewIndividuals = fractionOfNewIndividuals;
             this.MutationProbability = mutationProbability;
-
-            startingPlate = new Plate(segmentList);
-            //population = new Population(populationCount, startingPlate)
+            population = new Population(generationSize);
+            roulette = new Roulette(this.generationSize);
         }
 
         public void Optimize(Crossover crossover, Mutator mutator)
