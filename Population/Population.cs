@@ -11,7 +11,7 @@ namespace GeneticAlgorithms
     {
         private List<AbstractIndividual> firstGeneration;
         private List<AbstractIndividual> secondGeneration;
-        public bool currentGenerationFlag = true; //true = первая популяция является текущей
+        private bool currentGenerationFlag = true; //true = первая популяция является текущей
 
         //Заполнение популяций особями
         //ВНИМАНИЕ!!! Отладочный метод, использующий объекты класса Plate, а не интерфейсы
@@ -52,6 +52,11 @@ namespace GeneticAlgorithms
             }
         }
 
+        public void SwitchGenerations()
+        {
+            currentGenerationFlag = !currentGenerationFlag;
+        }
+
         //Вернуть ссылку на особь по индексу из текущей популяции
         public AbstractIndividual GetPlateFromCurrentPopulation(int index)
         {
@@ -64,18 +69,18 @@ namespace GeneticAlgorithms
             return AnotherGeneration[index];
         }
 
-        public void Mutation(Delegates.Mutator mutator, double mutationProbability) //Использовать mutationProbability
+        public void PerformMutation(Delegates.Mutator mutator, double mutationProbability) //Использовать mutationProbability
         {
             foreach (AbstractIndividual individual in CurrentGeneration)
             {
-                individual.Mutate(mutator);
+                individual.Mutate(mutator); //Добавить вероятность как параметр в Mutate
             }
         }
 
-        public void Crossover(Delegates.Crossover crossover, int[] indexesForCrossover)
+        public void PerformCrossingover(Delegates.Crossover crossover, int[] indexesForCrossover)
         {
-            int j = 0;
-            for (int i = 0; i < indexesForCrossover.Length/2; i++)
+            
+            for (int i = 0, j = 0; i < indexesForCrossover.Length/2 - 1; i++, j++)
             {
                 crossover(CurrentGeneration[indexesForCrossover[i]], CurrentGeneration[indexesForCrossover[i + 1]], AnotherGeneration[j]);
                 crossover(CurrentGeneration[indexesForCrossover[i+1]], CurrentGeneration[indexesForCrossover[i]], AnotherGeneration[++j]);

@@ -81,7 +81,7 @@ namespace GeneticAlgorithms
 
             foreach (int index in seenIndexes)
             {
-                childSegments[index] = new Segment(parent1.Segments[index]);
+                childSegments[index] = new Segment(parent1.Segments[index]);  //Не создавать новые а перезаписывать
             }
 
             for (int i = 0; i < size; i++)

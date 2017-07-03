@@ -48,7 +48,7 @@ namespace GeneticAlgorithms
                 start = GenerationAxis[i].End;
                 res += " - " + start;
             }
-            Console.WriteLine(res);
+            //Console.WriteLine(res);
         }
 
         public int PickIndividualIndex()
