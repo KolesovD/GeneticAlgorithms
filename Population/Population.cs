@@ -9,8 +9,8 @@ namespace GeneticAlgorithms
 {
     class Population : IPopulation
     {
-        private List<AbstractIndividual> firstGeneration;
-        private List<AbstractIndividual> secondGeneration;
+        private List<AbstractIndividual> firstGeneration = new List<AbstractIndividual>();
+        private List<AbstractIndividual> secondGeneration = new List<AbstractIndividual>();
         private bool currentGenerationFlag = true; //true = первая популяция является текущей
 
         //Заполнение популяций особями
@@ -86,6 +86,21 @@ namespace GeneticAlgorithms
                 crossover(CurrentGeneration[indexesForCrossover[i+1]], CurrentGeneration[indexesForCrossover[i]], AnotherGeneration[++j]);
                 j++;
             }
+        }
+
+        public AbstractIndividual GetBestIndividual()
+        {
+            double maxFitness = CurrentGeneration[0].GetFitnessFunction;
+            int maxIndex = 0;
+            for (int i = 1; i < CurrentGeneration.Count; i++)
+            {
+                if (CurrentGeneration[i].GetFitnessFunction > maxFitness)
+                {
+                    maxFitness = CurrentGeneration[i].GetFitnessFunction;
+                    maxIndex = i;
+                }
+            }
+            return CurrentGeneration[maxIndex];
         }
 
     }

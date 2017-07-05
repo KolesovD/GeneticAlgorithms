@@ -17,7 +17,7 @@ namespace GeneticAlgorithms
         public double fractionOfNewIndividuals = 0.25;
         public double mutationProbability = 0.01;
 
-        public Control(int generationSize, double fractionOfNewIndividuals = 0.25, double mutationProbability = 0.01)
+        public Control(int generationSize, double fractionOfNewIndividuals = 0.5, double mutationProbability = 0.01)
         {
             this.generationSize = generationSize;
             this.fractionOfNewIndividuals = fractionOfNewIndividuals;
@@ -35,7 +35,7 @@ namespace GeneticAlgorithms
             roulette.LoadByPopulation(population);
             int individualsToSelect = (int)((generationSize * fractionOfNewIndividuals)/2); //Деление на 2 из-за того, что кроссинговером будет произведено в 2 раза больше потомков (спорно)
             int[] selectedIndexes = new int[individualsToSelect];
-            for (int i = 0; i < generationSize; i++)
+            for (int i = 0; i < individualsToSelect; i++)
             {
                 selectedIndexes[i] = roulette.PickIndividualIndex();
             }
@@ -45,14 +45,17 @@ namespace GeneticAlgorithms
         public void Optimize(Delegates.Crossover crossover, Delegates.Mutator mutator)
         {
             //К этому моменту начальная случайно сгенерированная популяция уже создана, далее выполняется отбор
-            int[] selectedIndexes = RouletteSelection();
-            population.PerformCrossingover(crossover, selectedIndexes); //Кроссинговер
-            population.PerformMutation(mutator, mutationProbability); //Мутация 
-            //Использовать вероятность
-
-            population.SwitchGenerations(); //Поменять поколения в популяции местами
-
-            currentGenerationNumber++;
+            for (int i = 0; i < 20000; i++)
+            {
+                int[] selectedIndexes = RouletteSelection();
+                population.PerformCrossingover(crossover, selectedIndexes); //Кроссинговер
+                population.PerformMutation(mutator, mutationProbability); //Мутация 
+                                                                          //Использовать вероятность
+                population.SwitchGenerations(); //Поменять поколения в популяции местами
+                currentGenerationNumber++;
+                Console.WriteLine(population.GetBestIndividual());
+            }
+            Console.ReadLine();
             //Выполнять определённое количество раз
         }
     }

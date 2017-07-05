@@ -10,7 +10,8 @@ namespace GeneticAlgorithms
     {
         static void Main(string[] args)
         {
-
+            Control control = new Control(200);
+            control.Optimize(Crosser.CyclicCrossover, Mutator.ReverseSegmentMutation);
         }
     }
 }
