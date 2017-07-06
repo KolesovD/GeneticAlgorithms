@@ -13,11 +13,11 @@ namespace GeneticAlgorithms
 
         public Plate(List<Segment> segments) : base(segments) { }
 
-        override public double GetFitnessFunction
+        override public double FitnessFunction
         {
             get
             {
-                return 1.0 / CalcSumIdlingLine();
+                return 1.0 / (1 + CalcSumIdlingLine());
             }
         }
 
@@ -28,19 +28,6 @@ namespace GeneticAlgorithms
             {
                 this.AddSegment(new Segment(segment));
             }
-        }
-
-        public override string ToString()
-        {
-            string str = "";
-
-            for (int i = 0; i < _Segments.Count; i++)
-            {
-                str += _Segments[i].ToString();
-                str += "\n";
-            }
-
-            return str;
         }
 
         public void ShuffleSegments()
@@ -70,14 +57,7 @@ namespace GeneticAlgorithms
             {
                 int n = MyRandom.rnd.Next(2);
 
-                if (n == 1)
-                {
-                    segment.Direction = true;
-                }
-                else
-                {
-                    segment.Direction = false;
-                }
+                segment.Direction = (n == 1); 
             }
         }
 

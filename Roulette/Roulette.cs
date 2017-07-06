@@ -40,11 +40,12 @@ namespace GeneticAlgorithms
 
         public void LoadByPopulation(IPopulation population)
         {
+            //Console.WriteLine(population.ToString());
             double start = 0;
             string res = "0";
             for (int i = 0; i < GenerationAxis.Count; i++)
             {
-                GenerationAxis[i].ConfigSector(start, population.CurrentGeneration[i].GetFitnessFunction);
+                GenerationAxis[i].ConfigSector(start, population.CurrentGeneration[i].FitnessFunction);
                 start = GenerationAxis[i].End;
                 res += " - " + start;
             }

@@ -25,7 +25,7 @@ namespace GeneticAlgorithms
             _Segments = segments;
         }
 
-        public abstract double GetFitnessFunction { get; }
+        public abstract double FitnessFunction { get; }
 
         public void AddSegment(Segment segment)
         {
@@ -48,6 +48,19 @@ namespace GeneticAlgorithms
         public void Mutate(Delegates.Mutator mutator)
         {
             mutator(_Segments);
+        }
+
+        public override string ToString()
+        {
+            string str = "Fitness function: " + FitnessFunction.ToString() + "\n";
+
+            for (int i = 0; i < _Segments.Count; i++)
+            {
+                str += _Segments[i].ToString();
+                str += "\n";
+            }
+
+            return str;
         }
     }
 }

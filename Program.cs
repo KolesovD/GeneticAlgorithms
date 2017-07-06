@@ -10,8 +10,12 @@ namespace GeneticAlgorithms
     {
         static void Main(string[] args)
         {
-            Control control = new Control(200);
-            control.Optimize(Crosser.CyclicCrossover, Mutator.ReverseSegmentMutation);
+            int generationSize = 10;
+
+            Console.WriteLine("Start with generation size {0}", generationSize);
+            Control control = new Control(generationSize);
+
+            control.Optimize(Crosser.CyclicCrossover, Mutator.ReverseSegmentMutation, 300);
         }
     }
 }

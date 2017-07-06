@@ -57,7 +57,6 @@ namespace GeneticAlgorithms
 
         public static void CyclicCrossover(AbstractIndividual parent1, AbstractIndividual parent2, AbstractIndividual child)
         {
-
             int size = parent1.Size();
             List<Segment> childSegments = new List<Segment>();
 

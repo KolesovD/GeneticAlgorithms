@@ -42,18 +42,21 @@ namespace GeneticAlgorithms
             return selectedIndexes;
         }
 
-        public void Optimize(Delegates.Crossover crossover, Delegates.Mutator mutator)
-        {
+        public void Optimize(Delegates.Crossover crossover, Delegates.Mutator mutator, int maxPopulationNumber)
+        { 
+        
+            Console.WriteLine("Control.Optimize: Start.");
             //К этому моменту начальная случайно сгенерированная популяция уже создана, далее выполняется отбор
-            for (int i = 0; i < 20000; i++)
+            for (int i = 0; i < maxPopulationNumber; i++)
             {
                 int[] selectedIndexes = RouletteSelection();
+                
                 population.PerformCrossingover(crossover, selectedIndexes); //Кроссинговер
                 population.PerformMutation(mutator, mutationProbability); //Мутация 
                                                                           //Использовать вероятность
                 population.SwitchGenerations(); //Поменять поколения в популяции местами
                 currentGenerationNumber++;
-                Console.WriteLine(population.GetBestIndividual());
+                population.GetBestIndividual();
             }
             Console.ReadLine();
             //Выполнять определённое количество раз
