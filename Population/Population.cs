@@ -92,18 +92,59 @@ namespace GeneticAlgorithms
 
         public void PerformCrossingover(Delegates.Crossover crossover, int[] indexesForCrossover)
         {
-            //for (int i = 0, j = 0; i < indexesForCrossover.Length/2 - 1; i++, j++)
-            //{
-            //    crossover(CurrentGeneration[indexesForCrossover[i]], CurrentGeneration[indexesForCrossover[i + 1]], AnotherGeneration[j]);
-            //    crossover(CurrentGeneration[indexesForCrossover[i+1]], CurrentGeneration[indexesForCrossover[i]], AnotherGeneration[++j]);
-            //    //j++;
-            //}
 
-            for (int i = 0; i < indexesForCrossover.Count() / 2; i++) 
+            double average = 0; //cреднее значение фитнес-функции
+            for (int i = 0; i < AnotherGeneration.Count; i++)
             {
-                crossover(CurrentGeneration[indexesForCrossover[i]], CurrentGeneration[indexesForCrossover[i + 1]], AnotherGeneration[j]);
-                crossover(CurrentGeneration[indexesForCrossover[i + 1]], CurrentGeneration[indexesForCrossover[i]], AnotherGeneration[++j]);
+                average += AnotherGeneration[i].FitnessFunction;
+            }
 
+            average = average / AnotherGeneration.Count();
+
+            Console.WriteLine(average);
+
+            int[] badIndexes = new int[indexesForCrossover.Count()];
+            
+            for (int i = 0, k = 0; i < AnotherGeneration.Count; i++)
+            {
+                if (CurrentGeneration[i].FitnessFunction < average)
+                {
+                    if (k == indexesForCrossover.Count())
+                    {
+                        break;
+                    }
+                    badIndexes[k] = i;
+                    k++;
+                }
+            }
+
+            int j = 0;
+            for (int i = 0; i < indexesForCrossover.Count() / 2; i+=2, j++) 
+            {
+                //для создания двух разных потомков
+                //Скрещиваем 1 особь со 2 особъю
+                crossover(
+                    CurrentGeneration[indexesForCrossover[i]],
+                    CurrentGeneration[indexesForCrossover[i + 1]], 
+                    AnotherGeneration[badIndexes[j]]
+                    );
+                //Скрещиваем 2 особь с 1 особъю
+                crossover(
+                    CurrentGeneration[indexesForCrossover[i + 1]], 
+                    CurrentGeneration[indexesForCrossover[i]], 
+                    AnotherGeneration[badIndexes[++j]]
+                    );
+
+            }
+
+            if (indexesForCrossover.Count()%2 != 0)
+            {
+                //Здесь происходит IndexOutOfRangeException
+                crossover(
+                    CurrentGeneration[indexesForCrossover[indexesForCrossover.Count()-1]], 
+                    CurrentGeneration[indexesForCrossover[indexesForCrossover.Count()]], 
+                    AnotherGeneration[badIndexes[++j]]
+                    );
             }
         }
 

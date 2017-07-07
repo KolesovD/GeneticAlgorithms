@@ -32,8 +32,11 @@ namespace GeneticAlgorithms
             //Загрузить в рулетку популяцию
             //Достать определённое количество индексов
             ////---
+            //Загружаем данные о популяции в рулетку
             roulette.LoadByPopulation(population);
+
             int individualsToSelect = (int)((generationSize * fractionOfNewIndividuals)/2); //Деление на 2 из-за того, что кроссинговером будет произведено в 2 раза больше потомков (спорно)
+
             int[] selectedIndexes = new int[individualsToSelect];
             for (int i = 0; i < individualsToSelect; i++)
             {
