@@ -54,45 +54,26 @@ namespace GeneticAlgorithms
             child.Rewrite(childSegments);
         }
 
-
         public static void CyclicCrossover(AbstractIndividual parent1, AbstractIndividual parent2, AbstractIndividual child)
         {
-            int size = parent1.Size();
-            List<Segment> childSegments = new List<Segment>();
+            HashSet<int> cycleSet = new HashSet<int>();
 
-            for (int i = 0; i < size; i++)
+            int startIndex = parent1.Segments.FindIndex(s => s.ID == 0); //Индекс сегмента с ID = 0
+            cycleSet.Add(startIndex);
+            int currentIndex = parent1.Segments.FindIndex(s => s.ID == parent2.Segments[startIndex].ID); //Индекс в parent1 сегмента с ID, стоящим "напротив" начального элемента
+            while (currentIndex != startIndex)
             {
-                childSegments.Add(null);
+                cycleSet.Add(currentIndex);
+                currentIndex = parent1.Segments.FindIndex(s => s.ID == parent2.Segments[currentIndex].ID);
             }
 
-            HashSet<int> seenIndexes = new HashSet<int>();
-
-            int currentIndex = 0;
-            while (!seenIndexes.Contains(currentIndex))
+            for (int i = 0; i < child.Size(); i++)
             {
-                seenIndexes.Add(currentIndex);
-                int IDToFind = parent2.Segments[currentIndex].ID;
-                currentIndex = parent1.Segments.FindIndex(a =>
-                {
-                    return a.ID == IDToFind;
-                });
+                if (cycleSet.Contains(i))
+                    child.Segments[i].SetDataFromSegment(parent1.Segments[i]);
+                else
+                    child.Segments[i].SetDataFromSegment(parent2.Segments[i]);
             }
-
-            foreach (int index in seenIndexes)
-            {
-                childSegments[index] = new Segment(parent1.Segments[index]);  //Не создавать новые а перезаписывать
-            }
-
-            for (int i = 0; i < size; i++)
-            {
-                if (childSegments[i] == null)
-                {
-                    childSegments[i] = new Segment(parent2.Segments[i]);
-                }
-            }
-
-            child.Rewrite(childSegments);
         }
-
     }
 }

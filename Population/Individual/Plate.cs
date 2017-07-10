@@ -26,7 +26,7 @@ namespace GeneticAlgorithms
             _Segments = new List<Segment>();
             foreach (Segment segment in copy.Segments)
             {
-                this.AddSegment(new Segment(segment));
+                AddSegment(new Segment(segment));
             }
         }
 

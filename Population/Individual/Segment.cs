@@ -51,6 +51,7 @@ namespace GeneticAlgorithms
             Point1 = new Vector2(copy.Point1.X,copy.Point1.Y);
             Point2 = new Vector2(copy.Point2.X, copy.Point2.Y);
             Direction = copy.Direction;
+            ID = copy.ID;
         }
 
         public Segment(int ID, int X1, int Y1, int X2, int Y2, bool _direction)
