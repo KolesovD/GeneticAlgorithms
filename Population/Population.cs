@@ -93,7 +93,7 @@ namespace GeneticAlgorithms
         public void PerformCrossingover(Delegates.Crossover crossover, int[] indexesForCrossover)
         {
 
-            double average = 0; //cреднее значение фитнес-функции
+            double average = 0; //Среднее значение фитнес-функции
             for (int i = 0; i < AnotherGeneration.Count; i++)
             {
                 average += AnotherGeneration[i].FitnessFunction;
@@ -121,7 +121,7 @@ namespace GeneticAlgorithms
             int j = 0;
             for (int i = 0; i < indexesForCrossover.Count() / 2; i+=2, j++) 
             {
-                //для создания двух разных потомков
+                //Для создания двух разных потомков
                 //Скрещиваем 1 особь со 2 особъю
                 crossover(
                     CurrentGeneration[indexesForCrossover[i]],
@@ -139,10 +139,9 @@ namespace GeneticAlgorithms
 
             if (indexesForCrossover.Count()%2 != 0)
             {
-                //Здесь происходит IndexOutOfRangeException
                 crossover(
+                    CurrentGeneration[indexesForCrossover[indexesForCrossover.Count()-2]], 
                     CurrentGeneration[indexesForCrossover[indexesForCrossover.Count()-1]], 
-                    CurrentGeneration[indexesForCrossover[indexesForCrossover.Count()]], 
                     AnotherGeneration[badIndexes[++j]]
                     );
             }
