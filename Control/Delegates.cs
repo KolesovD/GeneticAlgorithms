@@ -3,5 +3,5 @@
 namespace GeneticAlgorithms.Delegates
 {
     public delegate void Crossover(AbstractIndividual parent1, AbstractIndividual parent2, AbstractIndividual child);
-    public delegate void Mutator(List<Segment> segmentList);
+    public delegate void Mutator(List<Segment> segmentList, double mutationProbability);
 }

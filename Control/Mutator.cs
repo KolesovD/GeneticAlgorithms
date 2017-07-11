@@ -59,11 +59,10 @@ namespace GeneticAlgorithms
             }
         }
 
-        public static void ReverseSegmentMutation(List<Segment> segmentListToMutate)
+        public static void ReverseSegmentMutation(List<Segment> segmentListToMutate, double mutationProbability = 0.01)
         {
-            double mutationProbability = 0.01; //Передавать как параметр или убрать
-
-            FlipRandomSegments(segmentListToMutate, mutationProbability);
+            //Для передачи дополнительных параметров необходимо обернуть метод мутации в класс
+            FlipRandomSegments(segmentListToMutate, mutationProbability); //Не использовать mutationProbability для флипа сегментов
 
             double max_part_len = 0.2; //Константа - нехорошо
             int max_part_elems = (int)(segmentListToMutate.Count * max_part_len);

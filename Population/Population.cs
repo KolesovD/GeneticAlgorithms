@@ -82,11 +82,11 @@ namespace GeneticAlgorithms
             return AnotherGeneration[index];
         }
 
-        public void PerformMutation(Delegates.Mutator mutator, double mutationProbability) //Использовать mutationProbability
+        public void PerformMutation(Delegates.Mutator mutator, double mutationProbability)
         {
             foreach (AbstractIndividual individual in CurrentGeneration)
             {
-                individual.Mutate(mutator); //Добавить вероятность как параметр в Mutate
+                individual.Mutate(mutator, mutationProbability);
             }
         }
 

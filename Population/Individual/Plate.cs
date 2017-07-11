@@ -73,32 +73,5 @@ namespace GeneticAlgorithms
             return length;
         }
 
-        /*private double CalcIdling(Segment segment1, Segment segment2)
-        {
-
-        
-            if (segment1.Direction && segment2.Direction)        //True и True
-            {
-                return CalcIdlingLine(segment1.X2, segment1.Y2, segment2.X1, segment2.Y1);
-            }
-            else if (!segment1.Direction && segment2.Direction)  //False и True
-            {
-                return CalcIdlingLine(segment1.X1, segment1.Y1, segment2.X1, segment2.Y1);
-            }
-            else if (segment1.Direction && !segment2.Direction) //True и False
-            {
-                return CalcIdlingLine(segment1.X2, segment1.Y2, segment2.X2, segment2.Y2);
-            }
-            else                                                //False и False
-            {
-                return CalcIdlingLine(segment1.X1, segment1.Y1, segment2.X2, segment2.Y2);
-            }
-        }*/
-
-        /*
-        private double CalcIdlingLine(double x1, double y1, double x2, double y2)
-        {
-            return Math.Sqrt(Math.Pow((x1 - x2), 2) + Math.Pow((y1 - y2), 2));
-        }*/
     }
 }

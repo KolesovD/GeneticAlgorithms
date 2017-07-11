@@ -14,8 +14,8 @@ namespace GeneticAlgorithms
 
         public bool allowParentsIntoNewGenerations = true;
         public int currentGenerationNumber = 0; //Нулевое поколение - сгенерированное случайно
-        public double fractionOfNewIndividuals = 0.25;
-        public double mutationProbability = 0.01;
+        public double fractionOfNewIndividuals;
+        public double mutationProbability;
 
         public Control(int generationSize, double fractionOfNewIndividuals = 0.5, double mutationProbability = 0.01)
         {
@@ -35,7 +35,7 @@ namespace GeneticAlgorithms
             //Загружаем данные о популяции в рулетку
             roulette.LoadByPopulation(population);
 
-            int individualsToSelect = (int)((generationSize * fractionOfNewIndividuals)/2); //Деление на 2 из-за того, что кроссинговером будет произведено в 2 раза больше потомков (спорно)
+            int individualsToSelect = (int)((generationSize * fractionOfNewIndividuals));
 
             int[] selectedIndexes = new int[individualsToSelect];
             for (int i = 0; i < individualsToSelect; i++)

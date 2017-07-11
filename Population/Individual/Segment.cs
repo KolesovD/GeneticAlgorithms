@@ -13,9 +13,12 @@ namespace GeneticAlgorithms
         public Vector2 Point1;
         public Vector2 Point2;
 
-        public Vector2 Start {
-            get {
-                if (Direction) {
+        public Vector2 Start
+        {
+            get
+            {
+                if (Direction)
+                {
                     return Point1;
                 }
                 else {
@@ -37,9 +40,11 @@ namespace GeneticAlgorithms
             }
         }
 
-        public float Length {
-            get {
-                return (Point1-Point2).Length();
+        public float Length
+        {
+            get
+            {
+                return (Point1 - Point2).Length();
             }
         }
 
@@ -48,7 +53,7 @@ namespace GeneticAlgorithms
 
         public Segment(Segment copy)
         {
-            Point1 = new Vector2(copy.Point1.X,copy.Point1.Y);
+            Point1 = new Vector2(copy.Point1.X, copy.Point1.Y);
             Point2 = new Vector2(copy.Point2.X, copy.Point2.Y);
             Direction = copy.Direction;
             ID = copy.ID;
@@ -86,7 +91,5 @@ namespace GeneticAlgorithms
         {
             Direction = !Direction;
         }
-
-        
-    }
+    } 
 }
