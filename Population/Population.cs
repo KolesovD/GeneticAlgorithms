@@ -13,6 +13,7 @@ namespace GeneticAlgorithms
         private List<AbstractIndividual> secondGeneration = new List<AbstractIndividual>();
         private bool currentGenerationFlag = true; //true = первая популяция является текущей
         private int currentGenerationNumber = 0;
+        public float bestFitnessFunction;
 
         //Заполнение популяций особями
         //ВНИМАНИЕ!!! Отладочный метод, использующий объекты класса Plate, а не интерфейсы
@@ -161,6 +162,7 @@ namespace GeneticAlgorithms
                 }
             }
             Console.WriteLine("Лучший в поколении №" + currentGenerationNumber + "\n"  + CurrentGeneration[maxIndex]);
+
             return CurrentGeneration[maxIndex];
         }
 

@@ -57,8 +57,9 @@ namespace GeneticAlgorithms
             for (int i = 0; i < _Segments.Count; i++)
             {
                 str += _Segments[i].ToString();
-                str += "\n";
+                
             }
+            str += "\n";
 
             return str;
         }

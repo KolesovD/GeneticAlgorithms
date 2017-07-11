@@ -60,6 +60,7 @@ namespace GeneticAlgorithms
                 population.SwitchGenerations(); //Поменять поколения в популяции местами
                 currentGenerationNumber++;
                 population.GetBestIndividual();
+                
             }
             Console.ReadLine();
             //Выполнять определённое количество раз
