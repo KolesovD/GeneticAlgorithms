@@ -72,9 +72,8 @@ namespace GeneticAlgorithms
             population.PerformCrossingover(crossover, selectedIndexes); //Кроссинговер
             population.PerformMutation(mutator, mutationProbability); //Мутация 
             population.SwitchGenerations(); //Поменять поколения в популяции местами
+            Console.WriteLine("Лучший в поколении №" + currentGenerationNumber + "\n" + population.GetBestIndividual());
             currentGenerationNumber++;
-            population.GetBestIndividual();
-
         }
     }
 }

@@ -27,7 +27,7 @@ namespace GeneticAlgorithms
 
             Console.WriteLine("Эталон: ");
 
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 30; i++)
             {
                 perfectPlate.AddSegment(new Segment(i, i, i, i + 1, i + 1, true));
                 Console.WriteLine($"New segment ID: {i}, [{i},{i}];[{i + 1},{i + 1}], direction: {true}");
@@ -110,8 +110,6 @@ namespace GeneticAlgorithms
 
             average = average / AnotherGeneration.Count();
 
-            Console.WriteLine(average);
-
             int[] badIndexes = new int[indexesForCrossover.Count()];
             
             for (int i = 0, k = 0; i < AnotherGeneration.Count; i++)
@@ -169,8 +167,6 @@ namespace GeneticAlgorithms
                     maxIndex = i;
                 }
             }
-            Console.WriteLine("Лучший в поколении №" + currentGenerationNumber + "\n"  + CurrentGeneration[maxIndex]);
-
             return CurrentGeneration[maxIndex];
         }
 

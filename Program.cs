@@ -10,14 +10,19 @@ namespace GeneticAlgorithms
     {
         static void Main(string[] args)
         {
-            int generationSize = 100;
+            int generationSize = 5000;
 
             Console.WriteLine("Start with generation size {0}", generationSize);
-            Control control = new Control(generationSize, fractionOfNewIndividuals:0.5, mutationProbability:0.05);
+            Control control = new Control(generationSize, fractionOfNewIndividuals:0.5, mutationProbability:0.01);
 
-            for (int i = 0; i <= 2000; i++)
+            for (int i = 0; i <=3000; i++)
             {
                 control.OptimizeStep(Crosser.CyclicCrossover, Mutator.ReverseSegmentMutation);
+
+                if (i%10 == 0)
+                {
+                    Console.ReadKey();
+                }
             }
         }
     }
