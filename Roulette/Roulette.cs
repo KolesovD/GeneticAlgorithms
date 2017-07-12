@@ -79,7 +79,7 @@ namespace GeneticAlgorithms
                 else if (res_end < random)
                 {
                     start = index + 1;
-                }
+                } 
                 /*
                 Console.WriteLine("шаг № {0}, диапазон сушности по индексу № {3}: {1} - {2}\n" +
                                   "диапазон текущего массива {4} - {5}", step, res_start, res_end, index, start, end);

@@ -12,7 +12,7 @@ namespace GeneticAlgorithms.Information
 
         private Info() { }
 
-        public static Info Get
+        public static Info getInstance
         {
             get
             {
@@ -24,8 +24,5 @@ namespace GeneticAlgorithms.Information
                 return instance;
             }
         }
-
-        
-
     }
 }

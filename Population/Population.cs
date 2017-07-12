@@ -12,12 +12,16 @@ namespace GeneticAlgorithms
         private List<AbstractIndividual> firstGeneration = new List<AbstractIndividual>();
         private List<AbstractIndividual> secondGeneration = new List<AbstractIndividual>();
         private bool currentGenerationFlag = true; //true = первая популяция является текущей
-        private int currentGenerationNumber = 0;
-        public float bestFitnessFunction;
+        public int currentGenerationNumber { get; private set; }
 
         //Заполнение популяций особями
         //ВНИМАНИЕ!!! Отладочный метод, использующий объекты класса Plate, а не интерфейсы
-        public Population(int count = 50)
+        public Population()
+        {
+
+        }
+
+        public void CreateStartingPopulation(int count = 50)
         {
             Plate perfectPlate = new Plate();
 
@@ -26,7 +30,7 @@ namespace GeneticAlgorithms
             for (int i = 0; i < 10; i++)
             {
                 perfectPlate.AddSegment(new Segment(i, i, i, i + 1, i + 1, true));
-                Console.WriteLine($"New segment ID: {i}, [{i},{i}];[{i+1},{i+1}], direction: {true}");
+                Console.WriteLine($"New segment ID: {i}, [{i},{i}];[{i + 1},{i + 1}], direction: {true}");
             }
 
             Console.ReadKey();
@@ -43,7 +47,6 @@ namespace GeneticAlgorithms
             Console.ReadKey();
 
             secondGeneration = new List<AbstractIndividual>(firstGeneration);
-
         }
 
         //Вернуть ссылку на текущее поколение
@@ -63,6 +66,11 @@ namespace GeneticAlgorithms
             {
                 return currentGenerationFlag ? secondGeneration : firstGeneration;
             }
+        }
+
+        public int GenerationSize
+        {
+            get { return CurrentGeneration.Count; }
         }
 
         public void SwitchGenerations()
@@ -168,7 +176,6 @@ namespace GeneticAlgorithms
 
         public override String ToString()
         {
-
             string sas = "Поколение №" + currentGenerationNumber + "\n";
 
             foreach (var item in CurrentGeneration)
