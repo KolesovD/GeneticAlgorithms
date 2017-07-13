@@ -11,11 +11,13 @@ namespace GeneticAlgorithms
     {
         public double mutationProbability { get; set; }
         public double segmentFlipProbability { get; set; }
+        public double maxCutoutPartLength;
 
-        public Mutator(double mutationProbability, double segmentFlipProbability)
+        public Mutator(double mutationProbability, double segmentFlipProbability, double maxCutoutPartLength = 0.2)
         {
             this.mutationProbability = mutationProbability;
             this.segmentFlipProbability = segmentFlipProbability;
+            this.maxCutoutPartLength = maxCutoutPartLength;
         }
 
         private void InsertRange(List<Segment> original, List<Segment> ToAdd, int position)
@@ -107,11 +109,9 @@ namespace GeneticAlgorithms
 
         public void ReverseSegmentMutation(List<Segment> segmentListToMutate)
         {
-            //Для передачи дополнительных параметров необходимо обернуть метод мутации в класс
             FlipRandomSegments(segmentListToMutate);
-
-            double max_part_len = 0.2; //Константа - нехорошо
-            int max_part_elems = (int)(segmentListToMutate.Count * max_part_len);
+           
+            int max_part_elems = (int)(segmentListToMutate.Count * maxCutoutPartLength);
             int part_elems;
 
             for (int i = 0; i < segmentListToMutate.Count; i++)
@@ -125,7 +125,6 @@ namespace GeneticAlgorithms
                     ReverseRange(segmentListToMutate, i, part_elems);
                 }
             }
-
         }
     }
 }

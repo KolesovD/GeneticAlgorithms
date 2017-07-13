@@ -56,7 +56,6 @@ namespace GeneticAlgorithms
             {
                 return currentGenerationFlag ? firstGeneration : secondGeneration;
             }
-
         }
 
         //Вернуть ссылку на не текущее поколение
@@ -93,9 +92,11 @@ namespace GeneticAlgorithms
 
         public void PerformMutation(Delegates.Mutator mutator)
         {
+            AbstractIndividual bestOne = GetBestIndividual();
             foreach (AbstractIndividual individual in CurrentGeneration)
             {
-                individual.Mutate(mutator);
+                if (individual != bestOne)
+                    individual.Mutate(mutator);
             }
         }
 

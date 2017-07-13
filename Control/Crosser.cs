@@ -9,8 +9,6 @@ namespace GeneticAlgorithms
 {
     public class Crosser
     {
-        //static Random rng = new Random();
-
         public static void OrderedCrossover(AbstractIndividual parent1, AbstractIndividual parent2, AbstractIndividual child)
         {
             List<Segment> childSegments = new List<Segment>();
