@@ -14,13 +14,13 @@ namespace GeneticAlgorithms
         private bool currentGenerationFlag = true; //true = первая популяция является текущей
         public int currentGenerationNumber { get; private set; }
 
-        //Заполнение популяций особями
-        //ВНИМАНИЕ!!! Отладочный метод, использующий объекты класса Plate, а не интерфейсы
         public Population()
         {
 
         }
 
+        //Заполнение популяций особями
+        //ВНИМАНИЕ!!! Отладочный метод, использующий объекты класса Plate, а не интерфейсы
         public void CreateStartingPopulation(int count = 50)
         {
             Plate perfectPlate = new Plate();
@@ -30,23 +30,23 @@ namespace GeneticAlgorithms
             for (int i = 0; i < 30; i++)
             {
                 perfectPlate.AddSegment(new Segment(i, i, i, i + 1, i + 1, true));
+                //Вывод сегментов эталонного варианта
                 Console.WriteLine($"New segment ID: {i}, [{i},{i}];[{i + 1},{i + 1}], direction: {true}");
             }
 
+            //Остановка для просмотра сформированного эталона
             Console.ReadKey();
-            Console.WriteLine("\nСтартовая популяция: ");
 
+            //Создание стартовой популяции
             for (int i = 0; i < count; i++)
             {
                 Plate plate = new Plate(perfectPlate);
                 plate.ShuffleSegments();
                 firstGeneration.Add(plate);
-                Console.WriteLine(plate.ToString());
             }
 
-            Console.ReadKey();
-
             secondGeneration = new List<AbstractIndividual>(firstGeneration);
+            currentGenerationNumber = 0;
         }
 
         //Вернуть ссылку на текущее поколение
@@ -91,11 +91,11 @@ namespace GeneticAlgorithms
             return AnotherGeneration[index];
         }
 
-        public void PerformMutation(Delegates.Mutator mutator, double mutationProbability)
+        public void PerformMutation(Delegates.Mutator mutator)
         {
             foreach (AbstractIndividual individual in CurrentGeneration)
             {
-                individual.Mutate(mutator, mutationProbability);
+                individual.Mutate(mutator);
             }
         }
 

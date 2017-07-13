@@ -15,13 +15,11 @@ namespace GeneticAlgorithms
         public bool allowParentsIntoNewGenerations = true;
         public int currentGenerationNumber = 0; //Нулевое поколение - сгенерированное случайно
         public double fractionOfNewIndividuals;
-        public double mutationProbability;
 
-        public Control(int generationSize, double fractionOfNewIndividuals = 0.5, double mutationProbability = 0.01)
+        public Control(int generationSize, double fractionOfNewIndividuals = 0.5)
         {
             this.generationSize = generationSize;
             this.fractionOfNewIndividuals = fractionOfNewIndividuals;
-            this.mutationProbability = mutationProbability;
             population = new Population();
             population.CreateStartingPopulation(generationSize); //Порождается отладочная популяция из Plate (единичные сегменты по диагонали с расстоянием 0)
             roulette = new Roulette(this.generationSize);
@@ -46,7 +44,7 @@ namespace GeneticAlgorithms
             return selectedIndexes;
         }
 
-        public void Optimize(Delegates.Crossover crossover, Delegates.Mutator mutator, int maxPopulationNumber)
+        public void Optimize(Delegates.Crossover crossover, Delegates.Mutator mutator, int maxPopulationNumber) //Перегрузить!
         {
             //К этому моменту начальная случайно сгенерированная популяция уже создана, далее выполняется отбор
             for (int i = 0; i < maxPopulationNumber; i++)
@@ -54,7 +52,7 @@ namespace GeneticAlgorithms
                 int[] selectedIndexes = RouletteSelection();
 
                 population.PerformCrossingover(crossover, selectedIndexes); //Кроссинговер
-                population.PerformMutation(mutator, mutationProbability); //Мутация 
+                population.PerformMutation(mutator); //Мутация 
                 population.SwitchGenerations(); //Поменять поколения в популяции местами
                 currentGenerationNumber++;
                 population.GetBestIndividual();
@@ -70,7 +68,7 @@ namespace GeneticAlgorithms
             //К этому моменту начальная случайно сгенерированная популяция уже создана, далее выполняется отбор
             int[] selectedIndexes = RouletteSelection();
             population.PerformCrossingover(crossover, selectedIndexes); //Кроссинговер
-            population.PerformMutation(mutator, mutationProbability); //Мутация 
+            population.PerformMutation(mutator); //Мутация 
             population.SwitchGenerations(); //Поменять поколения в популяции местами
             Console.WriteLine("Лучший в поколении №" + currentGenerationNumber + "\n" + population.GetBestIndividual());
             currentGenerationNumber++;

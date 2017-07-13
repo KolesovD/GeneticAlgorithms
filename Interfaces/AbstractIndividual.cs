@@ -45,9 +45,9 @@ namespace GeneticAlgorithms
             }
         }
 
-        public void Mutate(Delegates.Mutator mutator, double mutationProbability)
+        public void Mutate(Delegates.Mutator mutator)
         {
-            mutator(_Segments, mutationProbability);
+            mutator(_Segments);
         }
 
         public override string ToString()
