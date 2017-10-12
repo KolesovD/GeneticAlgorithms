@@ -16,6 +16,14 @@ namespace GeneticAlgorithms
         public int currentGenerationNumber = 0; //Нулевое поколение - сгенерированное случайно
         public double fractionOfNewIndividuals;
 
+        public AbstractIndividual bestIndividual
+        {
+            get
+            {
+                return population.GetBestIndividual();
+            }
+        }
+
         public Control(int generationSize, double fractionOfNewIndividuals = 0.5)
         {
             this.generationSize = generationSize;
@@ -44,19 +52,16 @@ namespace GeneticAlgorithms
             return selectedIndexes;
         }
 
-        public void Optimize(Delegates.Crossover crossover, Delegates.Mutator mutator, int maxPopulationNumber) //Перегрузить!
+        public void Optimize(Delegates.Crossover crossover, Delegates.Mutator mutator, int maxPopulationNumber)
         {
             //К этому моменту начальная случайно сгенерированная популяция уже создана, далее выполняется отбор
             for (int i = 0; i < maxPopulationNumber; i++)
             {
                 int[] selectedIndexes = RouletteSelection();
-
                 population.PerformCrossingover(crossover, selectedIndexes); //Кроссинговер
                 population.PerformMutation(mutator); //Мутация 
                 population.SwitchGenerations(); //Поменять поколения в популяции местами
                 currentGenerationNumber++;
-                population.GetBestIndividual();
-
             }
             Console.ReadLine();
             //Выполнять определённое количество раз
@@ -64,13 +69,13 @@ namespace GeneticAlgorithms
 
         public void OptimizeStep(Delegates.Crossover crossover, Delegates.Mutator mutator)
         {
-            Console.WriteLine($"Поколение №{population.currentGenerationNumber}");
+            //Console.WriteLine($"Поколение №{population.currentGenerationNumber}");
             //К этому моменту начальная случайно сгенерированная популяция уже создана, далее выполняется отбор
             int[] selectedIndexes = RouletteSelection();
             population.PerformCrossingover(crossover, selectedIndexes); //Кроссинговер
             population.PerformMutation(mutator); //Мутация 
             population.SwitchGenerations(); //Поменять поколения в популяции местами
-            Console.WriteLine("Лучший в поколении №" + currentGenerationNumber + "\n" + population.GetBestIndividual());
+            //Console.WriteLine("Лучший в поколении №" + currentGenerationNumber + "\n" + population.GetBestIndividual());
             currentGenerationNumber++;
         }
     }
