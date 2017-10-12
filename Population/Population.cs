@@ -22,7 +22,7 @@ namespace GeneticAlgorithms
 
         public bool currentGenerationFlag = true; //true = первая популяция является текущей
 
-		public void LoadDelegates(Loader _Load) {
+		private void LoadDelegates(Loader _Load) {
 			//Cross = _Load.Crossover;
 			//Mutate = _Load.Mutator;
 			CreateIindividual = _Load.CreateNewIndividual;
@@ -45,8 +45,7 @@ namespace GeneticAlgorithms
 			firstGeneration = new List<Iindividual>();
 			secondGeneration = new List<Iindividual>();
 			Iindividual perfectPlate = CreateIindividual();
-			for (int i = 0; i<_core.GetPopulationSize; i++)
-            {
+			for (int i = 0; i < _core.SizeOfPopulation(); i++) {
 				Iindividual plate = CopyIindividual(perfectPlate);
 				plate.Shuffle();
                 firstGeneration.Add(plate);
@@ -56,20 +55,16 @@ namespace GeneticAlgorithms
         }
 
         //Вернуть ссылку на текущее поколение
-        public List<Iindividual> CurrentGeneration
-        {
-            get
-            {
+        public List<Iindividual> CurrentGeneration {
+            get {
                 return currentGenerationFlag ? firstGeneration : secondGeneration;
             }
 
         }
 
         //Вернуть ссылку на не текущее поколение
-        public List<Iindividual> AnotherGeneration
-        {
-            get
-            {
+        public List<Iindividual> AnotherGeneration {
+            get {
                 return currentGenerationFlag ? secondGeneration : firstGeneration;
             }
 
@@ -96,17 +91,20 @@ namespace GeneticAlgorithms
 			return result/CurrentGeneration.Count;
 		}
 
-        public void Mutation(Mutator MutateDelegate) //мутирует текущее поколение в соответствии с _core.MutationProbability
+        public void Mutation(Mutatordel _MutateDelegate) //мутирует текущее поколение в соответствии с _core.MutationProbability
         {
-			int count = (int)((Convert.ToDouble(CurrentGeneration.Count) / 100.0d) * Convert.ToDouble(_core.MutationProbability));
+			int count = (int)((Convert.ToDouble(CurrentGeneration.Count) / 100.0d) * Convert.ToDouble(_core.mutationProbability) * 100.0d);
 			for (int i = 0; i < count; i++) {
-				MutateDelegate(CurrentGeneration[MyRandom.rnd.Next(CurrentGeneration.Count)]);
+				_MutateDelegate(CurrentGeneration[MyRandom.rnd.Next(CurrentGeneration.Count)]);
+				//_MutateDelegate();
 			}
         }
 
         public void Crossover(Crossover crossover) //получает из рулетки особи из текущего поколения и формирует неактивное поколение
         {
 			_core.GetRoulette.LoadByPopulation(this);
+			int count = (int)((Convert.ToDouble(CurrentGeneration.Count) / 100.0d) * Convert.ToDouble(_core.fractionOfNewIndividuals) * 100.0d);
+
 
 			for (int i = 0; i < AnotherGeneration.Count; i++) {
 				crossover(GetIndividualFromAnotherPopulation(_core.GetRoulette.PickIndividualIndex()), GetIndividualFromAnotherPopulation(_core.GetRoulette.PickIndividualIndex()), AnotherGeneration[i]);

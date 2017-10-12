@@ -58,6 +58,8 @@
     <Compile Include="Control\Loader.cs" />
     <Compile Include="Control\Strategy.cs" />
     <Compile Include="Population\Individual\LoaderPlate.cs" />
+    <Compile Include="Population\Individual\Crosser.cs" />
+    <Compile Include="Population\Individual\Mutator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

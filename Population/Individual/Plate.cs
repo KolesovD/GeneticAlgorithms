@@ -12,59 +12,42 @@ namespace GeneticAlgorithms
 	public class Plate : Iindividual
 	{
 		private List<Segment> _Segments;
-		private static readonly XDocument doc;
+		//private static readonly XDocument doc;
 
 		//конструкторы
-		static Plate()
-		{
-			doc = XDocument.Load("../../Population/Individual/Picture.xml");
+		//static Plate() {
+		//	doc = XDocument.Load("../../Population/Individual/Picture.xml");
+		//}
+
+		public Plate() {
+			_Segments = new List<Segment>();
 		}
 
-		public Plate(bool is_empty)
-		{
-			if (is_empty == false)
-			{
-				_Segments = new List<Segment>();
-				foreach (XElement el in doc.Root.Elements())
-				{
-					Regex reg = new Regex(@"[0-9]+");
-					MatchCollection collect = reg.Matches(el.Value);
-					_Segments.Add(new Segment(Convert.ToInt32(el.Attribute("id").Value),
-											  Convert.ToInt32(collect[0].Value),
-											 Convert.ToInt32(collect[1].Value),
-											 Convert.ToInt32(collect[2].Value),
-											 Convert.ToInt32(collect[3].Value),
-											  Convert.ToBoolean(el.Attribute("direction").Value)));
-				}
-			}
-			else {
-				_Segments = new List<Segment>();
-			}
-		}
-
-		public Plate(List<Segment> segments)
-		{
+		public Plate(List<Segment> segments) {
 			_Segments = segments;
 		}
-		public Plate(Plate copy)
-		{
+		public Plate(Plate copy) {
 			_Segments = new List<Segment>();
-			foreach (Segment segment in copy.Segments)
-			{
+			foreach (Segment segment in copy.Segments) {
 				this.AddSegment(new Segment(segment));
 			}
 		}
 
-		public List<Segment> Segments
-		{
+		public List<Segment> Segments {
 			get { return _Segments; }
 		}
 
-		public double GetFitnessFunction
-		{
-			get
-			{
+		public double GetFitnessFunction {
+			get {
 				return 1.0 / CalcSumIdlingLine();
+			}
+		}
+
+		public void Rewrite(List<Segment> newSegmentList)
+		{
+			for (int i = 0; i < newSegmentList.Count; i++)
+			{
+				_Segments[i].SetDataFromSegment(newSegmentList[i]);
 			}
 		}
 
