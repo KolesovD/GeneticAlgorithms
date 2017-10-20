@@ -7,6 +7,11 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Viewbox x:Name="Box">
+            <Canvas x:Name="CanvasDraw" HorizontalAlignment="Left" Height="303" Margin="10,10,0,0" VerticalAlignment="Top" Width="497"/>
+        </Viewbox>
     </Grid>
 </Window>
