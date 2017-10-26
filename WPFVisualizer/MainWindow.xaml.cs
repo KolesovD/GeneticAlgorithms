@@ -45,8 +45,10 @@ namespace WPFVisualizer
             absciss.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Aliased);
             absciss.StrokeThickness = 2;
 
-            CanvasDraw.Children.Add(new ArrowLine(new Point(0, 0), new Point(100, 0)).getShape());
-            CanvasDraw.Children.Add(new ArrowLine(new Point(0, 0), new Point(0, 100)).getShape());
+            Arrow r1 = new Arrow(new Point(0, 0), new Point(0, 100));
+            CanvasDraw.Children.Add(r1);
+            CanvasDraw.Children.Add(new Arrow(new Point(0, 0), new Point(100, 0)));
+            r1.SetCollor(Brushes.Red);
         }
 
     }
