@@ -24,6 +24,7 @@ namespace WPFVisualizer
     public partial class MainWindow : Window
     {
         private Queue<AbstractIndividual> _Queue = new Queue<AbstractIndividual>();
+        Timer t;
 
         void someFunc()
         {
@@ -46,25 +47,23 @@ namespace WPFVisualizer
         }
 
         void visualize(object obj) {
-            while (true)
-            {
-                Thread.Sleep(100);
+                //Thread.Sleep(100);
                 SynchronizationContext _uiContext = obj as SynchronizationContext;
+                _uiContext.Post((objs) =>
+                {
+                    textBox.AppendText("tik!!!");
+                }, null);
                 try
                 {
                     AbstractIndividual deq = _Queue.Peek();
 
                     if (deq != null)
                     {
-                        //_uiContext.Post((objs) =>
-                        //{
-                        //    textBox.AppendText(objs.ToString());
-                        //}, deq);
+                        
                         _uiContext.Post(visualizeDraw, deq);
                     }
                 }
                 catch (InvalidOperationException err) { }
-            }
         }
 
         void visualizeDraw(object data) {
@@ -86,7 +85,7 @@ namespace WPFVisualizer
             optTask.Start();
             TimerCallback time = new TimerCallback(visualize);
             SynchronizationContext uiContext = SynchronizationContext.Current;
-            Timer t = new Timer(time, uiContext, 0, 1000);
+            t = new Timer(time, uiContext, 0, 1000);
 
             //Line ordinat = new Line();
             //ordinat.Stretch = Stretch.Uniform;
