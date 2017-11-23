@@ -31,11 +31,11 @@ namespace GeneticAlgorithms
             {
                 perfectPlate.AddSegment(new Segment(i, i, i, i + 1, i + 1, true));
                 //Вывод сегментов эталонного варианта
-                Console.WriteLine($"New segment ID: {i}, [{i},{i}];[{i + 1},{i + 1}], direction: {true}");
+                //Console.WriteLine($"New segment ID: {i}, [{i},{i}];[{i + 1},{i + 1}], direction: {true}");
             }
 
             //Остановка для просмотра сформированного эталона
-            Console.ReadKey();
+            //Console.ReadKey();
 
             //Создание стартовой популяции
             for (int i = 0; i < count; i++)

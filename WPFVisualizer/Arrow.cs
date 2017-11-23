@@ -60,11 +60,9 @@ namespace WPFVisualizer
             connectorGeometry.StartPoint = start;
             connectorGeometry.EndPoint = end;
             lineGroup.Children.Add(connectorGeometry);
-
-
         }
 
-        public void SetCollor(SolidColorBrush color) {
+        public void SetColor(SolidColorBrush color) {
             Stroke = color;
             Fill = color;
         }

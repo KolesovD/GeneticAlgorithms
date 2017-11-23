@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GeneticAlgorithms
 {
-    class Control
+    public class Control
     {
         private int generationSize;
         private Population population;
