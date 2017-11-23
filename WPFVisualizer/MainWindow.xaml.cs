@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GeneticAlgorithms;
 using System.Threading;
+using System.Numerics;
 
 namespace WPFVisualizer
 {
@@ -55,15 +56,26 @@ namespace WPFVisualizer
 
                     if (deq != null)
                     {
-                        //textBox.AppendText(deq.ToString());
-                        _uiContext.Post((objs) =>
-                        {
-                            textBox.AppendText(deq.ToString());
-                        }, null);
+                        //_uiContext.Post((objs) =>
+                        //{
+                        //    textBox.AppendText(objs.ToString());
+                        //}, deq);
+                        _uiContext.Post(visualizeDraw, deq);
                     }
                 }
                 catch (InvalidOperationException err) { }
             }
+        }
+
+        void visualizeDraw(object data) {
+            AbstractIndividual deq = data as AbstractIndividual;
+            foreach (Segment seg in deq.Segments) {
+                CanvasDraw.Children.Add(new Arrow(fromVector(seg.Point1, 100), fromVector(seg.Point2, 100)));
+            }
+        }
+
+        Point fromVector(Vector2 vec, float scale) {
+            return new Point(vec.X*scale, vec.Y* scale);
         }
 
         public MainWindow()
@@ -101,6 +113,7 @@ namespace WPFVisualizer
             //CanvasDraw.Children.Add(r1);
             //CanvasDraw.Children.Add(new Arrow(new Point(0, 0), new Point(100, 0)));
             //r1.SetColor(Brushes.Red);
+
         }
 
     }

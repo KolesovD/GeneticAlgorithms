@@ -26,10 +26,10 @@ namespace GeneticAlgorithms
             Plate perfectPlate = new Plate();
 
             Console.WriteLine("Эталон: ");
-
-            for (int i = 0; i < 30; i++)
+            Random r = new Random();
+            for (int i = 0; i < 10; i++)
             {
-                perfectPlate.AddSegment(new Segment(i, i, i, i + 1, i + 1, true));
+                perfectPlate.AddSegment(new Segment(i, i+r.Next(10), i + r.Next(10), i + 1 + r.Next(10), i + 1 + r.Next(10), true));
                 //Вывод сегментов эталонного варианта
                 //Console.WriteLine($"New segment ID: {i}, [{i},{i}];[{i + 1},{i + 1}], direction: {true}");
             }
