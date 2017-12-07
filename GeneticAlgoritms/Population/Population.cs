@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Assets.MyRandoms;
+using GeneticAlgorithms.Information;
 
 namespace GeneticAlgorithms
 {
@@ -21,18 +22,19 @@ namespace GeneticAlgorithms
 
         //Заполнение популяций особями
         //ВНИМАНИЕ!!! Отладочный метод, использующий объекты класса Plate, а не интерфейсы
-        public void CreateStartingPopulation(int count = 50)
+        public void CreateStartingPopulation(string XML_path ,int count = 50)
         {
-            Plate perfectPlate = new Plate();
+            XMLLoader load = new XMLLoader(XML_path);
+            Plate perfectPlate = load.Parse();
 
-            Console.WriteLine("Эталон: ");
-            Random r = new Random();
-            for (int i = 0; i < 10; i++)
-            {
-                perfectPlate.AddSegment(new Segment(i, i+r.Next(10), i + r.Next(10), i + 1 + r.Next(10), i + 1 + r.Next(10), true));
-                //Вывод сегментов эталонного варианта
-                //Console.WriteLine($"New segment ID: {i}, [{i},{i}];[{i + 1},{i + 1}], direction: {true}");
-            }
+
+            //Console.WriteLine("Эталон: ");
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    perfectPlate.AddSegment(new Segment(i, i, i , i + 1 , i + 1, true));
+            //    //Вывод сегментов эталонного варианта
+            //    //Console.WriteLine($"New segment ID: {i}, [{i},{i}];[{i + 1},{i + 1}], direction: {true}");
+            //}
 
             //Остановка для просмотра сформированного эталона
             //Console.ReadKey();

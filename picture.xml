@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<picture>
+  <segment id="0" direction="true">
+    <point x="0" y="0"/>
+    <point x="1" y="1"/>
+  </segment>
+  <segment id="1" direction="true">
+    <point x="1" y="1"/>
+    <point x="2" y="2"/>
+  </segment>
+  <segment id="2" direction="true">
+    <point x="2" y="2"/>
+    <point x="3" y="3"/>
+  </segment>
+  <segment id="3" direction="true">
+    <point x="3" y="3"/>
+    <point x="4" y="4"/>
+  </segment>
+  <segment id="4" direction="true">
+    <point x="4" y="4"/>
+    <point x="5" y="5"/>
+  </segment>
+  <segment id="5" direction="true">
+    <point x="5" y="5"/>
+    <point x="6" y="6"/>
+  </segment>
+  <segment id="6" direction="true">
+    <point x="6" y="6"/>
+    <point x="7" y="7"/>
+  </segment>
+  <segment id="7" direction="true">
+    <point x="7" y="7"/>
+    <point x="8" y="8"/>
+  </segment>
+  <segment id="8" direction="true">
+    <point x="8" y="8"/>
+    <point x="9" y="9"/>
+  </segment>
+  <segment id="9" direction="true">
+    <point x="9" y="9"/>
+    <point x="10" y="10"/>
+  </segment>
+</picture>

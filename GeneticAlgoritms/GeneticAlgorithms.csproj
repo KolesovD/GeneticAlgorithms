@@ -52,6 +52,7 @@
     <Compile Include="Control\Delegates.cs" />
     <Compile Include="Control\Mutator.cs" />
     <Compile Include="Information\Info.cs" />
+    <Compile Include="Information\XMLLoader.cs" />
     <Compile Include="Interfaces\AbstractIndividual.cs" />
     <Compile Include="Interfaces\IPopulation.cs" />
     <Compile Include="Population\Individual\Plate.cs" />

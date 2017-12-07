@@ -24,12 +24,12 @@ namespace GeneticAlgorithms
             }
         }
 
-        public Control(int generationSize, double fractionOfNewIndividuals = 0.5)
+        public Control(string xml_path, int generationSize, double fractionOfNewIndividuals = 0.5)
         {
             this.generationSize = generationSize;
             this.fractionOfNewIndividuals = fractionOfNewIndividuals;
             population = new Population();
-            population.CreateStartingPopulation(generationSize); //Порождается отладочная популяция из Plate (единичные сегменты по диагонали с расстоянием 0)
+            population.CreateStartingPopulation(xml_path, generationSize); //Порождается отладочная популяция из Plate (единичные сегменты по диагонали с расстоянием 0)
             roulette = new Roulette(this.generationSize);
         }
 

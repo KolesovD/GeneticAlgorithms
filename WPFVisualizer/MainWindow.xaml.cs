@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using GeneticAlgorithms;
 using System.Threading;
 using System.Numerics;
+using System.Windows.Threading;
 
 namespace WPFVisualizer
 {
@@ -25,18 +26,19 @@ namespace WPFVisualizer
     {
         private Queue<AbstractIndividual> _Queue = new Queue<AbstractIndividual>();
         Timer t;
+        private DispatcherTimer dispatcherTimer;
 
         void someFunc()
         {
             int generationSize = 5000;
 
             //Console.WriteLine("Start with generation size {0}", generationSize);
-            GeneticAlgorithms.Control control = new GeneticAlgorithms.Control(generationSize, fractionOfNewIndividuals: 0.9);
+            GeneticAlgorithms.Control control = new GeneticAlgorithms.Control("../../../picture.xml", generationSize, fractionOfNewIndividuals: 0.9);
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.05);
 
             while (true)
             {
-                Thread.Sleep(100);
+                //Thread.Sleep(100);
                 //Console.WriteLine($"Поколение №{control.currentGenerationNumber}");
                 control.OptimizeStep(Crosser.CyclicCrossover, mutator.ReverseSegmentMutation);
                 _Queue.Enqueue(control.bestIndividual);
@@ -46,35 +48,56 @@ namespace WPFVisualizer
 
         }
 
-        void visualize(object obj) {
-                //Thread.Sleep(100);
-                SynchronizationContext _uiContext = obj as SynchronizationContext;
-                _uiContext.Post((objs) =>
-                {
-                    textBox.AppendText("tik!!!");
-                }, null);
-                try
-                {
-                    AbstractIndividual deq = _Queue.Peek();
+        //void visualize(object obj) {
+        //        //Thread.Sleep(100);
+        //        SynchronizationContext _uiContext = obj as SynchronizationContext;
+        //        _uiContext.Post((objs) =>
+        //        {
+        //            textBox.AppendText("tik!!!");
+        //        }, null);
+        //        try
+        //        {
+        //            AbstractIndividual deq = _Queue.Peek();
 
-                    if (deq != null)
-                    {
+        //            if (deq != null)
+        //            {
                         
-                        _uiContext.Post(visualizeDraw, deq);
-                    }
-                }
-                catch (InvalidOperationException err) { }
-        }
+        //                _uiContext.Post(visualizeDraw, deq);
+        //            }
+        //        }
+        //        catch (InvalidOperationException err) { }
+        //}
 
-        void visualizeDraw(object data) {
-            AbstractIndividual deq = data as AbstractIndividual;
-            foreach (Segment seg in deq.Segments) {
-                CanvasDraw.Children.Add(new Arrow(fromVector(seg.Point1, 100), fromVector(seg.Point2, 100)));
-            }
-        }
+        //void visualizeDraw(object data) {
+        //    AbstractIndividual deq = data as AbstractIndividual;
+        //    foreach (Segment seg in deq.Segments) {
+        //        if (seg.Direction) {
+        //            CanvasDraw.Children.Add(new Arrow(fromVector(seg.Point1, 100), fromVector(seg.Point2, 100)));
+        //        }
+        //        else {
+        //            CanvasDraw.Children.Add(new Arrow(fromVector(seg.Point2, 100), fromVector(seg.Point1, 100)));
+        //        }
+        //    }
+        //}
 
         Point fromVector(Vector2 vec, float scale) {
-            return new Point(vec.X*scale, vec.Y* scale);
+            return new Point(vec.X * scale, vec.Y * scale);
+        }
+
+        private void visualize_timer_new(object sender, EventArgs e) {
+            textBox.AppendText("tik!!!");
+            CanvasDraw.Children.Clear();
+            AbstractIndividual deq = _Queue.Peek();
+            foreach (Segment seg in deq.Segments)
+            {
+                if (seg.Direction)
+                {
+                    CanvasDraw.Children.Add(new Arrow(fromVector(seg.Point1, 100), fromVector(seg.Point2, 100)));
+                }
+                else {
+                    CanvasDraw.Children.Add(new Arrow(fromVector(seg.Point2, 100), fromVector(seg.Point1, 100)));
+                }
+            }
         }
 
         public MainWindow()
@@ -83,9 +106,16 @@ namespace WPFVisualizer
             InitializeComponent();
             Task optTask = new Task(someFunc);
             optTask.Start();
-            TimerCallback time = new TimerCallback(visualize);
-            SynchronizationContext uiContext = SynchronizationContext.Current;
-            t = new Timer(time, uiContext, 0, 1000);
+            //timer
+            //TimerCallback time = new TimerCallback(visualize);
+            //SynchronizationContext uiContext = SynchronizationContext.Current;
+            //t = new Timer(time, uiContext, 0, 1000);
+
+            //new timer
+            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler(visualize_timer_new);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatcherTimer.Start();
 
             //Line ordinat = new Line();
             //ordinat.Stretch = Stretch.Uniform;
