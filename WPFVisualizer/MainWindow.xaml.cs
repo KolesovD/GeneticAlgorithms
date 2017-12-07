@@ -90,13 +90,20 @@ namespace WPFVisualizer
             AbstractIndividual deq = _Queue.Peek();
             foreach (Segment seg in deq.Segments)
             {
+                Arrow visual = null;
                 if (seg.Direction)
                 {
-                    CanvasDraw.Children.Add(new Arrow(fromVector(seg.Point1, 100), fromVector(seg.Point2, 100)));
+                    visual = new Arrow(fromVector(seg.Point1, 100), fromVector(seg.Point2, 100));
                 }
                 else {
-                    CanvasDraw.Children.Add(new Arrow(fromVector(seg.Point2, 100), fromVector(seg.Point1, 100)));
+                    visual = new Arrow(fromVector(seg.Point2, 100), fromVector(seg.Point1, 100));
                 }
+                //дописать создание радуги
+                byte d = Convert.ToByte(255/deq.Segments.Count*seg.ID);
+                byte r = Convert.ToByte(255 - d);
+                SolidColorBrush br = new SolidColorBrush(Color.FromRgb(r, d, 255)); //Color.FromRgb(255, 33, 225);
+                visual.SetColor(br);
+                CanvasDraw.Children.Add(visual);
             }
         }
 
