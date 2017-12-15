@@ -32,52 +32,17 @@ namespace WPFVisualizer
         {
             int generationSize = 5000;
 
-            //Console.WriteLine("Start with generation size {0}", generationSize);
             GeneticAlgorithms.Control control = new GeneticAlgorithms.Control("../../../picture.xml", generationSize, fractionOfNewIndividuals: 0.9);
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.05);
 
             while (true)
             {
-                //Thread.Sleep(100);
-                //Console.WriteLine($"Поколение №{control.currentGenerationNumber}");
                 control.OptimizeStep(Crosser.CyclicCrossover, mutator.ReverseSegmentMutation);
                 _Queue.Enqueue(control.bestIndividual);    
                 //Console.WriteLine("Лучший в поколении №" + control.currentGenerationNumber + "\n" + control.bestIndividual);
             }
 
         }
-
-        //void visualize(object obj) {
-        //        //Thread.Sleep(100);
-        //        SynchronizationContext _uiContext = obj as SynchronizationContext;
-        //        _uiContext.Post((objs) =>
-        //        {
-        //            textBox.AppendText("tik!!!");
-        //        }, null);
-        //        try
-        //        {
-        //            AbstractIndividual deq = _Queue.Peek();
-
-        //            if (deq != null)
-        //            {
-                        
-        //                _uiContext.Post(visualizeDraw, deq);
-        //            }
-        //        }
-        //        catch (InvalidOperationException err) { }
-        //}
-
-        //void visualizeDraw(object data) {
-        //    AbstractIndividual deq = data as AbstractIndividual;
-        //    foreach (Segment seg in deq.Segments) {
-        //        if (seg.Direction) {
-        //            CanvasDraw.Children.Add(new Arrow(fromVector(seg.Point1, 100), fromVector(seg.Point2, 100)));
-        //        }
-        //        else {
-        //            CanvasDraw.Children.Add(new Arrow(fromVector(seg.Point2, 100), fromVector(seg.Point1, 100)));
-        //        }
-        //    }
-        //}
 
         Point fromVector(Vector2 vec, float scale) {
             return new Point(vec.X * scale, vec.Y * scale);
@@ -91,6 +56,7 @@ namespace WPFVisualizer
             {
                 Arrow segmentArrow = new Arrow(fromVector(seg.Start, 100), fromVector(seg.End, 100), 5);
                 //дописать создание радуги
+
                 SolidColorBrush br = new SolidColorBrush(Color.FromRgb(0, 0, 0));
                 segmentArrow.SetColor(br);
                 CanvasDraw.Children.Add(segmentArrow);
@@ -105,6 +71,69 @@ namespace WPFVisualizer
                 spareArrow.SetColor(br);
                 CanvasDraw.Children.Add(spareArrow);
             }
+        }
+
+        private Color GetRainbow(int index) {
+            int _index = index % 1023;
+            byte r = 0;
+            byte g = 0;
+            byte b = 0;
+
+            if (_index >= 0 && _index < 170)
+            {
+                g = Convert.ToByte(1.5 * (_index-0));
+            }
+            else if (_index >= 170 && _index < 511)
+            {
+                g = 255;
+            }
+            else if (_index >= 511 && _index < 682)
+            {
+                g = Convert.ToByte(1.5 * (682 - _index));
+            }
+            else if (_index >= 682 && _index < 1023)
+            {
+                g = 0;
+            }
+
+            if (_index >= 0 && _index < 341)
+            {
+                b = 0;
+            }
+            else if (_index >= 341 && _index < 511)
+            {
+                b = Convert.ToByte(1.5 * (_index - 341));
+            }
+            else if (_index >= 511 && _index < 852)
+            {
+                b = 255;
+            }
+            else if (_index >= 852 && _index < 1023)
+            {
+                b = Convert.ToByte(1.5 * (1023 - _index));
+            }
+
+            if (_index >= 0 && _index < 170)
+            {
+                r = 255;
+            }
+            else if (_index >= 170 && _index < 341)
+            {
+                r = Convert.ToByte(1.5 * (341 - _index));
+            }
+            else if (_index >= 341 && _index < 682)
+            {
+                r = 0;
+            }
+            else if (_index >= 682 && _index < 852)
+            {
+                r = Convert.ToByte(1.5 * (_index - 682));
+            }
+            else if (_index >= 852 && _index < 1023)
+            {
+                r = 255;
+            }
+            return Color.FromRgb(r, g, b);
         }
 
         public MainWindow()
