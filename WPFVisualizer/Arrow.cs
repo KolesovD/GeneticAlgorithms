@@ -18,13 +18,13 @@ namespace WPFVisualizer
         public bool direction = true;
         GeometryGroup lineGroup;
 
-        public Arrow (Point start, Point end)
+        public Arrow (Point start, Point end, int thickness = 2)
         {
             this.start = start;
             this.end = end;
             lineGroup = new GeometryGroup();
             Stroke = Brushes.Black;
-            StrokeThickness = 2;
+            StrokeThickness = thickness;
             Fill = Brushes.Black;
 
             double theta = Math.Atan2((end.Y - start.Y), (end.X - start.X)) * 180 / Math.PI;

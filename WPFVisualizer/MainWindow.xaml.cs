@@ -41,8 +41,7 @@ namespace WPFVisualizer
                 //Thread.Sleep(100);
                 //Console.WriteLine($"Поколение №{control.currentGenerationNumber}");
                 control.OptimizeStep(Crosser.CyclicCrossover, mutator.ReverseSegmentMutation);
-                _Queue.Enqueue(control.bestIndividual);
-                
+                _Queue.Enqueue(control.bestIndividual);    
                 //Console.WriteLine("Лучший в поколении №" + control.currentGenerationNumber + "\n" + control.bestIndividual);
             }
 
@@ -88,22 +87,23 @@ namespace WPFVisualizer
             textBox.AppendText("tik!!!");
             CanvasDraw.Children.Clear();
             AbstractIndividual deq = _Queue.Peek();
-            foreach (Segment seg in deq.Segments)
+            foreach (Segment seg in deq.Segments.ToArray())
             {
-                Arrow visual = null;
-                if (seg.Direction)
-                {
-                    visual = new Arrow(fromVector(seg.Point1, 100), fromVector(seg.Point2, 100));
-                }
-                else {
-                    visual = new Arrow(fromVector(seg.Point2, 100), fromVector(seg.Point1, 100));
-                }
+                Arrow segmentArrow = new Arrow(fromVector(seg.Start, 100), fromVector(seg.End, 100), 5);
                 //дописать создание радуги
-                byte d = Convert.ToByte(255/deq.Segments.Count*seg.ID);
+                SolidColorBrush br = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                segmentArrow.SetColor(br);
+                CanvasDraw.Children.Add(segmentArrow);
+            }
+
+            for (int i = 0; i < deq.Segments.Count-1; i++)
+            {               
+                Arrow spareArrow = new Arrow(fromVector(deq.Segments[i].Start, 100), fromVector(deq.Segments[i+1].End, 100));
+                byte d = Convert.ToByte(255 / deq.Segments.Count * i);
                 byte r = Convert.ToByte(255 - d);
-                SolidColorBrush br = new SolidColorBrush(Color.FromRgb(r, d, 255)); //Color.FromRgb(255, 33, 225);
-                visual.SetColor(br);
-                CanvasDraw.Children.Add(visual);
+                SolidColorBrush br = new SolidColorBrush(Color.FromRgb(r, d, 255));
+                spareArrow.SetColor(br);
+                CanvasDraw.Children.Add(spareArrow);
             }
         }
 
@@ -123,33 +123,6 @@ namespace WPFVisualizer
             dispatcherTimer.Tick += new EventHandler(visualize_timer_new);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
-
-            //Line ordinat = new Line();
-            //ordinat.Stretch = Stretch.Uniform;
-            //ordinat.Stroke = System.Windows.Media.Brushes.Black;
-            //ordinat.X1 = 100;
-            //ordinat.Y1 = 0;
-            //ordinat.X2 = 0;  // 150 too far
-            //ordinat.Y2 = 0;
-            //ordinat.SnapsToDevicePixels = true;
-            //ordinat.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Aliased);
-            //ordinat.StrokeThickness = 2;
-
-            //Line absciss = new Line();
-            //absciss.Stroke = System.Windows.Media.Brushes.Black;
-            //absciss.X1 = 0;
-            //absciss.Y1 = 0;
-            //absciss.X2 = 0;  // 150 too far
-            //absciss.Y2 = 100;
-            //absciss.SnapsToDevicePixels = true;
-            //absciss.SetValue(RenderOptions.EdgeModeProperty, EdgeMode.Aliased);
-            //absciss.StrokeThickness = 2;
-
-            //Arrow r1 = new Arrow(new Point(0, 0), new Point(0, 100));
-            //CanvasDraw.Children.Add(r1);
-            //CanvasDraw.Children.Add(new Arrow(new Point(0, 0), new Point(100, 0)));
-            //r1.SetColor(Brushes.Red);
-
         }
 
     }
