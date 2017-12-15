@@ -38,7 +38,7 @@ namespace WPFVisualizer
             while (true)
             {
                 control.OptimizeStep(Crosser.CyclicCrossover, mutator.ReverseSegmentMutation);
-                _Queue.Enqueue(control.bestIndividual);    
+                _Queue.Enqueue(control.bestIndividual);  
                 //Console.WriteLine("Лучший в поколении №" + control.currentGenerationNumber + "\n" + control.bestIndividual);
             }
 
@@ -49,25 +49,31 @@ namespace WPFVisualizer
         }
 
         private void visualize_timer_new(object sender, EventArgs e) {
-            textBox.AppendText("tik!!!");
+            textBox.Clear();
+            //Console.WriteLine($"Поколение №{control.currentGenerationNumber}");
+            //Console.WriteLine("Лучший в поколении №" + control.currentGenerationNumber + "\n" + control.bestIndividual);
+            
             CanvasDraw.Children.Clear();
             AbstractIndividual deq = _Queue.Peek();
+            textBox.AppendText("Лучший в поколении № " + deq.ToString());
             foreach (Segment seg in deq.Segments.ToArray())
             {
                 Arrow segmentArrow = new Arrow(fromVector(seg.Start, 100), fromVector(seg.End, 100), 5);
                 //дописать создание радуги
+                
 
-                SolidColorBrush br = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                SolidColorBrush br = new SolidColorBrush(Color.FromRgb(0,0,0));
                 segmentArrow.SetColor(br);
                 CanvasDraw.Children.Add(segmentArrow);
+                
             }
 
-            for (int i = 0; i < deq.Segments.Count-1; i++)
-            {               
-                Arrow spareArrow = new Arrow(fromVector(deq.Segments[i].Start, 100), fromVector(deq.Segments[i+1].End, 100));
-                byte d = Convert.ToByte(255 / deq.Segments.Count * i);
-                byte r = Convert.ToByte(255 - d);
-                SolidColorBrush br = new SolidColorBrush(Color.FromRgb(r, d, 255));
+            for (int i = 0; i < deq.Segments.Count - 1; i++)
+            {
+                Arrow spareArrow = new Arrow(fromVector(deq.Segments[i].Start, 100), fromVector(deq.Segments[i + 1].End, 100));
+                //byte d = Convert.ToByte(255 / deq.Segments.Count * i);
+                //byte r = Convert.ToByte(255 - d);
+                SolidColorBrush br = new SolidColorBrush(GetRainbow(1023/deq.Size() * i));
                 spareArrow.SetColor(br);
                 CanvasDraw.Children.Add(spareArrow);
             }
