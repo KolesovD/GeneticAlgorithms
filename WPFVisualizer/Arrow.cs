@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows;
+using System.Numerics;
 
 namespace WPFVisualizer
 {
@@ -23,6 +24,13 @@ namespace WPFVisualizer
             this.start = start;
             this.end = end;
             lineGroup = new GeometryGroup();
+            double x_l = Math.Abs(end.X-start.X);
+            double y_l = Math.Abs(end.Y - start.Y);
+            if (Math.Sqrt(Math.Pow(x_l, 2) + Math.Pow(y_l, 2)) <= 0.5d)
+            {
+                return;
+            }
+
             Stroke = Brushes.Black;
             StrokeThickness = thickness;
             Fill = Brushes.Black;
