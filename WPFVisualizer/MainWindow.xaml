@@ -7,16 +7,19 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
 
         </Grid.ColumnDefinitions>
-        <TextBox x:Name="textBox" TextWrapping="Wrap" Text="" RenderTransformOrigin="0.503,0.458" FontSize="8" Margin="10"/>
+        <TextBox IsEnabled="False" x:Name="textBox" TextWrapping="Wrap" Text="" RenderTransformOrigin="0.503,0.458" FontSize="8" Margin="10"/>
+        <TextBox IsEnabled="False" x:Name="textBox_Copy" TextWrapping="Wrap" Text="" RenderTransformOrigin="0.503,0.458" FontSize="8" Margin="10,258,10,0"/>
         <Viewbox x:Name="Box">
-            <Canvas Name="CanvasDraw" HorizontalAlignment="Left" Height="303" Margin="10, 10, 0, 0" VerticalAlignment="Top" Width="512">
+            <Canvas x:Name="CanvasDraw" HorizontalAlignment="Left" Height="303" Margin="10, 10, 0, 0" VerticalAlignment="Top" Width="512">
                 <Canvas.RenderTransform>
-                    <ScaleTransform ScaleX="0.3" ScaleY="0.3" CenterX="0" CenterY="0"></ScaleTransform>
+                    <TransformGroup>
+                        <TranslateTransform x:Name="position" X="0" Y="0" />
+                        <ScaleTransform x:Name="sc" ScaleX="0.3" ScaleY="0.3" CenterX="0" CenterY="0"/>
+                    </TransformGroup>
                 </Canvas.RenderTransform>
             </Canvas>
         </Viewbox>

@@ -24,9 +24,11 @@ namespace WPFVisualizer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private float scale = 80;
         private Queue<AbstractIndividual> _Queue = new Queue<AbstractIndividual>();
         private DispatcherTimer dispatcherTimer;
+        private Vector2 last_pos;
+        private AbstractIndividual deq;
+        private float scale = 100;
 
         void someFunc()
         {
@@ -48,10 +50,17 @@ namespace WPFVisualizer
         }
 
         private void visualize_timer_new(object sender, EventArgs e) {
-            if (_Queue.Count == 0) { return; }
+            if (_Queue.Count == 0) { 
+                if (deq == null) { 
+                    return;
+                }
+            }
             textBox.Clear();
             CanvasDraw.Children.Clear();
-            AbstractIndividual deq = _Queue.Dequeue();
+            if (_Queue.Count != 0)
+            {
+                deq = _Queue.Dequeue();
+            }
             textBox.AppendText("Лучший в поколении № " + deq.ToString());
             textBox.AppendText("Queue count: "+_Queue.Count);
             bool b = true;
@@ -114,11 +123,11 @@ namespace WPFVisualizer
             {
                 b = Convert.ToByte(1.5 * (_index - 341));
             }
-            else if (_index >= 511 && _index < 852)
+            else if (_index >= 511 && _index <= 852)
             {
                 b = 255;
             }
-            else if (_index >= 852 && _index < 1023)
+            else if (_index > 852 && _index < 1023)
             {
                 b = Convert.ToByte(1.5 * (1023 - _index));
             }
@@ -148,21 +157,52 @@ namespace WPFVisualizer
 
         public MainWindow()
         {
-            
             InitializeComponent();
+
+            last_pos = new Vector2(0, 0);
+
+            this.MouseWheel += Box_MouseWheel;
+            this.MouseMove += MainWindow_MouseMove;
+            this.MouseLeftButtonDown += MainWindow_MouseLeftButtonDown;
+
             Task optTask = new Task(someFunc);
             optTask.Start();
-            //timer
-            //TimerCallback time = new TimerCallback(visualize);
-            //SynchronizationContext uiContext = SynchronizationContext.Current;
-            //t = new Timer(time, uiContext, 0, 1000);
 
-            //new timer
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(visualize_timer_new);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             dispatcherTimer.Start();
         }
 
+        void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            last_pos.X = (float)e.GetPosition(this).X;
+            last_pos.Y = (float)e.GetPosition(this).Y;
+        }
+
+        void MainWindow_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                position.X += (e.GetPosition(this).X - last_pos.X);
+                position.Y += (e.GetPosition(this).Y - last_pos.Y);
+
+                last_pos.X = (float)e.GetPosition(this).X;
+                last_pos.Y = (float)e.GetPosition(this).Y;
+            }
+        }
+
+        void Box_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            scale += e.Delta * 0.1f;
+            //sc.ScaleX += e.Delta * 0.001f;
+            //sc.ScaleY += e.Delta * 0.001f;
+            //if (sc.ScaleX < 0) {
+            //    sc.ScaleX = 0;
+            //    sc.ScaleY = 0;
+            //}
+            //textBox_Copy.Clear();
+            //textBox_Copy.AppendText(sc.ScaleX.ToString());
+        }
     }
 }
