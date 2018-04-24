@@ -5,23 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFVisualizer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="386.207" Width="579.981">
     <Grid>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="145*"/>
+            <ColumnDefinition Width="141*"/>
+        </Grid.ColumnDefinitions>
+        <TextBox FontSize="{Binding ActualHeight, ElementName=Mwindow, Mode=OneWay}" IsEnabled="False" x:Name="textBox" TextWrapping="Wrap" Text="" RenderTransformOrigin="0.503,0.458" Margin="10,0,10,10" Height="74" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
+        <Canvas x:Name="CanvasDraw" Margin="10,10,10,0" Grid.ColumnSpan="2" Height="257" VerticalAlignment="Top">
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <TranslateTransform x:Name="position" X="0" Y="0" />
+                    <ScaleTransform x:Name="CanvasScale" ScaleX="1" ScaleY="1" CenterX="0" CenterY="0"/>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+        </Canvas>
+        <!--<Grid.ColumnDefinitions>
             <ColumnDefinition/>
 
-        </Grid.ColumnDefinitions>
-        <TextBox IsEnabled="False" x:Name="textBox" TextWrapping="Wrap" Text="" RenderTransformOrigin="0.503,0.458" FontSize="8" Margin="10"/>
-        <TextBox IsEnabled="False" x:Name="textBox_Copy" TextWrapping="Wrap" Text="" RenderTransformOrigin="0.503,0.458" FontSize="8" Margin="10,258,10,0"/>
-        <Viewbox x:Name="Box">
-            <Canvas x:Name="CanvasDraw" HorizontalAlignment="Left" Height="303" Margin="10, 10, 0, 0" VerticalAlignment="Top" Width="512">
+        </Grid.ColumnDefinitions>-->
+
+        <!--<Viewbox x:Name="Box">-->
+        <!--HorizontalAlignment="Left" Height="303" Margin="10, 10, 0, 0" VerticalAlignment="Top" Width="512"-->
+        <!--<Canvas x:Name="CanvasDraw" Margin="0,0,-1176,-536">
                 <Canvas.RenderTransform>
                     <TransformGroup>
                         <TranslateTransform x:Name="position" X="0" Y="0" />
-                        <ScaleTransform x:Name="sc" ScaleX="0.3" ScaleY="0.3" CenterX="0" CenterY="0"/>
+                        <ScaleTransform x:Name="CanvasScale" ScaleX="0.3" ScaleY="0.3" CenterX="0" CenterY="0"/>
                     </TransformGroup>
                 </Canvas.RenderTransform>
-            </Canvas>
-        </Viewbox>
+            </Canvas>-->
+        <!--</Viewbox>-->
     </Grid>
 </Window>

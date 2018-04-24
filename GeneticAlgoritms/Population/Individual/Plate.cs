@@ -72,5 +72,9 @@ namespace GeneticAlgorithms
             }
             return length;
         }
+
+        public override string ToString() {
+            return string.Format("idle line: {0} {1}", CalcSumIdlingLine() ,base.ToString());
+        }
     }
 }

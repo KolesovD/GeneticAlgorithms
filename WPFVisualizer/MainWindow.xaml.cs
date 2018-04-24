@@ -16,6 +16,7 @@ using GeneticAlgorithms;
 using System.Threading;
 using System.Numerics;
 using System.Windows.Threading;
+using WPFVisualizer.Code;
 
 namespace WPFVisualizer
 {
@@ -24,139 +25,84 @@ namespace WPFVisualizer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Queue<AbstractIndividual> _Queue = new Queue<AbstractIndividual>();
+        private VisualiserFuncs Code;
+        private Queue<AbstractIndividual> Queue = new Queue<AbstractIndividual>();
         private DispatcherTimer dispatcherTimer;
         private Vector2 last_pos;
-        private AbstractIndividual deq;
-        private float scale = 100;
+        private AbstractIndividual DequeueIndidvidual;
+        private float scale = 50;
 
-        void someFunc()
-        {
-            int generationSize = 5000;
+        private void GeneticAlgotithmFunc() {
+            int generationSize = 100;
 
             GeneticAlgorithms.Control control = new GeneticAlgorithms.Control("../../../picture.xml", generationSize, fractionOfNewIndividuals: 0.9);
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.05);
 
-            while (true)
-            {
+            while (true) {
                 control.OptimizeStep(Crosser.CyclicCrossover, mutator.ReverseSegmentMutation);
-                _Queue.Enqueue(new Plate((Plate)control.bestIndividual));
+                Queue.Enqueue(new Plate((Plate)control.bestIndividual));
             }
 
         }
 
-        Point fromVector(Vector2 vec, float scale) {
-            return new Point(vec.X * scale, vec.Y * scale);
-        }
+        private void VisualizeTimer(object sender, EventArgs e) {
+            if (Queue.Count == 0)
+            {
+                return;
+            }
+            else {
+                textBox.Clear();
+                CanvasDraw.Children.Clear();
+                DequeueIndidvidual = Queue.Dequeue();
+            }
 
-        private void visualize_timer_new(object sender, EventArgs e) {
-            if (_Queue.Count == 0) { 
-                if (deq == null) { 
-                    return;
-                }
-            }
-            textBox.Clear();
-            CanvasDraw.Children.Clear();
-            if (_Queue.Count != 0)
-            {
-                deq = _Queue.Dequeue();
-            }
-            textBox.AppendText("Лучший в поколении № " + deq.ToString());
-            textBox.AppendText("Queue count: "+_Queue.Count);
-            bool b = true;
-            foreach (Segment seg in deq.Segments.ToArray())
-            {
-                Arrow segmentArrow = new Arrow(fromVector(seg.End, scale), fromVector(seg.Start, scale), 5);
-                //дописать создание радуги
-                SolidColorBrush br = null;
-                if (b == true)
-                {
-                    br = new SolidColorBrush(Color.FromRgb(255, 0, 0));
-                    b = false;
-                }
-                else
-                {
-                    br = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-                }
-                segmentArrow.SetColor(br);
+            textBox.AppendText("Лучший в поколении № " + DequeueIndidvidual.ToString());
+            textBox.AppendText("Queue count: "+ Queue.Count);
+
+            SolidColorBrush segment_color = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            Segment[] segment_array = DequeueIndidvidual.Segments.ToArray();
+            SolidColorBrush link_color = null;
+            Arrow segmentArrow = null;
+
+            for (int i = 0; i < segment_array.Length-1; i++) {
+                segmentArrow = new Arrow(segment_array[i].Start*scale, segment_array[i].End * scale, 5);
+                segmentArrow.SetColor(segment_color);
                 CanvasDraw.Children.Add(segmentArrow);
-                
-            }
 
-            for (int i = 0; i < deq.Segments.Count - 1; i++)
-            {
-                Arrow spareArrow = new Arrow(fromVector(deq.Segments[i].Start, scale), fromVector(deq.Segments[i + 1].End, scale));
-                SolidColorBrush br = new SolidColorBrush(GetRainbow(1023/deq.Size() * i));
-                spareArrow.SetColor(br);
-                CanvasDraw.Children.Add(spareArrow);
-            }
-        }
+                Arrow LinkArrow = new Arrow(segment_array[i].End * scale, segment_array[i+1].Start * scale);
+                link_color = new SolidColorBrush(Code.GetRainbow(1023 / DequeueIndidvidual.Size() * i));
+                LinkArrow.SetColor(link_color);
+                CanvasDraw.Children.Add(LinkArrow);
 
-        private Color GetRainbow(int index) {
-            int _index = index % 1023;
-            byte r = 0;
-            byte g = 0;
-            byte b = 0;
+                if (segment_color.Color.R == 255) {
+                    segment_color = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+                }
+            }
+            segmentArrow = new Arrow(segment_array[segment_array.Length-1].Start * scale, segment_array[segment_array.Length - 1].End * scale, 5);
+            segmentArrow.SetColor(segment_color);
+            CanvasDraw.Children.Add(segmentArrow);
 
-            if (_index >= 0 && _index < 170)
-            {
-                g = Convert.ToByte(1.5 * (_index-0));
-            }
-            else if (_index >= 170 && _index < 511)
-            {
-                g = 255;
-            }
-            else if (_index >= 511 && _index < 682)
-            {
-                g = Convert.ToByte(1.5 * (682 - _index));
-            }
-            else if (_index >= 682 && _index < 1023)
-            {
-                g = 0;
-            }
+            //foreach (Segment seg in DequeueIndidvidual.Segments) {
+            //    Arrow segmentArrow = new Arrow(, , 5);
+            //    segmentArrow.SetColor(br);
+            //    CanvasDraw.Children.Add(segmentArrow);
+            //    if (br.Color.R == 255) {
+            //        br = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            //    }
+            //}
 
-            if (_index >= 0 && _index < 341)
-            {
-                b = 0;
-            }
-            else if (_index >= 341 && _index < 511)
-            {
-                b = Convert.ToByte(1.5 * (_index - 341));
-            }
-            else if (_index >= 511 && _index <= 852)
-            {
-                b = 255;
-            }
-            else if (_index > 852 && _index < 1023)
-            {
-                b = Convert.ToByte(1.5 * (1023 - _index));
-            }
-
-            if (_index >= 0 && _index < 170)
-            {
-                r = 255;
-            }
-            else if (_index >= 170 && _index < 341)
-            {
-                r = Convert.ToByte(1.5 * (341 - _index));
-            }
-            else if (_index >= 341 && _index < 682)
-            {
-                r = 0;
-            }
-            else if (_index >= 682 && _index < 852)
-            {
-                r = Convert.ToByte(1.5 * (_index - 682));
-            }
-            else if (_index >= 852 && _index < 1023)
-            {
-                r = 255;
-            }
-            return Color.FromRgb(r, g, b);
+            //for (int i = 0; i < DequeueIndidvidual.Segments.Count - 1; i++)
+            //{
+            //    Arrow spareArrow = new Arrow(fromVector(DequeueIndidvidual.Segments[i].Start, scale), fromVector(DequeueIndidvidual.Segments[i + 1].End, scale));
+            //    br = new SolidColorBrush(Code.GetRainbow(1023/ DequeueIndidvidual.Size() * i));
+            //    spareArrow.SetColor(br);
+            //    CanvasDraw.Children.Add(spareArrow);
+            //}
         }
 
         public MainWindow()
         {
+            Code = new VisualiserFuncs();
             InitializeComponent();
 
             last_pos = new Vector2(0, 0);
@@ -165,44 +111,38 @@ namespace WPFVisualizer
             this.MouseMove += MainWindow_MouseMove;
             this.MouseLeftButtonDown += MainWindow_MouseLeftButtonDown;
 
-            Task optTask = new Task(someFunc);
+            Task optTask = new Task(GeneticAlgotithmFunc);
             optTask.Start();
 
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            dispatcherTimer.Tick += new EventHandler(visualize_timer_new);
+            dispatcherTimer.Tick += new EventHandler(VisualizeTimer);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             dispatcherTimer.Start();
         }
 
         void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            last_pos.X = (float)e.GetPosition(this).X;
-            last_pos.Y = (float)e.GetPosition(this).Y;
+            last_pos.X = (float)e.GetPosition(CanvasDraw).X;
+            last_pos.Y = (float)e.GetPosition(CanvasDraw).Y;
         }
 
         void MainWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                position.X += (e.GetPosition(this).X - last_pos.X);
-                position.Y += (e.GetPosition(this).Y - last_pos.Y);
-
-                last_pos.X = (float)e.GetPosition(this).X;
-                last_pos.Y = (float)e.GetPosition(this).Y;
+            if (e.LeftButton == MouseButtonState.Pressed) {
+                position.X += (e.GetPosition(CanvasDraw).X - last_pos.X);
+                position.Y += (e.GetPosition(CanvasDraw).Y - last_pos.Y);
             }
         }
 
-        void Box_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            scale += e.Delta * 0.1f;
-            //sc.ScaleX += e.Delta * 0.001f;
-            //sc.ScaleY += e.Delta * 0.001f;
-            //if (sc.ScaleX < 0) {
-            //    sc.ScaleX = 0;
-            //    sc.ScaleY = 0;
-            //}
-            //textBox_Copy.Clear();
-            //textBox_Copy.AppendText(sc.ScaleX.ToString());
+        void Box_MouseWheel(object sender, MouseWheelEventArgs e) {
+            CanvasScale.CenterX = e.GetPosition(CanvasDraw).X;
+            CanvasScale.CenterY = e.GetPosition(CanvasDraw).Y;
+            CanvasScale.ScaleX += e.Delta * 0.001f;
+            CanvasScale.ScaleY += e.Delta * 0.001f;
+            if (CanvasScale.ScaleX <= 0.1) {
+                CanvasScale.ScaleX = 0.1;
+                CanvasScale.ScaleY = 0.1;
+            }
         }
     }
 }

@@ -52,16 +52,17 @@ namespace GeneticAlgorithms
 
         public override string ToString()
         {
-            string str = "Fitness function: " + FitnessFunction.ToString() + "\n";
+            StringBuilder bd = new StringBuilder();
+            bd.AppendFormat("Fitness function: {0}\n", FitnessFunction.ToString());
 
             for (int i = 0; i < _Segments.Count; i++)
             {
-                str += _Segments[i].ToString();
+                bd.Append(_Segments[i].ToString());
                 
             }
-            str += "\n";
+            bd.Append("\n");
 
-            return str;
+            return bd.ToString();
         }
     }
 }

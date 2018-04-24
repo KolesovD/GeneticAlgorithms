@@ -21,10 +21,18 @@ namespace WPFVisualizer
 
         public Arrow (Point start, Point end, int thickness = 2)
         {
+            Create(start, end, thickness);
+        }
+
+        public Arrow(Vector2 start, Vector2 end, int thickness = 2) {
+            Create(new Point(start.X, start.Y), new Point(end.X, end.Y), thickness);
+        }
+
+        private void Create(Point start, Point end, int thickness = 2) {
             this.start = start;
             this.end = end;
             lineGroup = new GeometryGroup();
-            double x_l = Math.Abs(end.X-start.X);
+            double x_l = Math.Abs(end.X - start.X);
             double y_l = Math.Abs(end.Y - start.Y);
             if (Math.Sqrt(Math.Pow(x_l, 2) + Math.Pow(y_l, 2)) <= 0.5d)
             {
