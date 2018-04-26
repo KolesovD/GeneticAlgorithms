@@ -33,9 +33,9 @@ namespace WPFVisualizer
         private float scale = 50;
 
         private void GeneticAlgotithmFunc() {
-            int generationSize = 100;
+            int generationSize = 5000;
 
-            GeneticAlgorithms.Control control = new GeneticAlgorithms.Control("../../../picture.xml", generationSize, fractionOfNewIndividuals: 0.9);
+            GeneticAlgorithms.Control control = new GeneticAlgorithms.Control("../../../picture_3.xml", generationSize, fractionOfNewIndividuals: 0.9);
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.05);
 
             while (true) {

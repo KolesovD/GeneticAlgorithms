@@ -24,10 +24,10 @@ namespace GeneticAlgorithms.Information
                 XElement point_01 = el.Elements().ElementAt(0);
                 XElement point_02 = el.Elements().ElementAt(1);
                 _Segments.Add(new Segment(Convert.ToInt32(el.Attribute("id").Value),
-                                                              Convert.ToInt32(Convert.ToDouble(point_01.Attribute("x").Value)),
-                                                              Convert.ToInt32(Convert.ToDouble(point_01.Attribute("y").Value)),
-                                                              Convert.ToInt32(Convert.ToDouble(point_02.Attribute("x").Value)),
-                                                              Convert.ToInt32(Convert.ToDouble(point_02.Attribute("y").Value)),
+                                                              Convert.ToSingle(point_01.Attribute("x").Value),
+                                                              Convert.ToSingle(point_01.Attribute("y").Value),
+                                                              Convert.ToSingle(point_02.Attribute("x").Value),
+                                                              Convert.ToSingle(point_02.Attribute("y").Value),
                                                               Convert.ToBoolean(el.Attribute("direction").Value)));
             }
             return new Plate(_Segments);
