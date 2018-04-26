@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<picture>
+  <segment id="0" direction="true">
+    <point x="17,5" y="1,2" />
+    <point x="17,6" y="1,3" />
+  </segment>
+  <segment id="1" direction="true">
+    <point x="17,6" y="1,3" />
+    <point x="17,6" y="4,8" />
+  </segment>
+  <segment id="2" direction="true">
+    <point x="23,4" y="11,2" />
+    <point x="28,1" y="11,2" />
+  </segment>
+  <segment id="3" direction="true">
+    <point x="28,1" y="11,2" />
+    <point x="31,3" y="14,4" />
+  </segment>
+  <segment id="4" direction="true">
+    <point x="31,3" y="14,4" />
+    <point x="33,1" y="14,4" />
+  </segment>
+  <segment id="5" direction="true">
+    <point x="33,1" y="14,4" />
+    <point x="33,1" y="18" />
+  </segment>
+  <segment id="6" direction="true">
+    <point x="33,1" y="10,8" />
+    <point x="33,1" y="14,4" />
+  </segment>
+  <segment id="7" direction="true">
+    <point x="33,1" y="4,4" />
+    <point x="33,1" y="8" />
+  </segment>
+  <segment id="8" direction="true">
+    <point x="29,9" y="1,2" />
+    <point x="33,1" y="4,4" />
+  </segment>
+  <segment id="9" direction="true">
+    <point x="7,3" y="1,2" />
+    <point x="29,9" y="1,2" />
+  </segment>
+  <segment id="10" direction="true">
+    <point x="6,2" y="2,3" />
+    <point x="7,3" y="1,2" />
+  </segment>
+  <segment id="11" direction="true">
+    <point x="6,2" y="2,3" />
+    <point x="6,2" y="4,4" />
+  </segment>
+  <segment id="12" direction="true">
+    <point x="6,2" y="8,8" />
+    <point x="9,3" y="11,9" />
+  </segment>
+  <segment id="13" direction="true">
+    <point x="6,2" y="7,2" />
+    <point x="6,2" y="8,8" />
+  </segment>
+  <segment id="14" direction="true">
+    <point x="17,6" y="7,6" />
+    <point x="21,2" y="7,6" />
+  </segment>
+  <segment id="15" direction="true">
+    <point x="21,2" y="7,6" />
+    <point x="23,4" y="9,8" />
+  </segment>
+  <segment id="16" direction="true">
+    <point x="23,4" y="9,8" />
+    <point x="23,4" y="12,9" />
+  </segment>
+  <segment id="17" direction="true">
+    <point x="21,9" y="14,4" />
+    <point x="23,4" y="12,9" />
+  </segment>
+  <segment id="18" direction="true">
+    <point x="21,9" y="21,7" />
+    <point x="24,9" y="21,7" />
+  </segment>
+  <segment id="19" direction="true">
+    <point x="24,9" y="21,7" />
+    <point x="25,9" y="20,7" />
+  </segment>
+  <segment id="20" direction="true">
+    <point x="25,9" y="20,7" />
+    <point x="33" y="20,7" />
+  </segment>
+  <segment id="21" direction="true">
+    <point x="33" y="20,7" />
+    <point x="33,1" y="20,8" />
+  </segment>
+  <segment id="22" direction="true">
+    <point x="33,1" y="20,8" />
+    <point x="33,1" y="28,4" />
+  </segment>
+  <segment id="23" direction="true">
+    <point x="26,4" y="31,2" />
+    <point x="33,1" y="31,2" />
+  </segment>
+  <segment id="24" direction="true">
+    <point x="23,8" y="28,6" />
+    <point x="26,4" y="31,2" />
+  </segment>
+  <segment id="25" direction="true">
+    <point x="21,8" y="28,6" />
+    <point x="23,8" y="28,6" />
+  </segment>
+  <segment id="26" direction="true">
+    <point x="16" y="14,4" />
+    <point x="19,1" y="14,4" />
+  </segment>
+  <segment id="27" direction="true">
+    <point x="13,5" y="11,9" />
+    <point x="16" y="14,4" />
+  </segment>
+  <segment id="28" direction="true">
+    <point x="7,4" y="11,9" />
+    <point x="13,5" y="11,9" />
+  </segment>
+  <segment id="29" direction="true">
+    <point x="6" y="13,3" />
+    <point x="7,4" y="11,9" />
+  </segment>
+  <segment id="30" direction="true">
+    <point x="6" y="13,3" />
+    <point x="6" y="16,2" />
+  </segment>
+  <segment id="31" direction="true">
+    <point x="6" y="19" />
+    <point x="6" y="21,2" />
+  </segment>
+  <segment id="32" direction="true">
+    <point x="6" y="21,2" />
+    <point x="6,5" y="21,7" />
+  </segment>
+  <segment id="33" direction="true">
+    <point x="6,5" y="21,7" />
+    <point x="19,1" y="21,7" />
+  </segment>
+  <segment id="34" direction="true">
+    <point x="21,9" y="21,7" />
+    <point x="21,9" y="24,2" />
+  </segment>
+  <segment id="35" direction="true">
+    <point x="20,7" y="25,4" />
+    <point x="21,9" y="24,2" />
+  </segment>
+  <segment id="36" direction="true">
+    <point x="12,5" y="25,4" />
+    <point x="20,7" y="25,4" />
+  </segment>
+  <segment id="37" direction="true">
+    <point x="8,5" y="29,4" />
+    <point x="12,5" y="25,4" />
+  </segment>
+  <segment id="38" direction="true">
+    <point x="5,1" y="29,4" />
+    <point x="8,5" y="29,4" />
+  </segment>
+  <segment id="39" direction="true">
+    <point x="12,3" y="28,6" />
+    <point x="19" y="28,6" />
+  </segment>
+  <segment id="40" direction="true">
+    <point x="8,7" y="32,2" />
+    <point x="12,3" y="28,6" />
+  </segment>
+  <segment id="41" direction="true">
+    <point x="5,1" y="32,2" />
+    <point x="8,7" y="32,2" />
+  </segment>
+</picture>
