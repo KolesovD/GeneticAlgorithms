@@ -30,12 +30,13 @@ namespace WPFVisualizer
         private DispatcherTimer dispatcherTimer;
         private Vector2 last_pos;
         private AbstractIndividual DequeueIndidvidual;
-        private float scale = 50;
+        private float scale = 100;
+        float ScaleRate = 1.1f;
 
         private void GeneticAlgotithmFunc() {
             int generationSize = 5000;
 
-            GeneticAlgorithms.Control control = new GeneticAlgorithms.Control("../../../picture_3.xml", generationSize, fractionOfNewIndividuals: 0.9);
+            GeneticAlgorithms.Control control = new GeneticAlgorithms.Control("../../../Lines.xml", generationSize, fractionOfNewIndividuals: 0.9);
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.05);
 
             while (true) {
@@ -122,27 +123,44 @@ namespace WPFVisualizer
 
         void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            last_pos.X = (float)e.GetPosition(CanvasDraw).X;
-            last_pos.Y = (float)e.GetPosition(CanvasDraw).Y;
+            last_pos.X = (float)e.GetPosition(CanvasMove).X;
+            last_pos.Y = (float)e.GetPosition(CanvasMove).Y;
         }
 
         void MainWindow_MouseMove(object sender, MouseEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed) {
-                position.X += (e.GetPosition(CanvasDraw).X - last_pos.X);
-                position.Y += (e.GetPosition(CanvasDraw).Y - last_pos.Y);
+                position.X += (e.GetPosition(CanvasMove).X - last_pos.X);
+                position.Y += (e.GetPosition(CanvasMove).Y - last_pos.Y);
             }
         }
 
         void Box_MouseWheel(object sender, MouseWheelEventArgs e) {
-            CanvasScale.CenterX = e.GetPosition(CanvasDraw).X;
-            CanvasScale.CenterY = e.GetPosition(CanvasDraw).Y;
-            CanvasScale.ScaleX += e.Delta * 0.001f;
-            CanvasScale.ScaleY += e.Delta * 0.001f;
-            if (CanvasScale.ScaleX <= 0.1) {
-                CanvasScale.ScaleX = 0.1;
-                CanvasScale.ScaleY = 0.1;
+            if (e.Delta > 0)
+            {
+                CanvasScale.CenterX = e.GetPosition(CanvasDraw).X;
+                CanvasScale.CenterY = e.GetPosition(CanvasDraw).Y;
+                CanvasScale.ScaleX *= ScaleRate;
+                CanvasScale.ScaleY *= ScaleRate;
             }
+            else
+            {
+                CanvasScale.ScaleX /= ScaleRate;
+                CanvasScale.ScaleY /= ScaleRate;
+                //c.Width *= ScaleRate;
+                //c.Height *= ScaleRate;
+                CanvasScale.CenterX = e.GetPosition(CanvasDraw).X;
+                CanvasScale.CenterY = e.GetPosition(CanvasDraw).Y;
+            }
+
+            //CanvasScale.CenterX = e.GetPosition(CanvasSkale).X;
+            //CanvasScale.CenterY = e.GetPosition(CanvasSkale).Y;
+            //CanvasScale.ScaleX += e.Delta * 0.0005f;
+            //CanvasScale.ScaleY += e.Delta * 0.0005f;
+            //if (CanvasScale.ScaleX <= 0.1) {
+            //    CanvasScale.ScaleX = 0.1;
+            //    CanvasScale.ScaleY = 0.1;
+            //}
         }
     }
 }

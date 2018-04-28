@@ -12,14 +12,27 @@
             <ColumnDefinition Width="141*"/>
         </Grid.ColumnDefinitions>
         <TextBox FontSize="{Binding ActualHeight, ElementName=Mwindow, Mode=OneWay}" IsEnabled="False" x:Name="textBox" TextWrapping="Wrap" Text="" RenderTransformOrigin="0.503,0.458" Margin="10,0,10,10" Height="74" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
-        <Canvas x:Name="CanvasDraw" Margin="10,10,10,0" Grid.ColumnSpan="2" Height="257" VerticalAlignment="Top">
+        <Canvas Grid.ColumnSpan="2" x:Name="CanvasMove">
+            <Canvas x:Name="CanvasDraw" Grid.ColumnSpan="2" Height="257" VerticalAlignment="Top">
+                <!--<Line
+                    X1="50" Y1="50"
+                    X2="200" Y2="200"
+                    Stroke="Red"
+                    StrokeThickness="4" 
+                />-->
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform x:Name="CanvasScale" ScaleX="1" ScaleY="1" CenterX="50" CenterY="50"/>
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+            </Canvas>
             <Canvas.RenderTransform>
                 <TransformGroup>
                     <TranslateTransform x:Name="position" X="0" Y="0" />
-                    <ScaleTransform x:Name="CanvasScale" ScaleX="1" ScaleY="1" CenterX="0" CenterY="0"/>
                 </TransformGroup>
             </Canvas.RenderTransform>
         </Canvas>
+        
         <!--<Grid.ColumnDefinitions>
             <ColumnDefinition/>
 
