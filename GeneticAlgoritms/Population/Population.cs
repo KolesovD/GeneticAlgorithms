@@ -26,19 +26,6 @@ namespace GeneticAlgorithms
         {
             XMLLoader load = new XMLLoader(XML_path);
             Plate perfectPlate = load.Parse();
-
-
-            //Console.WriteLine("Эталон: ");
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    perfectPlate.AddSegment(new Segment(i, i, i , i + 1 , i + 1, true));
-            //    //Вывод сегментов эталонного варианта
-            //    //Console.WriteLine($"New segment ID: {i}, [{i},{i}];[{i + 1},{i + 1}], direction: {true}");
-            //}
-
-            //Остановка для просмотра сформированного эталона
-            //Console.ReadKey();
-
             //Создание стартовой популяции
             for (int i = 0; i < count; i++)
             {
@@ -95,16 +82,19 @@ namespace GeneticAlgorithms
         public void PerformMutation(Delegates.Mutator mutator)
         {
             AbstractIndividual bestOne = GetBestIndividual();
-            foreach (AbstractIndividual individual in CurrentGeneration)
+            Parallel.ForEach<AbstractIndividual>(CurrentGeneration, (individual) =>
             {
                 if (individual != bestOne)
+                {
                     individual.Mutate(mutator);
-            }
+                }
+            });
+            //foreach (AbstractIndividual individual in CurrentGeneration)
+            //{
+            //    if (individual != bestOne)
+            //        individual.Mutate(mutator);
+            //}
         }
-
-        //private int AwerageByPie(List<AbstractIndividual> gen, int index_start, int index_end) {
-            
-        //}
 
         public void PerformCrossingover(Delegates.Crossover crossover, int[] indexesForCrossover)
         {
@@ -131,13 +121,15 @@ namespace GeneticAlgorithms
                     k++;
                 }
             }
+            for (int i = k+1; i < AnotherGeneration.Count; i++) {
+                badIndexes[k] = MyRandom.rnd.Next(0, AnotherGeneration.Count()-1);
+            }
 
             int j = 0;
             for (int i = 0; i < indexesForCrossover.Count() / 2; i+=2, j++) 
             {
                 //Для создания двух разных потомков
                 //Скрещиваем 1 особь со 2 особъю
-                if (k == -1) { break; }
                 crossover(
                     CurrentGeneration[indexesForCrossover[i]],
                     CurrentGeneration[indexesForCrossover[i + 1]], 
@@ -149,17 +141,16 @@ namespace GeneticAlgorithms
                     CurrentGeneration[indexesForCrossover[i]], 
                     AnotherGeneration[badIndexes[++j]]
                     );
-                k--;
             }
 
-            //if (indexesForCrossover.Count() % 2 != 0)
-            //{
-            //    crossover(
-            //        CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 2]],
-            //        CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 1]],
-            //        AnotherGeneration[badIndexes[++j]]
-            //        );
-            //}
+            if (indexesForCrossover.Count() % 2 != 0)
+            {
+                crossover(
+                    CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 2]],
+                    CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 1]],
+                    AnotherGeneration[badIndexes[++j]]
+                    );
+            }
         }
 
         public AbstractIndividual GetBestIndividual()

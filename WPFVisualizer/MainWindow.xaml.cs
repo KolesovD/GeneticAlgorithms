@@ -37,18 +37,17 @@ namespace WPFVisualizer
             int generationSize = 5000;
 
             GeneticAlgorithms.Control control = new GeneticAlgorithms.Control("../../../Lines.xml", generationSize, fractionOfNewIndividuals: 0.9);
-            Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.05);
+            Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
 
             while (true) {
                 control.OptimizeStep(Crosser.CyclicCrossover, mutator.ReverseSegmentMutation);
-                Queue.Enqueue(new Info(new Plate((Plate)control.bestIndividual), string.Format("Поколение № ", control.currentGenerationNumber)));
+                Queue.Enqueue(new Info(new Plate((Plate)control.bestIndividual), string.Format("Поколение № {0}", control.currentGenerationNumber)));
             }
 
         }
 
         private void VisualizeTimer(object sender, EventArgs e) {
-            if (Queue.Count == 0)
-            {
+            if (Queue.Count == 0) {
                 return;
             }
             else {
@@ -83,23 +82,6 @@ namespace WPFVisualizer
             segmentArrow = new Arrow(segment_array[segment_array.Length-1].Start * scale, segment_array[segment_array.Length - 1].End * scale, 5);
             segmentArrow.SetColor(segment_color);
             CanvasDraw.Children.Add(segmentArrow);
-
-            //foreach (Segment seg in DequeueIndidvidual.Segments) {
-            //    Arrow segmentArrow = new Arrow(, , 5);
-            //    segmentArrow.SetColor(br);
-            //    CanvasDraw.Children.Add(segmentArrow);
-            //    if (br.Color.R == 255) {
-            //        br = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-            //    }
-            //}
-
-            //for (int i = 0; i < DequeueIndidvidual.Segments.Count - 1; i++)
-            //{
-            //    Arrow spareArrow = new Arrow(fromVector(DequeueIndidvidual.Segments[i].Start, scale), fromVector(DequeueIndidvidual.Segments[i + 1].End, scale));
-            //    br = new SolidColorBrush(Code.GetRainbow(1023/ DequeueIndidvidual.Size() * i));
-            //    spareArrow.SetColor(br);
-            //    CanvasDraw.Children.Add(spareArrow);
-            //}
         }
 
         public MainWindow()

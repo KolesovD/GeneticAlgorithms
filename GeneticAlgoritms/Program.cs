@@ -23,7 +23,7 @@ namespace GeneticAlgorithms
                 //Console.WriteLine($"Поколение №{control.currentGenerationNumber}");
                 control.OptimizeStep(Crosser.CyclicCrossover, mutator.ReverseSegmentMutation);
                 Console.WriteLine("Лучший в поколении №" + control.currentGenerationNumber + "\n" + control.bestIndividual);
-                if (i%1000 == 0)
+                if (i%50 == 0)
                 {
                     Console.ReadKey();
                 }

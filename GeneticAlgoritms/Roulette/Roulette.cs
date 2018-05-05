@@ -56,10 +56,10 @@ namespace GeneticAlgorithms
 
         public int PickIndividualIndex()
         {
-            double random;
-            lock (_lock) {
-                random = MyRandom.GetRandomDouble(get_end_of_gen);
-            }
+            //double random;
+            //lock (_lock) {
+            double random = MyRandom.GetRandomDouble(get_end_of_gen);
+            //}
             //Console.WriteLine("случайное значение {0}", random);
             //int step = 0;
 
