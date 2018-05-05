@@ -24,6 +24,7 @@ namespace GeneticAlgorithms
     public class Roulette
     {
         public List<Sector> GenerationAxis;
+        private object _lock; 
         private double get_end_of_gen
         {
             get { return GenerationAxis[GenerationAxis.Count - 1].End; }
@@ -31,6 +32,7 @@ namespace GeneticAlgorithms
 
         public Roulette(int gen_lenght)
         {
+            _lock = new object();
             GenerationAxis = new List<Sector>();
             for (int i = 0; i < gen_lenght; i++)
             {
@@ -42,21 +44,24 @@ namespace GeneticAlgorithms
         {
             //Console.WriteLine(population.ToString());
             double start = 0;
-            string res = "0";
+            //string res = "0";
             for (int i = 0; i < GenerationAxis.Count; i++)
             {
                 GenerationAxis[i].ConfigSector(start, population.CurrentGeneration[i].FitnessFunction);
                 start = GenerationAxis[i].End;
-                res += " - " + start;
+                //res += " - " + start;
             }
             //Console.WriteLine(res);
         }
 
         public int PickIndividualIndex()
         {
-            double random = MyRandom.GetRandomDouble(get_end_of_gen);
+            double random;
+            lock (_lock) {
+                random = MyRandom.GetRandomDouble(get_end_of_gen);
+            }
             //Console.WriteLine("случайное значение {0}", random);
-            int step = 0;
+            //int step = 0;
 
             int start = 0;
             int end = GenerationAxis.Count - 1;
@@ -67,7 +72,7 @@ namespace GeneticAlgorithms
 
             do
             {
-                step += 1;
+                //step += 1;
 
                 index = start + ((end - start) / 2);
                 res_start = GenerationAxis[index].Start;

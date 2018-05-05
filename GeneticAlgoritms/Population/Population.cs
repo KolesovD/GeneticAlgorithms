@@ -102,6 +102,10 @@ namespace GeneticAlgorithms
             }
         }
 
+        //private int AwerageByPie(List<AbstractIndividual> gen, int index_start, int index_end) {
+            
+        //}
+
         public void PerformCrossingover(Delegates.Crossover crossover, int[] indexesForCrossover)
         {
 
@@ -114,10 +118,10 @@ namespace GeneticAlgorithms
             average = average / AnotherGeneration.Count();
 
             int[] badIndexes = new int[indexesForCrossover.Count()];
-            
-            for (int i = 0, k = 0; i < AnotherGeneration.Count; i++)
+            int k = 0;
+            for (int i = 0; i < AnotherGeneration.Count; i++)
             {
-                if (CurrentGeneration[i].FitnessFunction < average)
+                if (AnotherGeneration[i].FitnessFunction < average)
                 {
                     if (k == indexesForCrossover.Count())
                     {
@@ -133,6 +137,7 @@ namespace GeneticAlgorithms
             {
                 //Для создания двух разных потомков
                 //Скрещиваем 1 особь со 2 особъю
+                if (k == -1) { break; }
                 crossover(
                     CurrentGeneration[indexesForCrossover[i]],
                     CurrentGeneration[indexesForCrossover[i + 1]], 
@@ -144,17 +149,17 @@ namespace GeneticAlgorithms
                     CurrentGeneration[indexesForCrossover[i]], 
                     AnotherGeneration[badIndexes[++j]]
                     );
-
+                k--;
             }
 
-            if (indexesForCrossover.Count()%2 != 0)
-            {
-                crossover(
-                    CurrentGeneration[indexesForCrossover[indexesForCrossover.Count()-2]], 
-                    CurrentGeneration[indexesForCrossover[indexesForCrossover.Count()-1]], 
-                    AnotherGeneration[badIndexes[++j]]
-                    );
-            }
+            //if (indexesForCrossover.Count() % 2 != 0)
+            //{
+            //    crossover(
+            //        CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 2]],
+            //        CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 1]],
+            //        AnotherGeneration[badIndexes[++j]]
+            //        );
+            //}
         }
 
         public AbstractIndividual GetBestIndividual()
@@ -175,13 +180,7 @@ namespace GeneticAlgorithms
 
         public override String ToString()
         {
-            string sas = "Поколение №" + currentGenerationNumber + "\n";
-
-            foreach (var item in CurrentGeneration)
-            {
-                sas += item.ToString() + "\n";
-            }
-
+            string sas = string.Format("Поколение № {0}", currentGenerationNumber);
             return sas; 
         }
 

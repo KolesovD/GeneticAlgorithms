@@ -13,7 +13,7 @@ namespace GeneticAlgorithms
         private Roulette roulette;
 
         public bool allowParentsIntoNewGenerations = true;
-        public int currentGenerationNumber = 0; //Нулевое поколение - сгенерированное случайно
+        public int currentGenerationNumber { get; private set; } //Нулевое поколение - сгенерированное случайно
         public double fractionOfNewIndividuals;
 
         public AbstractIndividual bestIndividual
@@ -26,6 +26,7 @@ namespace GeneticAlgorithms
 
         public Control(string xml_path, int generationSize, double fractionOfNewIndividuals = 0.5)
         {
+            currentGenerationNumber = 0;
             this.generationSize = generationSize;
             this.fractionOfNewIndividuals = fractionOfNewIndividuals;
             population = new Population();
@@ -45,10 +46,11 @@ namespace GeneticAlgorithms
             int individualsToSelect = (int)((generationSize * fractionOfNewIndividuals));
 
             int[] selectedIndexes = new int[individualsToSelect];
-            for (int i = 0; i < individualsToSelect; i++)
-            {
-                selectedIndexes[i] = roulette.PickIndividualIndex();
-            }
+            Parallel.For(0, individualsToSelect - 1, (i) => selectedIndexes[i] = roulette.PickIndividualIndex());
+            //for (int i = 0; i < individualsToSelect; i++)
+            //{
+            //    selectedIndexes[i] = roulette.PickIndividualIndex();
+            //}
             return selectedIndexes;
         }
 
