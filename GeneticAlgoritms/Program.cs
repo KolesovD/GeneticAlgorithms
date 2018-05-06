@@ -11,7 +11,7 @@ namespace GeneticAlgorithms
         static void Main(string[] args)
         {
             //App.Main();
-            int generationSize = 5000;
+            int generationSize = 1000;
 
             Console.WriteLine("Start with generation size {0}", generationSize);
             Control control = new Control("../../../Lines.xml", generationSize, 0.9);
@@ -23,7 +23,7 @@ namespace GeneticAlgorithms
                 //Console.WriteLine($"Поколение №{control.currentGenerationNumber}");
                 control.OptimizeStep(Crosser.CyclicCrossover, mutator.ReverseSegmentMutation);
                 Console.WriteLine("Лучший в поколении №" + control.currentGenerationNumber + "\n" + control.bestIndividual);
-                if (i%50 == 0)
+                if (i%10 == 0)
                 {
                     Console.ReadKey();
                 }

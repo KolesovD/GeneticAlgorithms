@@ -99,12 +99,7 @@ namespace GeneticAlgorithms
         public void PerformCrossingover(Delegates.Crossover crossover, int[] indexesForCrossover)
         {
 
-            double average = 0; //Среднее значение фитнес-функции
-            for (int i = 0; i < AnotherGeneration.Count; i++)
-            {
-                average += AnotherGeneration[i].FitnessFunction;
-            }
-
+            double average = AnotherGeneration.AsParallel().Sum((i) => i.FitnessFunction); //Среднее значение фитнес-функции
             average = average / AnotherGeneration.Count();
 
             int[] badIndexes = new int[indexesForCrossover.Count()];
