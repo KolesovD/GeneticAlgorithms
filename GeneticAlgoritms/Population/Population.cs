@@ -22,7 +22,7 @@ namespace GeneticAlgorithms
 
         //Заполнение популяций особями
         //ВНИМАНИЕ!!! Отладочный метод, использующий объекты класса Plate, а не интерфейсы
-        public void CreateStartingPopulation(string XML_path ,int count = 50)
+        public void CreateStartingPopulation(string XML_path, int count = 50)
         {
             XMLLoader load = new XMLLoader(XML_path);
             Plate perfectPlate = load.Parse();
@@ -116,49 +116,100 @@ namespace GeneticAlgorithms
                     k++;
                 }
             }
-            for (int i = k+1; i < AnotherGeneration.Count; i++) {
-                badIndexes[k] = MyRandom.rnd.Next(0, AnotherGeneration.Count()-1);
+            for (int i = k + 1; i < AnotherGeneration.Count; i++)
+            {
+                badIndexes[k] = MyRandom.rnd.Next(0, AnotherGeneration.Count() - 1);
             }
 
+            //Parallel.For(0, indexesForCrossover.Count() / 2, i =>
+            //{
+            //    int ind = (2 * i);
+            //    //Для создания двух разных потомков
+            //    //Скрещиваем 1 особь со 2 особъю
+            //    crossover(
+            //        CurrentGeneration[indexesForCrossover[ind]],
+            //        CurrentGeneration[indexesForCrossover[ind + 1]],
+            //        AnotherGeneration[badIndexes[ind]]
+            //        );
+            //    //Скрещиваем 2 особь с 1 особъю
+            //    crossover(
+            //        CurrentGeneration[indexesForCrossover[ind + 1]],
+            //        CurrentGeneration[indexesForCrossover[ind]],
+            //        AnotherGeneration[badIndexes[ind + 1]]
+            //        );
+            //});
+
             int j = 0;
-            for (int i = 0; i < indexesForCrossover.Count() / 2; i+=2, j++) 
+            for (int i = 0; i < indexesForCrossover.Count() / 2; i += 2, j++)
             {
                 //Для создания двух разных потомков
                 //Скрещиваем 1 особь со 2 особъю
                 crossover(
                     CurrentGeneration[indexesForCrossover[i]],
-                    CurrentGeneration[indexesForCrossover[i + 1]], 
+                    CurrentGeneration[indexesForCrossover[i + 1]],
                     AnotherGeneration[badIndexes[j]]
                     );
                 //Скрещиваем 2 особь с 1 особъю
                 crossover(
-                    CurrentGeneration[indexesForCrossover[i + 1]], 
-                    CurrentGeneration[indexesForCrossover[i]], 
+                    CurrentGeneration[indexesForCrossover[i + 1]],
+                    CurrentGeneration[indexesForCrossover[i]],
                     AnotherGeneration[badIndexes[++j]]
                     );
             }
 
-            if (indexesForCrossover.Count() % 2 != 0)
+            if (badIndexes.Length % 2 != 0)
             {
                 crossover(
                     CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 2]],
                     CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 1]],
-                    AnotherGeneration[badIndexes[++j]]
+                    AnotherGeneration[badIndexes[badIndexes.Length - 1]]
                     );
             }
         }
 
+        private int get_best_in_bit(int start, int count) {
+            double maxFitness = CurrentGeneration[start].FitnessFunction;
+
+            int index = start;
+            for (int i = start + 1; i < start + count; i++) {
+                double _prom = CurrentGeneration[i].FitnessFunction;
+                if (_prom > maxFitness) {
+                    maxFitness = _prom;
+                    index = i;
+                }
+            }
+            return index;
+        }
+
         public AbstractIndividual GetBestIndividual()
         {
-            double maxFitness = CurrentGeneration[0].FitnessFunction;
-
-            int maxIndex = 0;
-            for (int i = 1; i < CurrentGeneration.Count; i++)
+            int lenght = Environment.ProcessorCount;
+            Task<int>[] tasks = new Task<int>[lenght];
+            int start = 0;
+            int count = CurrentGeneration.Count() / lenght;
+            for (int i = 0; i < lenght; i++)
             {
-                if (CurrentGeneration[i].FitnessFunction > maxFitness)
+                if (i != lenght - 1)
                 {
-                    maxFitness = CurrentGeneration[i].FitnessFunction;
-                    maxIndex = i;
+                    tasks[i] = new Task<int>(() => get_best_in_bit(start, count));
+                    start += count;
+                }
+                else {
+                    tasks[i] = new Task<int>(() => get_best_in_bit(start, CurrentGeneration.Count() - start));
+                }
+                tasks[i].Start();
+            }
+            Task.WaitAll(tasks);
+            double maxFitness = CurrentGeneration[tasks[0].Result].FitnessFunction;
+
+            int maxIndex = tasks[0].Result;
+            for (int i = 1; i < lenght; i++)
+            {
+                double _prom = CurrentGeneration[tasks[i].Result].FitnessFunction;
+                if (_prom > maxFitness)
+                {
+                    maxFitness = _prom;
+                    maxIndex = tasks[i].Result;
                 }
             }
             return CurrentGeneration[maxIndex];
@@ -167,7 +218,7 @@ namespace GeneticAlgorithms
         public override String ToString()
         {
             string sas = string.Format("Поколение № {0}", currentGenerationNumber);
-            return sas; 
+            return sas;
         }
 
     }

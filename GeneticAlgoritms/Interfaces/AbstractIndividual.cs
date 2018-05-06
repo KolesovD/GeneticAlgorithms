@@ -9,7 +9,6 @@ namespace GeneticAlgorithms
     abstract public class AbstractIndividual
     {
         protected List<Segment> _Segments;
-
         public List<Segment> Segments
         {
             get { return _Segments; }

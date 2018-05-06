@@ -11,7 +11,7 @@ namespace GeneticAlgorithms
         static void Main(string[] args)
         {
             //App.Main();
-            int generationSize = 1000;
+            int generationSize = 10;
 
             Console.WriteLine("Start with generation size {0}", generationSize);
             Control control = new Control("../../../Lines.xml", generationSize, 0.9);
