@@ -32,6 +32,8 @@ namespace WPFVisualizer
         private Info DequeueIndidvidual;
         private float scale = 100;
         float ScaleRate = 1.1f;
+        private bool stop_state = true;
+        private ManualResetEvent stopper;
 
         private void GeneticAlgotithmFunc() {
             int generationSize = 5000;
@@ -40,6 +42,7 @@ namespace WPFVisualizer
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
 
             while (true) {
+                stopper.WaitOne();
                 control.OptimizeStep(Crosser.CyclicCrossover, mutator.ReverseSegmentMutation);
                 Queue.Enqueue(new Info(new Plate((Plate)control.bestIndividual), string.Format("Поколение № {0}", control.currentGenerationNumber)));
             }
@@ -86,6 +89,7 @@ namespace WPFVisualizer
 
         public MainWindow()
         {
+            stopper = new ManualResetEvent(stop_state);
             Code = new VisualiserFuncs();
             InitializeComponent();
 
@@ -144,6 +148,20 @@ namespace WPFVisualizer
             //    CanvasScale.ScaleX = 0.1;
             //    CanvasScale.ScaleY = 0.1;
             //}
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e) {
+            if (stop_state)
+            {
+                stopper.Reset();//осановка
+                stop.Content = "continue";
+            }
+            else
+            {
+                stopper.Set();//запуск
+                stop.Content = "stop";
+            }
+            stop_state = !stop_state;
         }
     }
 }
