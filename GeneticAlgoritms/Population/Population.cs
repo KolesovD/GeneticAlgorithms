@@ -116,44 +116,28 @@ namespace GeneticAlgorithms
                     k++;
                 }
             }
-            for (int i = k + 1; i < AnotherGeneration.Count; i++)
-            {
-                badIndexes[k] = MyRandom.rnd.Next(0, AnotherGeneration.Count() - 1);
-            }
-
-            //Parallel.For(0, indexesForCrossover.Count() / 2, i =>
+            //for (int i = k + 1; i < badIndexes.Length; i++)
             //{
-            //    int ind = (2 * i);
-            //    //Для создания двух разных потомков
-            //    //Скрещиваем 1 особь со 2 особъю
-            //    crossover(
-            //        CurrentGeneration[indexesForCrossover[ind]],
-            //        CurrentGeneration[indexesForCrossover[ind + 1]],
-            //        AnotherGeneration[badIndexes[ind]]
-            //        );
-            //    //Скрещиваем 2 особь с 1 особъю
-            //    crossover(
-            //        CurrentGeneration[indexesForCrossover[ind + 1]],
-            //        CurrentGeneration[indexesForCrossover[ind]],
-            //        AnotherGeneration[badIndexes[ind + 1]]
-            //        );
-            //});
+            //    badIndexes[i] = MyRandom.rnd.Next(0, AnotherGeneration.Count() - 1);
+            //}
 
-            int j = 0;
-            for (int i = 0; i < indexesForCrossover.Count() / 2; i += 2, j++)
+            //int j = 0;
+            for (int i = 0; i < indexesForCrossover.Count()-indexesForCrossover.Length%2; i += 2)
             {
                 //Для создания двух разных потомков
                 //Скрещиваем 1 особь со 2 особъю
+                if (i >= k) { break; }
                 crossover(
                     CurrentGeneration[indexesForCrossover[i]],
                     CurrentGeneration[indexesForCrossover[i + 1]],
-                    AnotherGeneration[badIndexes[j]]
+                    AnotherGeneration[badIndexes[i]]
                     );
                 //Скрещиваем 2 особь с 1 особъю
+                if (i+1 >= k) { break; }
                 crossover(
                     CurrentGeneration[indexesForCrossover[i + 1]],
                     CurrentGeneration[indexesForCrossover[i]],
-                    AnotherGeneration[badIndexes[++j]]
+                    AnotherGeneration[badIndexes[i+1]]
                     );
             }
 
