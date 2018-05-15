@@ -125,29 +125,19 @@ namespace WPFVisualizer
         void Box_MouseWheel(object sender, MouseWheelEventArgs e) {
             if (e.Delta > 0)
             {
-                CanvasScale.CenterX = e.GetPosition(CanvasMove).X;
-                CanvasScale.CenterY = e.GetPosition(CanvasMove).Y;
+                CanvasScale.CenterX = CanvasMove.ActualWidth/2;
+                CanvasScale.CenterY = CanvasMove.ActualHeight/2;
                 CanvasScale.ScaleX *= ScaleRate;
                 CanvasScale.ScaleY *= ScaleRate;
             }
             else
             {
+                CanvasScale.CenterX = CanvasMove.ActualWidth/2;
+                CanvasScale.CenterY = CanvasMove.ActualHeight/2;
                 CanvasScale.ScaleX /= ScaleRate;
                 CanvasScale.ScaleY /= ScaleRate;
-                //c.Width *= ScaleRate;
-                //c.Height *= ScaleRate;
-                CanvasScale.CenterX = e.GetPosition(CanvasMove).X;
-                CanvasScale.CenterY = e.GetPosition(CanvasMove).Y;
             }
 
-            //CanvasScale.CenterX = e.GetPosition(CanvasSkale).X;
-            //CanvasScale.CenterY = e.GetPosition(CanvasSkale).Y;
-            //CanvasScale.ScaleX += e.Delta * 0.0005f;
-            //CanvasScale.ScaleY += e.Delta * 0.0005f;
-            //if (CanvasScale.ScaleX <= 0.1) {
-            //    CanvasScale.ScaleX = 0.1;
-            //    CanvasScale.ScaleY = 0.1;
-            //}
         }
 
         private void Button_Click(object sender, RoutedEventArgs e) {
