@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GeneticAlgorithms
 {
-    abstract public class AbstractIndividual
+    abstract public class AbstractIndividual //: IComparer<AbstractIndividual>
     {
         protected List<Segment> _Segments;
         public List<Segment> Segments
@@ -23,7 +24,7 @@ namespace GeneticAlgorithms
         {
             _Segments = segments;
         }
-
+        public abstract AbstractIndividual GetCopy();
         public abstract double FitnessFunction { get; }
 
         public void AddSegment(Segment segment)
@@ -63,5 +64,7 @@ namespace GeneticAlgorithms
 
             return bd.ToString();
         }
+
+        //public abstract int Compare(AbstractIndividual x, AbstractIndividual y);
     }
 }

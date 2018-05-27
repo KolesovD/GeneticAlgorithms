@@ -13,11 +13,22 @@ namespace GeneticAlgorithms
         private List<AbstractIndividual> firstGeneration = new List<AbstractIndividual>();
         private List<AbstractIndividual> secondGeneration = new List<AbstractIndividual>();
         private bool currentGenerationFlag = true; //true = первая популяция является текущей
+        
         public int currentGenerationNumber { get; private set; }
 
         public Population()
         {
 
+        }
+
+        public void RemoveAt(int index) {
+            firstGeneration.RemoveAt(index);
+            secondGeneration.RemoveAt(index);
+        }
+
+        public void Add(AbstractIndividual item) {
+            CurrentGeneration.Add(item);
+            CurrentGeneration.Add(item.GetCopy());//возможно можно создавать пустую
         }
 
         //Заполнение популяций особями
@@ -98,57 +109,77 @@ namespace GeneticAlgorithms
 
         public void PerformCrossingover(Delegates.Crossover crossover, int[] indexesForCrossover)
         {
+            //AnotherGeneration.Sort(AnotherGeneration[AnotherGeneration.Count-1]);//в конце лучшие
 
-            double average = AnotherGeneration.AsParallel().Sum((i) => i.FitnessFunction); //Среднее значение фитнес-функции
-            average = average / AnotherGeneration.Count();
+            //double average = AnotherGeneration.AsParallel().Sum((i) => i.FitnessFunction); //Среднее значение фитнес-функции
+            //average = average / AnotherGeneration.Count();
 
-            int[] badIndexes = new int[indexesForCrossover.Count()];
-            int k = 0;
-            for (int i = 0; i < AnotherGeneration.Count; i++)
-            {
-                if (AnotherGeneration[i].FitnessFunction < average)
-                {
-                    if (k == indexesForCrossover.Count())
-                    {
-                        break;
-                    }
-                    badIndexes[k] = i;
-                    k++;
-                }
-            }
-            //for (int i = k + 1; i < badIndexes.Length; i++)
+            //int[] badIndexes = new int[indexesForCrossover.Count()];
+            //int k = 0;
+            //for (int i = 0; i < AnotherGeneration.Count; i++)
             //{
-            //    badIndexes[i] = MyRandom.rnd.Next(0, AnotherGeneration.Count() - 1);
+            //    if (AnotherGeneration[i].FitnessFunction < average)
+            //    {
+            //        if (k == indexesForCrossover.Count())
+            //        {
+            //            break;
+            //        }
+            //        badIndexes[k] = i;
+            //        k++;
+            //    }
             //}
 
-            //int j = 0;
-            for (int i = 0; i < indexesForCrossover.Count()-indexesForCrossover.Length%2; i += 2)
+            //if (k < indexesForCrossover.Length/3)
+            //{
+            //    Console.WriteLine("true");
+            //    for (int i = k + 1; i < badIndexes.Length; i++)
+            //    {
+            //        badIndexes[i] = MyRandom.rnd.Next(0, AnotherGeneration.Count() - 1);
+            //    }
+            //}
+
+            //int another_gen_count = AnotherGeneration.Count;
+            for (int i = 0; i < indexesForCrossover.Length - indexesForCrossover.Length % 2; i += 2)
             {
+                //double child_individual, parent_01_individual, parent_02_individual;
+                //Console.WriteLine("i = {0}",i);
                 //Для создания двух разных потомков
                 //Скрещиваем 1 особь со 2 особъю
-                if (i >= k) { break; }
                 crossover(
                     CurrentGeneration[indexesForCrossover[i]],
                     CurrentGeneration[indexesForCrossover[i + 1]],
-                    AnotherGeneration[badIndexes[i]]
+                    AnotherGeneration[i]
                     );
+                //child_individual = AnotherGeneration[i].FitnessFunction;
+                //parent_01_individual = CurrentGeneration[indexesForCrossover[i]].FitnessFunction;
+                //parent_02_individual = CurrentGeneration[indexesForCrossover[i + 1]].FitnessFunction;
+                //if ((child_individual < parent_01_individual) && (child_individual < parent_02_individual))
+                //{
+                //    AnotherGeneration[i] = CurrentGeneration[indexesForCrossover[i]].GetCopy(CurrentGeneration[indexesForCrossover[i]]);
+                //}
                 //Скрещиваем 2 особь с 1 особъю
-                if (i+1 >= k) { break; }
                 crossover(
                     CurrentGeneration[indexesForCrossover[i + 1]],
                     CurrentGeneration[indexesForCrossover[i]],
-                    AnotherGeneration[badIndexes[i+1]]
+                    AnotherGeneration[i+1]
                     );
+                //child_individual = AnotherGeneration[i+1].FitnessFunction;
+                //parent_01_individual = CurrentGeneration[indexesForCrossover[i+1]].FitnessFunction;
+                //parent_02_individual = CurrentGeneration[indexesForCrossover[i]].FitnessFunction;
+                //if ((child_individual < parent_01_individual) && (child_individual < parent_02_individual))
+                //{
+                //    AnotherGeneration[i+1] = CurrentGeneration[indexesForCrossover[i+1]].GetCopy(CurrentGeneration[indexesForCrossover[i+1]]);
+                //}
             }
 
-            if (badIndexes.Length % 2 != 0)
-            {
-                crossover(
-                    CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 2]],
-                    CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 1]],
-                    AnotherGeneration[badIndexes[badIndexes.Length - 1]]
-                    );
-            }
+            //if (indexesForCrossover.Length % 2 != 0)
+            //{
+            //    crossover(
+            //        CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 2]],
+            //        CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 1]],
+            //        AnotherGeneration[indexesForCrossover.Length - indexesForCrossover.Length % 2]
+            //        );
+            //}
         }
 
         private int get_best_in_bit(int start, int count) {

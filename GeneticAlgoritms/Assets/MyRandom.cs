@@ -34,7 +34,7 @@ namespace Assets
             }
             public static double GetRandomDouble(double max)
             {
-                return GetRandomDouble() * max;
+                return GetRandomDouble()%max;
             }
             public static double GetRandomDouble(double min, double max)
             {

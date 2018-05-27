@@ -76,5 +76,28 @@ namespace GeneticAlgorithms
         public override string ToString() {
             return string.Format("idle line: {0} {1}", CalcSumIdlingLine() ,base.ToString());
         }
+
+        //public override int Compare(AbstractIndividual x, AbstractIndividual y) {
+        //    double x_f = x.FitnessFunction;
+        //    double y_f = y.FitnessFunction;
+
+        //    if (x_f > y_f)
+        //    {
+        //        return 1;
+        //    }
+        //    else if (x_f < y_f)
+        //    {
+        //        return -1;
+        //    }
+        //    else
+        //    {
+        //        return 0;
+        //    }
+        //}
+
+        public override AbstractIndividual GetCopy()
+        {
+            return new Plate(this);
+        }
     }
 }

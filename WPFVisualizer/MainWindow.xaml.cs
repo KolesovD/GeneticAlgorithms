@@ -17,6 +17,7 @@ using System.Threading;
 using System.Numerics;
 using System.Windows.Threading;
 using WPFVisualizer.Code;
+using System.Collections.Concurrent;
 
 namespace WPFVisualizer
 {
@@ -26,26 +27,43 @@ namespace WPFVisualizer
     public partial class MainWindow : Window
     {
         private VisualiserFuncs Code;
-        private Queue<Info> Queue = new Queue<Info>();
+        private ConcurrentQueue<Info> Queue = new ConcurrentQueue<Info>();
         private DispatcherTimer dispatcherTimer;
         private Vector2 last_pos;
         private Info DequeueIndidvidual;
         private float scale = 100;
         float ScaleRate = 1.1f;
-        private bool stop_state = true;
-        private ManualResetEvent stopper;
+        private MasterControll GA;
 
         private void GeneticAlgotithmFunc() {
             int generationSize = 5000;
+            int island_count = 4;
 
-            GeneticAlgorithms.Control control = new GeneticAlgorithms.Control("../../../Lines.xml", generationSize, fractionOfNewIndividuals: 0.9);
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
 
-            while (true) {
-                stopper.WaitOne();
-                control.OptimizeStep(Crosser.CyclicCrossover, mutator.ReverseSegmentMutation);
-                Queue.Enqueue(new Info(new Plate((Plate)control.bestIndividual), string.Format("Поколение № {0}", control.currentGenerationNumber)));
-            }
+            GA = new MasterControll(island_count, "../../../Lines.xml", generationSize, 
+                (i) => {
+                    return Crosser.CyclicCrossover;
+                }, 
+                (i) => {
+                    return mutator.ReverseSegmentMutation;
+                }, 
+                (i) => {
+                    return (c) => {
+                        AbstractIndividual best = c.bestIndividual;
+                        Queue.Enqueue(new Info(best.GetCopy(best), string.Format("Поколение № {0}", c.currentGenerationNumber)));
+                    }; 
+                }
+            );
+
+            //GeneticAlgorithms.Control control = new GeneticAlgorithms.Control("../../../Lines.xml", generationSize);
+            
+
+            //while (true) {
+            //    stopper.WaitOne();
+            //    control.OptimizeStep(Crosser.CyclicCrossover, mutator.ReverseSegmentMutation);
+            //    Queue.Enqueue(new Info(new Plate((Plate)control.bestIndividual), string.Format("Поколение № {0}", control.currentGenerationNumber)));
+            //}
 
         }
 
@@ -56,7 +74,7 @@ namespace WPFVisualizer
             else {
                 textBox.Clear();
                 CanvasDraw.Children.Clear();
-                DequeueIndidvidual = Queue.Dequeue();
+                if (!Queue.TryDequeue(out DequeueIndidvidual)) { return; }
             }
             textBox.AppendText(DequeueIndidvidual.GenInfo);
             textBox.AppendText("\n");
@@ -89,7 +107,6 @@ namespace WPFVisualizer
 
         public MainWindow()
         {
-            stopper = new ManualResetEvent(stop_state);
             Code = new VisualiserFuncs();
             InitializeComponent();
 
@@ -99,8 +116,7 @@ namespace WPFVisualizer
             this.MouseMove += MainWindow_MouseMove;
             this.MouseLeftButtonDown += MainWindow_MouseLeftButtonDown;
 
-            Task optTask = new Task(GeneticAlgotithmFunc);
-            optTask.Start();
+            GeneticAlgotithmFunc();
 
             dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(VisualizeTimer);
@@ -141,17 +157,16 @@ namespace WPFVisualizer
         }
 
         private void Button_Click(object sender, RoutedEventArgs e) {
-            if (stop_state)
+            if (GA.StopState)
             {
-                stopper.Reset();//осановка
+                GA.ResetStopper();//осановка
                 stop.Content = "continue";
             }
             else
             {
-                stopper.Set();//запуск
+                GA.SetStopper();//запуск
                 stop.Content = "stop";
             }
-            stop_state = !stop_state;
         }
     }
 }

@@ -47,9 +47,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\MyRandom.cs" />
+    <Compile Include="Control\ChangeBag.cs" />
     <Compile Include="Control\Control.cs" />
     <Compile Include="Control\Crosser.cs" />
     <Compile Include="Control\Delegates.cs" />
+    <Compile Include="Control\MasterControll.cs" />
     <Compile Include="Control\Mutator.cs" />
     <Compile Include="Information\Info.cs" />
     <Compile Include="Information\XMLLoader.cs" />

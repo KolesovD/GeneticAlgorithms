@@ -24,17 +24,16 @@ namespace GeneticAlgorithms
     public class Roulette
     {
         public List<Sector> GenerationAxis;
-        private object _lock; 
+        public int GenLentght { get; private set; }
         private double get_end_of_gen
         {
             get { return GenerationAxis[GenerationAxis.Count - 1].End; }
         }
 
-        public Roulette(int gen_lenght)
+        public Roulette(int gen_lenght_max)
         {
-            _lock = new object();
             GenerationAxis = new List<Sector>();
-            for (int i = 0; i < gen_lenght; i++)
+            for (int i = 0; i < gen_lenght_max; i++)
             {
                 GenerationAxis.Add(new Sector());
             }
@@ -43,9 +42,10 @@ namespace GeneticAlgorithms
         public void LoadByPopulation(IPopulation population)
         {
             //Console.WriteLine(population.ToString());
+            GenLentght = Math.Min(population.CurrentGeneration.Count, GenerationAxis.Count);
             double start = 0;
             //string res = "0";
-            for (int i = 0; i < GenerationAxis.Count; i++)
+            for (int i = 0; i < GenLentght; i++)
             {
                 GenerationAxis[i].ConfigSector(start, population.CurrentGeneration[i].FitnessFunction);
                 start = GenerationAxis[i].End;
@@ -64,7 +64,7 @@ namespace GeneticAlgorithms
             //int step = 0;
 
             int start = 0;
-            int end = GenerationAxis.Count - 1;
+            int end = GenLentght - 1;
 
             int index;
             double res_start;
