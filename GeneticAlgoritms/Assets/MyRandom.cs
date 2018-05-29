@@ -12,7 +12,7 @@ namespace Assets
                 get {
                     lock (global_lock) {
                         return new Random(main_random.Next()); 
-                    } 
+                    }
                 }
             }
             private static object global_lock;

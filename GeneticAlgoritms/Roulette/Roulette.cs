@@ -27,7 +27,7 @@ namespace GeneticAlgorithms
         public int GenLentght { get; private set; }
         private double get_end_of_gen
         {
-            get { return GenerationAxis[GenerationAxis.Count - 1].End; }
+            get { return GenerationAxis[GenLentght - 1].End; }
         }
 
         public Roulette(int gen_lenght_max)
@@ -58,7 +58,7 @@ namespace GeneticAlgorithms
         {
             //double random;
             //lock (_lock) {
-            double random = MyRandom.GetRandomDouble(get_end_of_gen);
+            double random = Math.Abs(MyRandom.rnd.NextDouble())%get_end_of_gen;
             //}
             //Console.WriteLine("случайное значение {0}", random);
             //int step = 0;

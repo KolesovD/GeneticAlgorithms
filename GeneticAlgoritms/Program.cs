@@ -12,14 +12,15 @@ namespace GeneticAlgorithms
         static void Main(string[] args)
         {
             //App.Main();
-            int generationSize = 5000;
+            int generationSize = 2000;
             int island_count = 4;
+            int migration_count = (int)(generationSize * 0.1f);
 
             Console.WriteLine("Start with generation size {0}", generationSize);
-            //Control control = new Control("../../../Lines.xml", generationSize);
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.05);
-
-            GA = new MasterControll(island_count, "../../../Lines.xml", generationSize,
+            int k = 10;
+            int g = k;
+            GA = new MasterControll(migration_count, island_count, "../../../Lines.xml", generationSize,
                 (i) =>
                 {
                     return Crosser.CyclicCrossover;
@@ -32,10 +33,16 @@ namespace GeneticAlgorithms
                 {
                     return (c) =>
                     {
+                        if (i != 0) { return; }
+                        //if (k > 0) { k--; return; }
                         Console.WriteLine("Лучший в поколении №" + c.currentGenerationNumber + " на острове "+i+"\n" + c.bestIndividual);
+                        //k = g;
                     };
                 }
             );
+            GA.Start();
+            Console.ReadKey();
+            GA.ResetStopper();
             Console.ReadKey();
             //for (int i = 0; i <=6000; i++)
             //{

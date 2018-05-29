@@ -16,13 +16,16 @@ namespace GeneticAlgorithms
         public int Count
         {
             get {
-                if (!Monitor.TryEnter(_locker)) {
+                if (!Monitor.TryEnter(_locker))
+                {
                     throw new FlagException();
                 }
-                try {
+                try
+                {
                     return Migrate.Count;
                 }
-                finally {
+                finally
+                {
                     Monitor.Exit(_locker);
                 }
             }
@@ -35,7 +38,7 @@ namespace GeneticAlgorithms
 
         public void SaveOperate(Action<List<T>> operation) {
             lock(_locker) {
-                operation(Migrate);
+                operation.Invoke(Migrate);
             }
         }
     }

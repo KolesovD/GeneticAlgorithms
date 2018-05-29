@@ -36,12 +36,14 @@ namespace WPFVisualizer
         private MasterControll GA;
 
         private void GeneticAlgotithmFunc() {
-            int generationSize = 5000;
+            int generationSize = 2000;
             int island_count = 4;
-
+            int migration_count = (int)(generationSize * 0.4f);
+            int k = 10;
+            int g = k * island_count;
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
 
-            GA = new MasterControll(island_count, "../../../Lines.xml", generationSize, 
+            GA = new MasterControll(migration_count, island_count, "../../../Lines.xml", generationSize, 
                 (i) => {
                     return Crosser.CyclicCrossover;
                 }, 
@@ -50,12 +52,15 @@ namespace WPFVisualizer
                 }, 
                 (i) => {
                     return (c) => {
+                        //if (i != 0) { return; }
+                        if (g > 0) { g--; return; }
                         AbstractIndividual best = c.bestIndividual;
-                        Queue.Enqueue(new Info(best.GetCopy(best), string.Format("Поколение № {0}", c.currentGenerationNumber)));
+                        Queue.Enqueue(new Info(best.GetCopy(), string.Format("Поколение № {0} остров № {1} количество миграций {2}", c.currentGenerationNumber, i, c.MigrationCount)));
+                        g = k * island_count;
                     }; 
                 }
             );
-
+            GA.Start();
             //GeneticAlgorithms.Control control = new GeneticAlgorithms.Control("../../../Lines.xml", generationSize);
             
 

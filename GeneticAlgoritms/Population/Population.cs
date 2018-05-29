@@ -28,7 +28,7 @@ namespace GeneticAlgorithms
 
         public void Add(AbstractIndividual item) {
             CurrentGeneration.Add(item);
-            CurrentGeneration.Add(item.GetCopy());//возможно можно создавать пустую
+            AnotherGeneration.Add(item.GetCopy());//возможно можно создавать пустую
         }
 
         //Заполнение популяций особями
