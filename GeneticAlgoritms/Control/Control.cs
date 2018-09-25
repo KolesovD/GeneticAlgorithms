@@ -14,7 +14,7 @@ namespace GeneticAlgorithms
         private Roulette roulette;
         private ChangeBag<AbstractIndividual> Write;
         private ChangeBag<AbstractIndividual> Read;
-        private MasterControll Repository;
+        private MasterControl Repository;
         public int MigrationCount { get; private set; }
 
         public bool allowParentsIntoNewGenerations = true;
@@ -29,7 +29,7 @@ namespace GeneticAlgorithms
             }
         }
 
-        public Control(MasterControll master, string xml_path, int generationSize, ChangeBag<AbstractIndividual> Read, ChangeBag<AbstractIndividual> Write)
+        public Control(MasterControl master, string xml_path, int generationSize, ChangeBag<AbstractIndividual> Read, ChangeBag<AbstractIndividual> Write)
         {
             MigrationCount = 0;
             Repository = master;
@@ -37,7 +37,7 @@ namespace GeneticAlgorithms
             this.generationSize = generationSize;
             //this.fractionOfNewIndividuals = fractionOfNewIndividuals;
             population = new Population();
-            population.CreateStartingPopulation(xml_path, generationSize); //Порождается отладочная популяция из Plate (единичные сегменты по диагонали с расстоянием 0)
+            population.CreateStartingPopulation(xml_path, generationSize);
             roulette = new Roulette(this.generationSize);
             this.Read = Read;
             this.Write = Write;

@@ -33,7 +33,7 @@ namespace WPFVisualizer
         private Info DequeueIndidvidual;
         private float scale = 100;
         float ScaleRate = 1.1f;
-        private MasterControll GA;
+        private MasterControl GA;
 
         private void GeneticAlgotithmFunc() {
             int generationSize = 2000;
@@ -43,7 +43,7 @@ namespace WPFVisualizer
             int g = k * island_count;
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
 
-            GA = new MasterControll(migration_count, island_count, "../../../Lines.xml", generationSize, 
+            GA = new MasterControl(migration_count, island_count, "../../../Lines.xml", generationSize, 
                 (i) => {
                     return Crosser.CyclicCrossover;
                 }, 

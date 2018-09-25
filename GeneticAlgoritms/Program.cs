@@ -8,7 +8,7 @@ namespace GeneticAlgorithms
 {
     class Program
     {
-        private static MasterControll GA;
+        private static MasterControl GA;
         static void Main(string[] args)
         {
             //App.Main();
@@ -20,7 +20,7 @@ namespace GeneticAlgorithms
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.05);
             int k = 10;
             int g = k;
-            GA = new MasterControll(migration_count, island_count, "../../../Lines.xml", generationSize,
+            GA = new MasterControl(migration_count, island_count, "../../../Lines.xml", generationSize,
                 (i) =>
                 {
                     return Crosser.CyclicCrossover;
