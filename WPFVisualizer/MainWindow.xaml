@@ -20,17 +20,7 @@
                         Stroke="Red"
                         StrokeThickness="4" 
                     />-->
-                <Canvas.RenderTransform>
-                    <TransformGroup>
-                        <TranslateTransform x:Name="position" X="0" Y="0" />
-                    </TransformGroup>
-                </Canvas.RenderTransform>
             </Canvas>
-            <Canvas.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform x:Name="CanvasScale" ScaleX="1" ScaleY="1" CenterX="0" CenterY="0"/>
-                </TransformGroup>
-            </Canvas.RenderTransform>
         </Canvas>
         <Button x:Name="stop" Content="stop" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="75" Grid.Column="1" Margin="0,0,10,52" Click="Button_Click"/>
         <!--<Grid.ColumnDefinitions>

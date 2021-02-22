@@ -18,6 +18,7 @@ using System.Numerics;
 using System.Windows.Threading;
 using WPFVisualizer.Code;
 using System.Collections.Concurrent;
+using WPFVisualizer.Extensions;
 
 namespace WPFVisualizer
 {
@@ -29,11 +30,10 @@ namespace WPFVisualizer
         private VisualiserFuncs Code;
         private ConcurrentQueue<Info> Queue = new ConcurrentQueue<Info>();
         private DispatcherTimer dispatcherTimer;
-        private Vector2 last_pos;
+        private Point last_pos;
         private Info DequeueIndidvidual;
-        private float scale = 100;
-        float ScaleRate = 1.1f;
         private MasterControl GA;
+        private float _thickness = 0.1f;
 
         private void GeneticAlgotithmFunc() {
             int generationSize = 2000;
@@ -92,11 +92,11 @@ namespace WPFVisualizer
             Arrow segmentArrow = null;
 
             for (int i = 0; i < segment_array.Length-1; i++) {
-                segmentArrow = new Arrow(segment_array[i].Start*scale, segment_array[i].End * scale, 5);
+                segmentArrow = new Arrow(segment_array[i].Start, segment_array[i].End, _thickness);
                 segmentArrow.SetColor(segment_color);
                 CanvasDraw.Children.Add(segmentArrow);
 
-                Arrow LinkArrow = new Arrow(segment_array[i].End * scale, segment_array[i+1].Start * scale);
+                Arrow LinkArrow = new Arrow(segment_array[i].End, segment_array[i+1].Start, _thickness/3f);
                 link_color = new SolidColorBrush(Code.GetRainbow(1023 / DequeueIndidvidual.Individual.Size() * i));
                 LinkArrow.SetColor(link_color);
                 CanvasDraw.Children.Add(LinkArrow);
@@ -105,7 +105,7 @@ namespace WPFVisualizer
                     segment_color = new SolidColorBrush(Color.FromRgb(0, 0, 0));
                 }
             }
-            segmentArrow = new Arrow(segment_array[segment_array.Length-1].Start * scale, segment_array[segment_array.Length - 1].End * scale, 5);
+            segmentArrow = new Arrow(segment_array[segment_array.Length-1].Start, segment_array[segment_array.Length - 1].End, _thickness);
             segmentArrow.SetColor(segment_color);
             CanvasDraw.Children.Add(segmentArrow);
         }
@@ -115,11 +115,12 @@ namespace WPFVisualizer
             Code = new VisualiserFuncs();
             InitializeComponent();
 
-            last_pos = new Vector2(0, 0);
+            last_pos = new Point();
 
             this.MouseWheel += Box_MouseWheel;
             this.MouseMove += MainWindow_MouseMove;
             this.MouseLeftButtonDown += MainWindow_MouseLeftButtonDown;
+            this.MouseLeftButtonUp += MainWindow_MouseLeftButtonUp;
 
             GeneticAlgotithmFunc();
 
@@ -129,36 +130,39 @@ namespace WPFVisualizer
             dispatcherTimer.Start();
         }
 
+        private void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            CanvasDraw.ReleaseMouseCapture();
+        }
+
         void MainWindow_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            last_pos.X = (float)e.GetPosition(CanvasDraw).X;
-            last_pos.Y = (float)e.GetPosition(CanvasDraw).Y;
+            if (e.ClickCount == 1)
+            {
+                CanvasDraw.Focus();
+                last_pos = e.GetPosition(CanvasDraw);
+                CanvasDraw.CaptureMouse();
+            }
+            e.Handled = true;
         }
 
         void MainWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed) {
-                position.X += (e.GetPosition(CanvasDraw).X - last_pos.X);
-                position.Y += (e.GetPosition(CanvasDraw).Y - last_pos.Y);
+            if (CanvasDraw.IsMouseCaptured)
+            {
+                Point point = e.GetPosition(CanvasDraw);
+                CanvasDraw.RenderTransform = new MatrixTransform(Matrix.Multiply(new TranslateTransform(point.X - last_pos.X, point.Y - last_pos.Y).Value, CanvasDraw.RenderTransform.Value));
+                
             }
         }
 
-        void Box_MouseWheel(object sender, MouseWheelEventArgs e) {
-            if (e.Delta > 0)
-            {
-                CanvasScale.CenterX = CanvasMove.ActualWidth/2;
-                CanvasScale.CenterY = CanvasMove.ActualHeight/2;
-                CanvasScale.ScaleX *= ScaleRate;
-                CanvasScale.ScaleY *= ScaleRate;
-            }
-            else
-            {
-                CanvasScale.CenterX = CanvasMove.ActualWidth/2;
-                CanvasScale.CenterY = CanvasMove.ActualHeight/2;
-                CanvasScale.ScaleX /= ScaleRate;
-                CanvasScale.ScaleY /= ScaleRate;
-            }
+        void Box_MouseWheel(object sender, MouseWheelEventArgs e) 
+        {
+            Point mousePoint = e.GetPosition(CanvasDraw);
 
+            double _scale =  MathExtensions.Clamp(e.Delta/100f + 1f, 0, float.PositiveInfinity);
+
+            CanvasDraw.RenderTransform = new MatrixTransform(Matrix.Multiply(new ScaleTransform(_scale, _scale, mousePoint.X, mousePoint.Y).Value, CanvasDraw.RenderTransform.Value));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e) {
