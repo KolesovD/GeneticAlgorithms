@@ -27,15 +27,24 @@ namespace WPFVisualizer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private CancellationTokenSource CancellationTokenSource;
+
         private VisualiserFuncs Code;
         private ConcurrentQueue<Info> Queue = new ConcurrentQueue<Info>();
         private DispatcherTimer dispatcherTimer;
+
         private Point last_pos;
         private Info DequeueIndidvidual;
         private MasterControl GA;
         private float _thickness = 0.1f;
 
-        private void GeneticAlgotithmFunc() {
+        private void GeneticAlgotithmFunc(string path = "../../../Lines.xml") 
+        {
+            CancellationTokenSource?.Cancel();
+            CancellationTokenSource?.Dispose();
+            CancellationTokenSource = new CancellationTokenSource();
+            CancellationToken token = CancellationTokenSource.Token;
+
             int generationSize = 2000;
             int island_count = 4;
             int migration_count = (int)(generationSize * 0.4f);
@@ -43,7 +52,7 @@ namespace WPFVisualizer
             int g = k * island_count;
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
 
-            GA = new MasterControl(migration_count, island_count, "../../../Lines.xml", generationSize, 
+            GA = new MasterControl(migration_count, island_count, path, generationSize, 
                 (i) => {
                     return Crosser.CyclicCrossover;
                 }, 
@@ -52,24 +61,36 @@ namespace WPFVisualizer
                 }, 
                 (i) => {
                     return (c) => {
-                        //if (i != 0) { return; }
                         if (g > 0) { g--; return; }
                         AbstractIndividual best = c.bestIndividual;
                         Queue.Enqueue(new Info(best.GetCopy(), string.Format("Поколение № {0} остров № {1} количество миграций {2}", c.currentGenerationNumber, i, c.MigrationCount)));
                         g = k * island_count;
                     }; 
-                }
+                },
+                token
             );
+            UpdateButtonContent();
             GA.Start();
-            //GeneticAlgorithms.Control control = new GeneticAlgorithms.Control("../../../Lines.xml", generationSize);
+
+            dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += VisualizeTimer;
+            dispatcherTimer.Tick += ForReset;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            dispatcherTimer.Start();
+            CancellationTokenRegistration registration = default;
+            registration = token.Register(() =>
+            {
+                dispatcherTimer.Stop();
+                registration.Dispose();
+            });
+
+            void ForReset(object sender, EventArgs e) 
+            {
+                ResetMovement();
+                dispatcherTimer.Tick -= ForReset;
+            }
+
             
-
-            //while (true) {
-            //    stopper.WaitOne();
-            //    control.OptimizeStep(Crosser.CyclicCrossover, mutator.ReverseSegmentMutation);
-            //    Queue.Enqueue(new Info(new Plate((Plate)control.bestIndividual), string.Format("Поколение № {0}", control.currentGenerationNumber)));
-            //}
-
         }
 
         private void VisualizeTimer(object sender, EventArgs e) {
@@ -77,14 +98,14 @@ namespace WPFVisualizer
                 return;
             }
             else {
+                if (!Queue.TryDequeue(out DequeueIndidvidual)) { return; }
+
                 textBox.Clear();
                 CanvasDraw.Children.Clear();
-                if (!Queue.TryDequeue(out DequeueIndidvidual)) { return; }
             }
-            textBox.AppendText(DequeueIndidvidual.GenInfo);
-            textBox.AppendText("\n");
-            textBox.AppendText("Лучший в поколении: " + DequeueIndidvidual.Individual.ToString());
-            textBox.AppendText("Queue count: "+ Queue.Count);
+            textBox.AppendText($"Queue count: {Queue.Count}\n" +
+                $"{DequeueIndidvidual.GenInfo}\n" +
+                $"Лучший в поколении: {DequeueIndidvidual.Individual}");
 
             SolidColorBrush segment_color = new SolidColorBrush(Color.FromRgb(255, 0, 0));
             Segment[] segment_array = DequeueIndidvidual.Individual.Segments.ToArray();
@@ -121,14 +142,11 @@ namespace WPFVisualizer
             this.MouseMove += MainWindow_MouseMove;
             this.MouseLeftButtonDown += MainWindow_MouseLeftButtonDown;
             this.MouseLeftButtonUp += MainWindow_MouseLeftButtonUp;
-
-            GeneticAlgotithmFunc();
-
-            dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            dispatcherTimer.Tick += new EventHandler(VisualizeTimer);
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
-            dispatcherTimer.Start();
         }
+
+        #region movement
+
+        #region translate
 
         private void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -156,6 +174,10 @@ namespace WPFVisualizer
             }
         }
 
+        #endregion
+
+        #region scale
+
         void Box_MouseWheel(object sender, MouseWheelEventArgs e) 
         {
             Point mousePoint = e.GetPosition(CanvasDraw);
@@ -165,17 +187,79 @@ namespace WPFVisualizer
             CanvasDraw.RenderTransform = new MatrixTransform(Matrix.Multiply(new ScaleTransform(_scale, _scale, mousePoint.X, mousePoint.Y).Value, CanvasDraw.RenderTransform.Value));
         }
 
+        #endregion
+
+        private void ResetMovement() 
+        {
+            TransformGroup transformGroup = new TransformGroup();
+            transformGroup.Children.Add(new TranslateTransform(0, 0));
+            transformGroup.Children.Add(new ScaleTransform(10, 10));
+            transformGroup.Children.Add(new RotateTransform(0));
+
+            CanvasDraw.RenderTransform = transformGroup;
+        }
+
+        #endregion
+
+        #region PlayPause
+
         private void Button_Click(object sender, RoutedEventArgs e) {
-            if (GA.StopState)
+            if (GA.IsRunning)
             {
-                GA.ResetStopper();//осановка
-                stop.Content = "continue";
+                GA.Pause();//осановка
             }
             else
             {
-                GA.SetStopper();//запуск
+                GA.Continue();//запуск
+            }
+
+            UpdateButtonContent();
+        }
+
+        private void UpdateButtonContent() 
+        {
+            if (GA.IsRunning)
+            {
                 stop.Content = "stop";
             }
+            else
+            {
+                stop.Content = "continue";
+            }
+        }
+
+        #endregion
+
+        private void OnOpenDocument(object sender, RoutedEventArgs e)
+        {
+            OpenDocument();
+        }
+
+        private void OpenDocument() 
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            //dlg.FileName = "Document"; // Default file name
+            dlg.DefaultExt = ".xml"; // Default file extension
+            dlg.Filter = "Xml documents (.xml)|*.xml"; // Filter files by extension
+
+            // Show open file dialog box
+            bool? result = dlg.ShowDialog();
+
+            // Process open file dialog box results
+            if (result.HasValue && result == true)
+            {
+                GeneticAlgotithmFunc(dlg.FileName);
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            OpenDocument();
+        }
+
+        private void ResetPosition(object sender, RoutedEventArgs e)
+        {
+            ResetMovement();
         }
     }
 }

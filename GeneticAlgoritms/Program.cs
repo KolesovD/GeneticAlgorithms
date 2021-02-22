@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GeneticAlgorithms
@@ -35,14 +36,15 @@ namespace GeneticAlgorithms
                     {
                         if (i != 0) { return; }
                         //if (k > 0) { k--; return; }
-                        Console.WriteLine("Лучший в поколении №" + c.currentGenerationNumber + " на острове "+i+"\n" + c.bestIndividual);
+                        Console.WriteLine("Лучший в поколении №" + c.currentGenerationNumber + " на острове " + i + "\n" + c.bestIndividual);
                         //k = g;
                     };
-                }
+                },
+                CancellationToken.None
             );
             GA.Start();
             Console.ReadKey();
-            GA.ResetStopper();
+            GA.Pause();
             Console.ReadKey();
             //for (int i = 0; i <=6000; i++)
             //{

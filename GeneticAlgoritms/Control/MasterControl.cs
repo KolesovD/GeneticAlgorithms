@@ -17,7 +17,7 @@ namespace GeneticAlgorithms
         private ManualResetEvent stopper;
         public int MigrationCount { get; private set; }
         public double MigrationProbability { get; private set; }
-        public bool StopState { get; private set; }
+        public bool IsRunning { get; private set; }
         public Task[] IslandTasks;
         public Control[] Controls;
 
@@ -54,14 +54,23 @@ namespace GeneticAlgorithms
             }
         }
 
-        public MasterControl(int migration_count, int populations_count, string xml, int generationSize, Func<int, Delegates.Crossover> get_cross, Func<int, Delegates.Mutator> get_mutate, Func<int, Action<Control>> onNewStep)
+        public MasterControl(
+            int migration_count, 
+            int populations_count, 
+            string xml, 
+            int generationSize, 
+            Func<int, Delegates.Crossover> get_cross, 
+            Func<int, Delegates.Mutator> get_mutate, 
+            Func<int, Action<Control>> onNewStep,
+            CancellationToken token
+            )
         {
             MigrationCount = migration_count;
             _locker = new object();
             _is_change = true;
             MigrationProbability = 1.0d /(populations_count*10.0d);
-            StopState = true;
-            stopper = new ManualResetEvent(StopState);
+            IsRunning = true;
+            stopper = new ManualResetEvent(IsRunning);
             ChangeBag<AbstractIndividual>[] changebags = new ChangeBag<AbstractIndividual>[populations_count];
             for (int i = 0; i < populations_count; i++) {
                 changebags[i] = new ChangeBag<AbstractIndividual>();
@@ -69,13 +78,11 @@ namespace GeneticAlgorithms
             Controls = new Control[populations_count];
             IslandTasks = new Task[populations_count];
             Controls[0] = new Control(this, xml, generationSize, changebags[populations_count - 1], changebags[0]);
-            IslandTasks[0] = new Task(() => TaskFunc(Controls[0], get_cross(0), get_mutate(0), onNewStep(0)));
-            //IslandTasks[0].Start();
+            IslandTasks[0] = new Task(() => TaskFunc(Controls[0], get_cross(0), get_mutate(0), onNewStep(0), token));
             for (int j = 1; j < populations_count; j++) {
                 int iterator = j;
                 Controls[iterator] = new Control(this, xml, generationSize, changebags[iterator - 1], changebags[iterator]);
-                IslandTasks[iterator] = new Task(() => TaskFunc(Controls[iterator], get_cross(iterator), get_mutate(iterator), onNewStep(iterator)));
-                //IslandTasks[i].Start();
+                IslandTasks[iterator] = new Task(() => TaskFunc(Controls[iterator], get_cross(iterator), get_mutate(iterator), onNewStep(iterator), token));
             }
             Console.WriteLine();
         }
@@ -87,23 +94,44 @@ namespace GeneticAlgorithms
             }
         }
 
-        public void ResetStopper() {
-            if (StopState == false) { return; }
+        public void Pause() {
+            if (IsRunning == false) { return; }
             stopper.Reset();//осановка
-            StopState = false;
+            IsRunning = false;
         }
-        public void SetStopper() {
-            if (StopState == true) { return; }
+        public void Continue() {
+            if (IsRunning == true) { return; }
             stopper.Set();//запуск
-            StopState = true;
+            IsRunning = true;
         }
 
-        private void TaskFunc(Control c, Delegates.Crossover cross, Delegates.Mutator mutate, Action<Control> onNewStep)
+        private void TaskFunc(
+            Control c, 
+            Delegates.Crossover cross, 
+            Delegates.Mutator mutate, 
+            Action<Control> onNewStep,
+            CancellationToken token
+            )
         {
-            while (true)
+            while (!token.IsCancellationRequested)
             {
-                stopper.WaitOne();
+                WaitHandle.WaitAny
+                    (
+                    new[] { token.WaitHandle, stopper }
+                    );
+
+                if (token.IsCancellationRequested) 
+                {
+                    return;
+                }
+
                 c.OptimizeStep(cross, mutate);
+
+                if (token.IsCancellationRequested)
+                {
+                    return;
+                }
+
                 onNewStep(c);
             }
         }
