@@ -107,28 +107,36 @@ namespace WPFVisualizer
                 $"{DequeueIndidvidual.GenInfo}\n" +
                 $"Лучший в поколении: {DequeueIndidvidual.Individual}");
 
-            SolidColorBrush segment_color = new SolidColorBrush(Color.FromRgb(255, 0, 0));
+
+
+            IEnumerator<SolidColorBrush> _colors = Colors().GetEnumerator();
             Segment[] segment_array = DequeueIndidvidual.Individual.Segments.ToArray();
-            SolidColorBrush link_color = null;
-            Arrow segmentArrow = null;
 
-            for (int i = 0; i < segment_array.Length-1; i++) {
-                segmentArrow = new Arrow(segment_array[i].Start, segment_array[i].End, _thickness);
-                segmentArrow.SetColor(segment_color);
+            for (int i = 0; i < segment_array.Length; i++)
+            {
+                _colors.MoveNext();
+                Arrow segmentArrow = new Arrow(segment_array[i].Start, segment_array[i].End, _thickness);
+                segmentArrow.SetColor(_colors.Current);
                 CanvasDraw.Children.Add(segmentArrow);
-
-                Arrow LinkArrow = new Arrow(segment_array[i].End, segment_array[i+1].Start, _thickness/3f);
-                link_color = new SolidColorBrush(Code.GetRainbow(1023 / DequeueIndidvidual.Individual.Size() * i));
-                LinkArrow.SetColor(link_color);
-                CanvasDraw.Children.Add(LinkArrow);
-
-                if (segment_color.Color.R == 255) {
-                    segment_color = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-                }
             }
-            segmentArrow = new Arrow(segment_array[segment_array.Length-1].Start, segment_array[segment_array.Length - 1].End, _thickness);
-            segmentArrow.SetColor(segment_color);
-            CanvasDraw.Children.Add(segmentArrow);
+
+            for (int i = 0; i < segment_array.Length-1; i++)
+            {
+                Arrow LinkArrow = new Arrow(segment_array[i].End, segment_array[i + 1].Start, _thickness / 3f);
+                LinkArrow.SetColor(new SolidColorBrush(Code.GetRainbow(1023 / DequeueIndidvidual.Individual.Size() * i)));
+                CanvasDraw.Children.Add(LinkArrow);
+            }
+
+        }
+
+        private IEnumerable<SolidColorBrush> Colors() 
+        {
+            yield return new SolidColorBrush(Color.FromRgb(255, 0, 0));
+            SolidColorBrush others = new SolidColorBrush(Color.FromRgb(0, 0, 0));
+            while (true) 
+            {
+                yield return others;
+            }
         }
 
         public MainWindow()
@@ -182,7 +190,7 @@ namespace WPFVisualizer
         {
             Point mousePoint = e.GetPosition(CanvasDraw);
 
-            double _scale =  MathExtensions.Clamp(e.Delta/100f + 1f, 0, float.PositiveInfinity);
+            double _scale =  MathExtensions.Clamp(e.Delta/1000f + 1f, 0.1f, float.PositiveInfinity);
 
             CanvasDraw.RenderTransform = new MatrixTransform(Matrix.Multiply(new ScaleTransform(_scale, _scale, mousePoint.X, mousePoint.Y).Value, CanvasDraw.RenderTransform.Value));
         }
