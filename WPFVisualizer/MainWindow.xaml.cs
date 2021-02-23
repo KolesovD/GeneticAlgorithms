@@ -30,7 +30,7 @@ namespace WPFVisualizer
         private CancellationTokenSource CancellationTokenSource;
 
         private VisualiserFuncs Code;
-        private ConcurrentQueue<Info> Queue = new ConcurrentQueue<Info>();
+        private ConcurrentQueue<Info>[] Queue;
         private DispatcherTimer dispatcherTimer;
 
         private Point last_pos;
@@ -48,10 +48,16 @@ namespace WPFVisualizer
             int generationSize = 2000;
             int island_count = 8;
             int migration_count = (int)(generationSize * 0.3f);
-            double migrationProbability = 0.5f;
-            int k = 20;
+            double migrationProbability = 0.1f;
+            int k = 5;
             int g = k * island_count;
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
+
+            Queue = new ConcurrentQueue<Info>[island_count];
+            for (int i = 0; i < Queue.Length; i++)
+            {
+                Queue[i] = new ConcurrentQueue<Info>();
+            }
 
             GA = new MasterControl(migration_count, island_count, path, generationSize, migrationProbability,
                 (i) => {
@@ -64,7 +70,7 @@ namespace WPFVisualizer
                     return (c) => {
                         if (g > 0) { g--; return; }
                         AbstractIndividual best = c.bestIndividual;
-                        Queue.Enqueue(new Info(best.GetCopy(), string.Format("Поколение № {0} остров № {1} количество миграций {2}", c.currentGenerationNumber, i, c.MigrationCount)));
+                        Queue[i].Enqueue(new Info(best.GetCopy(), string.Format("Поколение № {0} остров № {1} количество миграций {2}", c.currentGenerationNumber, i, c.MigrationCount)));
                         g = k * island_count;
                     }; 
                 },
@@ -91,6 +97,11 @@ namespace WPFVisualizer
                 dispatcherTimer.Tick -= ForReset;
             }
 
+            
+        }
+
+        private void Draw(ConcurrentQueue<Info> infos) 
+        {
             
         }
 

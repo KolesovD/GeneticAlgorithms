@@ -12,6 +12,36 @@ namespace GeneticAlgorithms
 
     public class MasterControl
     {
+        public float X 
+        {
+            get 
+            {
+                return Controls[0].X;
+            }
+        }
+        public float Y
+        {
+            get
+            {
+                return Controls[0].Y;
+            }
+        }
+
+        public float SizeX
+        {
+            get
+            {
+                return Controls[0].SizeX;
+            }
+        }
+        public float SizeY
+        {
+            get
+            {
+                return Controls[0].SizeY;
+            }
+        }
+
         private object _locker;
         private bool _is_change;
         private ManualResetEvent stopper;

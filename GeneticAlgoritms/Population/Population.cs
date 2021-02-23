@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using Assets.MyRandoms;
@@ -235,6 +236,5 @@ namespace GeneticAlgorithms
             string sas = string.Format("Поколение № {0}", currentGenerationNumber);
             return sas;
         }
-
     }
 }

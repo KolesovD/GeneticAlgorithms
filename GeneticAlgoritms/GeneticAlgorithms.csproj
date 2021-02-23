@@ -37,6 +37,9 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\WPFVisualizer\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,6 +56,8 @@
     <Compile Include="Control\Delegates.cs" />
     <Compile Include="Control\MasterControl.cs" />
     <Compile Include="Control\Mutator.cs" />
+    <Compile Include="Extensions\LinqExtetions.cs" />
+    <Compile Include="Extensions\MathExtensions.cs" />
     <Compile Include="Information\Info.cs" />
     <Compile Include="Information\XMLLoader.cs" />
     <Compile Include="Interfaces\AbstractIndividual.cs" />
@@ -66,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

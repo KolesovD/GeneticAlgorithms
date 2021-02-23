@@ -11,6 +11,12 @@ namespace GeneticAlgorithms
 {
     public class Control
     {
+        public float X { get; private set; }
+        public float Y { get; private set; }
+
+        public float SizeX { get; private set; }
+        public float SizeY { get; private set; }
+
         private int _id;
         private int generationSize;
         private Population population;
@@ -55,6 +61,28 @@ namespace GeneticAlgorithms
             roulette = new Roulette(this.generationSize);
             this.Read = Read;
             this.Write = Write;
+
+            var XGroupe = population
+                .CurrentGeneration[generationSize - 1]
+                .Segments
+                .SelectMany(_segment => LinqExtetions.FromParams(_segment.Point1, _segment.Point2))
+                .GroupBy(_vector => _vector.X)
+                .Select(_data => _data.Key)
+                .ToSortedSet();
+
+            var YGroupe = population
+                .CurrentGeneration[generationSize - 1]
+                .Segments
+                .SelectMany(_segment => LinqExtetions.FromParams(_segment.Point1, _segment.Point2))
+                .GroupBy(_vector => _vector.Y)
+                .Select(_data => _data.Key)
+                .ToSortedSet();
+
+            SizeX = XGroupe.Max;
+            SizeY = YGroupe.Max;
+
+            X = XGroupe.Min;
+            Y = YGroupe.Min;
         }
 
         //private void roullete_task(int start, int count, int[] target)
@@ -168,7 +196,7 @@ namespace GeneticAlgorithms
             //К этому моменту начальная случайно сгенерированная популяция уже создана, далее выполняется отбор
 
             Console.WriteLine($"read migrate {_id} IsEmpty = {Read.IsEmpty}");
-            if (!Read.IsEmpty) 
+            if (!Read.IsEmpty && Read.Count >= Repository.MigrationCount) 
             {
                 if (population.GenerationSize < generationSize) 
                 {
