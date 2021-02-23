@@ -45,8 +45,8 @@ namespace WPFVisualizer
             CancellationTokenSource = new CancellationTokenSource();
             CancellationToken token = CancellationTokenSource.Token;
 
-            int generationSize = 2000;
-            int island_count = 8;
+            int generationSize = 5000;
+            int island_count = 4;
             int migration_count = (int)(generationSize * 0.3f);
             double migrationProbability = 0.1f;
             int k = 5;
@@ -106,16 +106,16 @@ namespace WPFVisualizer
         }
 
         private void VisualizeTimer(object sender, EventArgs e) {
-            if (Queue.Count == 0) {
+            if (Queue[0].Count == 0) {
                 return;
             }
             else {
-                if (!Queue.TryDequeue(out DequeueIndidvidual)) { return; }
+                if (!Queue[0].TryDequeue(out DequeueIndidvidual)) { return; }
 
                 textBox.Clear();
                 CanvasDraw.Children.Clear();
             }
-            textBox.AppendText($"Queue count: {Queue.Count}\n" +
+            textBox.AppendText($"Queue count: {Queue[0].Count}\n" +
                 $"{DequeueIndidvidual.GenInfo}\n" +
                 $"Лучший в поколении: {DequeueIndidvidual.Individual}");
 

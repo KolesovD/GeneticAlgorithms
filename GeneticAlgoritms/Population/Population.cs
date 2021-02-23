@@ -110,6 +110,59 @@ namespace GeneticAlgorithms
 
         public void PerformCrossingover(Delegates.Crossover crossover, int[] indexesForCrossover)
         {
+            double average = AnotherGeneration.AsParallel().Sum((i) => i.FitnessFunction); //Среднее значение фитнес-функции
+            average = average / AnotherGeneration.Count();
+
+            int[] badIndexes = new int[indexesForCrossover.Count()];
+            int k = 0;
+            for (int i = 0; i < AnotherGeneration.Count; i++)
+            {
+                if (AnotherGeneration[i].FitnessFunction < average)
+                {
+                    if (k == indexesForCrossover.Count())
+                    {
+                        break;
+                    }
+                    badIndexes[k] = i;
+                    k++;
+                }
+            }
+            //for (int i = k + 1; i < badIndexes.Length; i++)
+            //{
+            //    badIndexes[i] = MyRandom.rnd.Next(0, AnotherGeneration.Count() - 1);
+            //}
+
+            //int j = 0;
+            for (int i = 0; i < indexesForCrossover.Count() - indexesForCrossover.Length % 2; i += 2)
+            {
+                //Для создания двух разных потомков
+                //Скрещиваем 1 особь со 2 особъю
+                if (i >= k) { break; }
+                crossover(
+                    CurrentGeneration[indexesForCrossover[i]],
+                    CurrentGeneration[indexesForCrossover[i + 1]],
+                    AnotherGeneration[badIndexes[i]]
+                    );
+                //Скрещиваем 2 особь с 1 особъю
+                if (i + 1 >= k) { break; }
+                crossover(
+                    CurrentGeneration[indexesForCrossover[i + 1]],
+                    CurrentGeneration[indexesForCrossover[i]],
+                    AnotherGeneration[badIndexes[i + 1]]
+                    );
+            }
+
+            if (badIndexes.Length % 2 != 0)
+            {
+                crossover(
+                    CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 2]],
+                    CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 1]],
+                    AnotherGeneration[badIndexes[badIndexes.Length - 1]]
+                    );
+            }
+
+            /*
+
             //AnotherGeneration.Sort(AnotherGeneration[AnotherGeneration.Count-1]);//в конце лучшие
 
             //double average = AnotherGeneration.AsParallel().Sum((i) => i.FitnessFunction); //Среднее значение фитнес-функции
@@ -181,6 +234,8 @@ namespace GeneticAlgorithms
             //        AnotherGeneration[indexesForCrossover.Length - indexesForCrossover.Length % 2]
             //        );
             //}
+
+            */
         }
 
         private int get_best_in_bit(int start, int count) {
