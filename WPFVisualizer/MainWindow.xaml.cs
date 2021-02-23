@@ -46,13 +46,14 @@ namespace WPFVisualizer
             CancellationToken token = CancellationTokenSource.Token;
 
             int generationSize = 2000;
-            int island_count = 4;
-            int migration_count = (int)(generationSize * 0.4f);
-            int k = 10;
+            int island_count = 8;
+            int migration_count = (int)(generationSize * 0.3f);
+            double migrationProbability = 0.5f;
+            int k = 20;
             int g = k * island_count;
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
 
-            GA = new MasterControl(migration_count, island_count, path, generationSize, 
+            GA = new MasterControl(migration_count, island_count, path, generationSize, migrationProbability,
                 (i) => {
                     return Crosser.CyclicCrossover;
                 }, 

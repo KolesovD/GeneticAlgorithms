@@ -12,36 +12,41 @@ namespace GeneticAlgorithms
         private static MasterControl GA;
         static void Main(string[] args)
         {
-            //App.Main();
             int generationSize = 2000;
-            int island_count = 4;
-            int migration_count = (int)(generationSize * 0.1f);
-
+            int island_count = 8;
+            int migration_count = (int)(generationSize * 0.3f);
+            double migrationProbability = 1d;
+            int k = 20;
+            int g = k * island_count;
+            Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
             Console.WriteLine("Start with generation size {0}", generationSize);
-            Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.05);
-            int k = 10;
-            int g = k;
-            GA = new MasterControl(migration_count, island_count, "../../../Lines.xml", generationSize,
-                (i) =>
-                {
+            GA = new MasterControl(migration_count, island_count, "../../../Lines.xml", generationSize, migrationProbability,
+                (i) => {
                     return Crosser.CyclicCrossover;
                 },
-                (i) =>
-                {
+                (i) => {
                     return mutator.ReverseSegmentMutation;
                 },
-                (i) =>
-                {
+                (i) => {
                     return (c) =>
                     {
-                        if (i != 0) { return; }
-                        //if (k > 0) { k--; return; }
-                        Console.WriteLine("Лучший в поколении №" + c.currentGenerationNumber + " на острове " + i + "\n" + c.bestIndividual);
-                        //k = g;
+                        //if (g > 0) { g--; return; }
+
+                        Console.WriteLine(
+                            string.Format(
+                                "Поколение № {0} остров № {1} количество миграций {2}\nbest: {3}", 
+                                c.currentGenerationNumber, 
+                                i, 
+                                c.MigrationCount,
+                                c.bestIndividual.FitnessFunction
+                                )
+                            );
+                        //g = k * island_count;
                     };
                 },
                 CancellationToken.None
             );
+
             GA.Start();
             Console.ReadKey();
             GA.Pause();

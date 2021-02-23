@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Assets.MyRandoms;
 
@@ -9,11 +11,15 @@ namespace GeneticAlgorithms
 {
     public class Control
     {
+        private int _id;
         private int generationSize;
         private Population population;
         private Roulette roulette;
-        private ChangeBag<AbstractIndividual> Write;
-        private ChangeBag<AbstractIndividual> Read;
+
+        private ConcurrentBag<AbstractIndividual> Write;
+        private ConcurrentBag<AbstractIndividual> Read;
+        //private ChangeBag<AbstractIndividual> Write;
+        //private ChangeBag<AbstractIndividual> Read;
         private MasterControl Repository;
         public int MigrationCount { get; private set; }
 
@@ -29,8 +35,16 @@ namespace GeneticAlgorithms
             }
         }
 
-        public Control(MasterControl master, string xml_path, int generationSize, ChangeBag<AbstractIndividual> Read, ChangeBag<AbstractIndividual> Write)
+        public Control(
+            int i,
+            MasterControl master, 
+            string xml_path, 
+            int generationSize,
+            ConcurrentBag<AbstractIndividual> Write,
+            ConcurrentBag<AbstractIndividual> Read
+            )
         {
+            _id = i;
             MigrationCount = 0;
             Repository = master;
             currentGenerationNumber = 0;
@@ -62,9 +76,11 @@ namespace GeneticAlgorithms
 
             int[] selectedIndexes = new int[population.GenerationSize];
             //Console.WriteLine("use roulette thread №{0}", num);
-            for (int i = 0; i < selectedIndexes.Length; i++) {
+            for (int i = 0; i < selectedIndexes.Length; i++) 
+            {
                 selectedIndexes[i] = roulette.PickIndividualIndex();
             }
+
             //Console.WriteLine("end use roulette thread №{0}", num);
             //int proc_count = Environment.ProcessorCount;
             //Task[] t = new Task[proc_count];
@@ -103,61 +119,82 @@ namespace GeneticAlgorithms
             //Выполнять определённое количество раз
         }
 
-        public void ReadOperate() {
-            Read.SaveOperate((bag) =>
+        public void ReadOperate() 
+        {
+            //Read.SaveOperate((bag) =>
+            //{
+            //    for (int i = 0; i < bag.Count; i++)
+            //    {
+            //        population.Add(bag[i]);
+            //    }
+            //    bag.Clear();
+            //});
+
+            while (!Read.IsEmpty)
             {
-                for (int i = 0; i < bag.Count; i++)
-                {
-                    population.Add(bag[i]);
-                }
-                bag.Clear();
-            });
+                Read.TryTake(out AbstractIndividual instance);
+                population.Add(instance);
+            }
+
         }
-        public void WriteOperate() {
+        public void WriteOperate() 
+        {
             int count_of_population = population.GenerationSize;
-            Write.SaveOperate((bag) =>
+
+            for (int i = 0; i < Repository.MigrationCount; i++)
             {
-                for (int i = 0; i < Repository.MigrationCount; i++)
-                {
-                    int migrate_index = MyRandom.rnd.Next(count_of_population);
-                    bag.Add(population.CurrentGeneration[migrate_index]);
-                    population.RemoveAt(migrate_index);
-                    count_of_population--;
-                }
-            });
+                int migrate_index = MyRandom.rnd.Next(count_of_population);
+                Write.Add(population.CurrentGeneration[migrate_index]);
+                population.RemoveAt(migrate_index);
+                count_of_population--;
+            }
+
+            //int count_of_population = population.GenerationSize;
+            //Write.SaveOperate((bag) =>
+            //{
+            //    for (int i = 0; i < Repository.MigrationCount; i++)
+            //    {
+            //        int migrate_index = MyRandom.rnd.Next(count_of_population);
+            //        bag.Add(population.CurrentGeneration[migrate_index]);
+            //        population.RemoveAt(migrate_index);
+            //        count_of_population--;
+            //    }
+            //});
         }
 
         public void OptimizeStep(Delegates.Crossover crossover, Delegates.Mutator mutator)
         {
             //Console.WriteLine($"Поколение №{population.currentGenerationNumber}");
             //К этому моменту начальная случайно сгенерированная популяция уже создана, далее выполняется отбор
-            try {
-                if (Read.Count != 0) {
-                    if (population.GenerationSize < generationSize) {
-                        //условие окончания кольца 
-                        ReadOperate();
-                        Repository.Reset();
-                        MigrationCount++;
-                        //Console.WriteLine("end migrate");
-                    }
-                    else {
-                        //условие прихода мигрантов
-                        WriteOperate();
-                        ReadOperate();
-                        //Console.WriteLine("get migrate");
-                    }
+
+            Console.WriteLine($"read migrate {_id} IsEmpty = {Read.IsEmpty}");
+            if (!Read.IsEmpty) 
+            {
+                if (population.GenerationSize < generationSize) 
+                {
+                    //условие окончания кольца 
+                    ReadOperate();
+                    Repository.Reset();
+                    MigrationCount++;
+                    Console.WriteLine($"end migrate {_id}");
                 }
-            }
-            catch (FlagException err) {}
-            try {
-                if (Repository.IsAvaliableChange & Repository.MigrationProbability >= MyRandom.GetRandomDouble(1)) {
-                    //условие запуска миграции
-                    Repository.Set();
+                else 
+                {
+                    //условие прихода мигрантов
                     WriteOperate();
-                    //Console.WriteLine("migrate");
+                    ReadOperate();
+                    Console.WriteLine($"get migrate {_id}");
                 }
             }
-            catch (FlagException err) {}
+
+            if (Repository.MigrationProbability >= MyRandom.GetRandomDouble(1) && Repository.Set()) 
+            {
+                //условие запуска миграции
+                
+                WriteOperate();
+                Console.WriteLine($"start migrate {_id}");
+            }
+
             int[] selectedIndexes = RouletteSelection();
             population.PerformCrossingover(crossover, selectedIndexes); //Кроссинговер
             population.PerformMutation(mutator); //Мутация 

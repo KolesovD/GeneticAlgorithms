@@ -18,39 +18,47 @@ namespace GeneticAlgorithms
         public int MigrationCount { get; private set; }
         public double MigrationProbability { get; private set; }
         public bool IsRunning { get; private set; }
-        public Task[] IslandTasks;
+        public Thread[] IslandTasks;
         public Control[] Controls;
 
         public bool IsAvaliableChange { 
             get {
-                if (!Monitor.TryEnter(_locker, 100))
-                {
-                    throw new FlagException();//эквивалентно false
-                }
-                try
+                //if (!Monitor.TryEnter(_locker, 100))
+                //{
+                //    throw new FlagException();//эквивалентно false
+                //}
+                //try
+                //{
+                //    return _is_change;
+                //}
+                //finally
+                //{
+                //    Monitor.Exit(_locker);
+                //}
+
+                lock (_locker)
                 {
                     return _is_change;
                 }
-                finally
-                {
-                    Monitor.Exit(_locker);
-                }
-            }
-            private set {
-                _is_change = value;
+
+                //return _is_change;
             }
         }
 
-        public void Set() {//start ring
-            lock (_locker) {
-                if (_is_change == false) { throw new FlagException(); }
-                IsAvaliableChange = false;
+        public bool Set() {//start ring
+            lock (_locker)
+            {
+                if (_is_change == false) { return false; }
+                _is_change = false;
+                return true;
             }
         }
         public void Reset() {//stop ring
-            lock (_locker) {
-                if (_is_change == true) { throw new FlagException(); }
-                IsAvaliableChange = true;
+
+            lock (_locker)
+            {
+                if (_is_change == true) { return; }
+                _is_change = true;
             }
         }
 
@@ -59,6 +67,7 @@ namespace GeneticAlgorithms
             int populations_count, 
             string xml, 
             int generationSize, 
+            double migrationProbability,
             Func<int, Delegates.Crossover> get_cross, 
             Func<int, Delegates.Mutator> get_mutate, 
             Func<int, Action<Control>> onNewStep,
@@ -68,28 +77,33 @@ namespace GeneticAlgorithms
             MigrationCount = migration_count;
             _locker = new object();
             _is_change = true;
-            MigrationProbability = 1.0d /(populations_count*10.0d);
+            MigrationProbability = migrationProbability;//1.0d /(populations_count*10.0d);
             IsRunning = true;
             stopper = new ManualResetEvent(IsRunning);
-            ChangeBag<AbstractIndividual>[] changebags = new ChangeBag<AbstractIndividual>[populations_count];
-            for (int i = 0; i < populations_count; i++) {
-                changebags[i] = new ChangeBag<AbstractIndividual>();
+
+            ConcurrentBag<AbstractIndividual>[] changebags = new ConcurrentBag<AbstractIndividual>[populations_count];
+            for (int i = 0; i < populations_count; i++) 
+            {
+                changebags[i] = new ConcurrentBag<AbstractIndividual>();
             }
+
             Controls = new Control[populations_count];
-            IslandTasks = new Task[populations_count];
-            Controls[0] = new Control(this, xml, generationSize, changebags[populations_count - 1], changebags[0]);
-            IslandTasks[0] = new Task(() => TaskFunc(Controls[0], get_cross(0), get_mutate(0), onNewStep(0), token));
+            IslandTasks = new Thread[populations_count];
+
+            Controls[0] = new Control(0, this, xml, generationSize, changebags[populations_count - 1], changebags[0]);
+            IslandTasks[0] = new Thread(() => TaskFunc(Controls[0], get_cross(0), get_mutate(0), onNewStep(0), token));
             for (int j = 1; j < populations_count; j++) {
                 int iterator = j;
-                Controls[iterator] = new Control(this, xml, generationSize, changebags[iterator - 1], changebags[iterator]);
-                IslandTasks[iterator] = new Task(() => TaskFunc(Controls[iterator], get_cross(iterator), get_mutate(iterator), onNewStep(iterator), token));
+                Controls[iterator] = new Control(iterator, this, xml, generationSize, changebags[iterator - 1], changebags[iterator]);
+                IslandTasks[iterator] = new Thread(() => TaskFunc(Controls[iterator], get_cross(iterator), get_mutate(iterator), onNewStep(iterator), token));
             }
-            Console.WriteLine();
+            //Console.WriteLine();
         }
         public void Start()
         {
-            foreach (Task t in IslandTasks)
+            foreach (Thread t in IslandTasks)
             {
+                t.IsBackground = true;
                 t.Start();
             }
         }
