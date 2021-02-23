@@ -19,16 +19,16 @@ namespace WPFVisualizer
         public bool direction = true;
         GeometryGroup lineGroup;
 
-        public Arrow (Point start, Point end, int thickness = 2)
+        public Arrow (Point start, Point end, float thickness = 1)
         {
             Create(start, end, thickness);
         }
 
-        public Arrow(Vector2 start, Vector2 end, int thickness = 2) {
+        public Arrow(Vector2 start, Vector2 end, float thickness = 1) {
             Create(new Point(start.X, start.Y), new Point(end.X, end.Y), thickness);
         }
 
-        private void Create(Point start, Point end, int thickness = 2) {
+        private void Create(Point start, Point end, float thickness = 1) {
             this.start = start;
             this.end = end;
             lineGroup = new GeometryGroup();
@@ -50,8 +50,8 @@ namespace WPFVisualizer
             Point p = new Point(end.X, end.Y);
             pathFigure.StartPoint = p;
 
-            Point lpoint = new Point(p.X + 6, p.Y + 15);
-            Point rpoint = new Point(p.X - 6, p.Y + 15);
+            Point lpoint = new Point(p.X + 1* thickness, p.Y + 2f* thickness);
+            Point rpoint = new Point(p.X - 1* thickness, p.Y + 2f* thickness);
             LineSegment seg1 = new LineSegment();
             seg1.Point = lpoint;
             pathFigure.Segments.Add(seg1);

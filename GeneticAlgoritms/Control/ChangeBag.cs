@@ -16,18 +16,24 @@ namespace GeneticAlgorithms
         public int Count
         {
             get {
-                if (!Monitor.TryEnter(_locker))
-                {
-                    throw new FlagException();
-                }
-                try
+                lock (_locker)
                 {
                     return Migrate.Count;
                 }
-                finally
-                {
-                    Monitor.Exit(_locker);
-                }
+
+                //if (!Monitor.TryEnter(_locker))
+                //{
+                //    //throw new FlagException();
+                //    return 0;
+                //}
+                //try
+                //{
+                //    return Migrate.Count;
+                //}
+                //finally
+                //{
+                //    Monitor.Exit(_locker);
+                //}
             }
         }
 
