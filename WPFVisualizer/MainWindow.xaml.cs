@@ -30,13 +30,14 @@ namespace WPFVisualizer
         private CancellationTokenSource CancellationTokenSource;
 
         private VisualiserFuncs Code;
-        private ConcurrentQueue<Info>[] Queue;
+        private ConcurrentQueue<Info> Queue = new ConcurrentQueue<Info>();
         private DispatcherTimer dispatcherTimer;
+        private Canvas[] islandsCanvases;
 
         private Point last_pos;
-        private Info DequeueIndidvidual;
         private MasterControl GA;
         private float _thickness = 0.1f;
+        private float space = 1;
 
         private void GeneticAlgotithmFunc(string path = "../../../Lines.xml") 
         {
@@ -46,18 +47,12 @@ namespace WPFVisualizer
             CancellationToken token = CancellationTokenSource.Token;
 
             int generationSize = 5000;
-            int island_count = 4;
+            int island_count = 6;
             int migration_count = (int)(generationSize * 0.3f);
             double migrationProbability = 0.1f;
             int k = 5;
             int g = k * island_count;
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
-
-            Queue = new ConcurrentQueue<Info>[island_count];
-            for (int i = 0; i < Queue.Length; i++)
-            {
-                Queue[i] = new ConcurrentQueue<Info>();
-            }
 
             GA = new MasterControl(migration_count, island_count, path, generationSize, migrationProbability,
                 (i) => {
@@ -67,21 +62,41 @@ namespace WPFVisualizer
                     return mutator.ReverseSegmentMutation;
                 }, 
                 (i) => {
+
                     return (c) => {
                         if (g > 0) { g--; return; }
+
                         AbstractIndividual best = c.bestIndividual;
-                        Queue[i].Enqueue(new Info(best.GetCopy(), string.Format("Поколение № {0} остров № {1} количество миграций {2}", c.currentGenerationNumber, i, c.MigrationCount)));
+                        Queue.Enqueue(new Info(best.GetCopy(), c.currentGenerationNumber, i, c.MigrationCount));
                         g = k * island_count;
                     }; 
                 },
                 token
             );
             UpdateButtonContent();
+
+            CanvasDraw.Children.Clear();
+            islandsCanvases = new Canvas[island_count];
+            for (int i = 0; i < islandsCanvases.Length; i++)
+            {
+                islandsCanvases[i] = new Canvas();
+                int dimension = (int)Math.Sqrt(GA.IslandCount);
+
+                int row = (int)Math.Floor((float)i / (float)dimension);
+                int column = i % dimension;
+
+                Vector2 _offset = new Vector2(column * (GA.SizeX - GA.X) + space * column, row * (GA.SizeY - GA.Y) + space * row);
+
+                CanvasDraw.Children.Add(islandsCanvases[i]);
+
+                islandsCanvases[i].RenderTransform = new TranslateTransform(_offset.X, _offset.Y);
+            }
+
             GA.Start();
 
             dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += VisualizeTimer;
             dispatcherTimer.Tick += ForReset;
+            dispatcherTimer.Tick += VisualizeTimer;            
             dispatcherTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             dispatcherTimer.Start();
             CancellationTokenRegistration registration = default;
@@ -100,45 +115,52 @@ namespace WPFVisualizer
             
         }
 
-        private void Draw(ConcurrentQueue<Info> infos) 
+        private void Draw(Info infos, Canvas canvas, int countLeft) 
         {
-            
-        }
+            textBox.Clear();
 
-        private void VisualizeTimer(object sender, EventArgs e) {
-            if (Queue[0].Count == 0) {
-                return;
-            }
-            else {
-                if (!Queue[0].TryDequeue(out DequeueIndidvidual)) { return; }
+            //int c = 0;
+            //for (; c < islandsCanvases.Length; c++)
+            //{
+            //    if (islandsCanvases[c] == canvas) break;
+            //}
 
-                textBox.Clear();
-                CanvasDraw.Children.Clear();
-            }
-            textBox.AppendText($"Queue count: {Queue[0].Count}\n" +
-                $"{DequeueIndidvidual.GenInfo}\n" +
-                $"Лучший в поколении: {DequeueIndidvidual.Individual}");
+            //textBox.AppendText($"islandID: {c} children: {canvas.Children.Count}");
 
+            canvas.Children.Clear();
 
+            textBox.AppendText($"Queue count: {countLeft}\n" +
+                $"{infos}\n" +
+                $"Лучший в поколении: {infos.Individual}");
 
             IEnumerator<SolidColorBrush> _colors = Colors().GetEnumerator();
-            Segment[] segment_array = DequeueIndidvidual.Individual.Segments.ToArray();
+            Segment[] segment_array = infos.Individual.Segments.ToArray();
 
             for (int i = 0; i < segment_array.Length; i++)
             {
                 _colors.MoveNext();
                 Arrow segmentArrow = new Arrow(segment_array[i].Start, segment_array[i].End, _thickness);
                 segmentArrow.SetColor(_colors.Current);
-                CanvasDraw.Children.Add(segmentArrow);
+                canvas.Children.Add(segmentArrow);
             }
 
-            for (int i = 0; i < segment_array.Length-1; i++)
+            for (int i = 0; i < segment_array.Length - 1; i++)
             {
                 Arrow LinkArrow = new Arrow(segment_array[i].End, segment_array[i + 1].Start, _thickness / 3f);
-                LinkArrow.SetColor(new SolidColorBrush(Code.GetRainbow(1023 / DequeueIndidvidual.Individual.Size() * i)));
-                CanvasDraw.Children.Add(LinkArrow);
+                LinkArrow.SetColor(new SolidColorBrush(Code.GetRainbow(1023 / infos.Individual.Size() * i)));
+                canvas.Children.Add(LinkArrow);
             }
+        }
 
+        private void VisualizeTimer(object sender, EventArgs e) {
+            if (Queue.Count == 0) {
+                return;
+            }
+            else {
+                if (!Queue.TryDequeue(out Info DequeueIndidvidual)) { return; }
+
+                Draw(DequeueIndidvidual, islandsCanvases[DequeueIndidvidual.islandID], Queue.Count);
+            }
         }
 
         private IEnumerable<SolidColorBrush> Colors() 

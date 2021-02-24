@@ -47,6 +47,7 @@ namespace GeneticAlgorithms
         private ManualResetEvent stopper;
         public int MigrationCount { get; private set; }
         public double MigrationProbability { get; private set; }
+        public double IslandCount { get; private set; }
         public bool IsRunning { get; private set; }
         public Thread[] IslandTasks;
         public Control[] Controls;
@@ -104,6 +105,7 @@ namespace GeneticAlgorithms
             CancellationToken token
             )
         {
+            IslandCount = populations_count;
             MigrationCount = migration_count;
             _locker = new object();
             _is_change = true;

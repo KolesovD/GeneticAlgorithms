@@ -13,7 +13,7 @@ namespace GeneticAlgorithms
         static void Main(string[] args)
         {
             int generationSize = 2000;
-            int island_count = 8;
+            int island_count = 4;
             int migration_count = (int)(generationSize * 0.3f);
             double migrationProbability = 1d;
             int k = 20;

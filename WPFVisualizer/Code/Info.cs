@@ -10,12 +10,22 @@ namespace WPFVisualizer.Code
     public class Info
     {
         public AbstractIndividual Individual { get; private set; }
-        public string GenInfo { get; private set; }
 
-        public Info(AbstractIndividual Individual, string info)
+        public int currentGenerationNumber { get; private set; }
+        public int islandID { get; private set; }
+        public int migrationCount { get; private set; }
+
+        public Info(AbstractIndividual Individual, int currentGenerationNumber, int islandID, int migrationCount)
         {
             this.Individual = Individual;
-            GenInfo = info;
+            this.currentGenerationNumber = currentGenerationNumber;
+            this.islandID = islandID;
+            this.migrationCount = migrationCount;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Поколение № {0} остров № {1} количество миграций {2}", currentGenerationNumber, islandID, migrationCount);
         }
 
     }
