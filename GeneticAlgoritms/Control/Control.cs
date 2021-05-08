@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Assets.MyRandoms;
+using GeneticAlgorithms.Crossovers;
+using GeneticAlgorithms.Mutations;
 
 namespace GeneticAlgorithms
 {
@@ -132,20 +134,20 @@ namespace GeneticAlgorithms
             return selectedIndexes;
         }
 
-        public void Optimize(Delegates.Crossover crossover, Delegates.Mutator mutator, int maxPopulationNumber)
+        /*public void Optimize(ICrossover crossover, IMutation mutator, int maxPopulationNumber)
         {
             //К этому моменту начальная случайно сгенерированная популяция уже создана, далее выполняется отбор
             for (int i = 0; i < maxPopulationNumber; i++)
             {
                 int[] selectedIndexes = RouletteSelection();
-                population.PerformCrossingover(crossover, selectedIndexes); //Кроссинговер
+                population.PerformCrossover(crossover, selectedIndexes); //Кроссинговер
                 population.PerformMutation(mutator); //Мутация 
                 population.SwitchGenerations(); //Поменять поколения в популяции местами
                 currentGenerationNumber++;
             }
             Console.ReadLine();
             //Выполнять определённое количество раз
-        }
+        }*/
 
         public void ReadOperate() 
         {
@@ -190,15 +192,15 @@ namespace GeneticAlgorithms
             //});
         }
 
-        public void OptimizeStep(Delegates.Crossover crossover, Delegates.Mutator mutator)
+        public void OptimizeStep(List<(float, ICrossover)> crossoverList, List<(float, IMutation)> mutatorList)
         {
             //Console.WriteLine($"Поколение №{population.currentGenerationNumber}");
             //К этому моменту начальная случайно сгенерированная популяция уже создана, далее выполняется отбор
 
             Console.WriteLine($"read migrate {_id} IsEmpty = {Read.IsEmpty}");
-            if (!Read.IsEmpty && Read.Count >= Repository.MigrationCount) 
+            if (!Read.IsEmpty && Read.Count >= Repository.MigrationCount)
             {
-                if (population.GenerationSize < generationSize) 
+                if (population.GenerationSize < generationSize)
                 {
                     //условие окончания кольца 
                     ReadOperate();
@@ -206,7 +208,7 @@ namespace GeneticAlgorithms
                     MigrationCount++;
                     Console.WriteLine($"end migrate {_id}");
                 }
-                else 
+                else
                 {
                     //условие прихода мигрантов
                     WriteOperate();
@@ -215,17 +217,44 @@ namespace GeneticAlgorithms
                 }
             }
 
-            if (Repository.MigrationProbability >= MyRandom.GetRandomDouble(1) && Repository.Set()) 
+            if (Repository.MigrationProbability >= MyRandom.GetRandomDouble(1) && Repository.Set())
             {
                 //условие запуска миграции
-                
+
                 WriteOperate();
                 Console.WriteLine($"start migrate {_id}");
             }
 
             int[] selectedIndexes = RouletteSelection();
-            population.PerformCrossingover(crossover, selectedIndexes); //Кроссинговер
-            population.PerformMutation(mutator); //Мутация 
+
+            if (crossoverList.Count > 1)
+            {
+                float crossProb = (float)MyRandom.GetRandomDouble();
+                for (int i = 0; i < crossoverList.Count; i++)
+                {
+                    crossProb -= crossoverList[i].Item1;
+                    if (crossProb <= 0 || i == crossoverList.Count - 1)
+                    {
+                        population.SetCurrentCrossingover(crossoverList[i].Item2);
+                        break;
+                    }
+                }
+            }
+            else population.SetCurrentCrossingover(crossoverList[0].Item2);
+            population.PerformCrossover(selectedIndexes); //Кроссинговер
+
+            float mutationProb = (float)MyRandom.GetRandomDouble();
+            for (int i = 0; i < mutatorList.Count; i++)
+            {
+                mutationProb -= mutatorList[i].Item1;
+                if (mutationProb <= 0)
+                {
+                    population.SetCurrentMutation(mutatorList[i].Item2);
+                    population.PerformMutation(); //Мутация
+                    break;
+                }
+            }
+
             population.SwitchGenerations(); //Поменять поколения в популяции местами
             //Console.WriteLine("Лучший в поколении №" + currentGenerationNumber + "\n" + population.GetBestIndividual());
             currentGenerationNumber++;

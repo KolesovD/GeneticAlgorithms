@@ -52,10 +52,14 @@
     <Compile Include="Assets\MyRandom.cs" />
     <Compile Include="Control\ChangeBag.cs" />
     <Compile Include="Control\Control.cs" />
-    <Compile Include="Control\Crosser.cs" />
+    <Compile Include="Crossovers\ICrossover.cs" />
+    <Compile Include="Crossovers\OrderedCrossover.cs" />
+    <Compile Include="Crossovers\CyclicCrossover.cs" />
     <Compile Include="Control\Delegates.cs" />
     <Compile Include="Control\MasterControl.cs" />
-    <Compile Include="Control\Mutator.cs" />
+    <Compile Include="Mutations\IMutation.cs" />
+    <Compile Include="Mutations\InvertDirectionMutation.cs" />
+    <Compile Include="Mutations\ReverseSegmentMutation.cs" />
     <Compile Include="Extensions\LinqExtetions.cs" />
     <Compile Include="Extensions\MathExtensions.cs" />
     <Compile Include="Information\Info.cs" />
@@ -73,6 +77,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

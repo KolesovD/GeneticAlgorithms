@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GeneticAlgorithms.Mutations;
 
 namespace GeneticAlgorithms
 {
@@ -45,9 +46,9 @@ namespace GeneticAlgorithms
             }
         }
 
-        public void Mutate(Delegates.Mutator mutator)
+        public void Mutate(IMutation mutator)
         {
-            mutator(_Segments);
+            mutator.PerformMutation(_Segments);
         }
 
         public override string ToString()
