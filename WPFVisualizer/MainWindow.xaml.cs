@@ -147,7 +147,8 @@ namespace WPFVisualizer
             for (int i = 0; i < segment_array.Length - 1; i++)
             {
                 Arrow LinkArrow = new Arrow(segment_array[i].End, segment_array[i + 1].Start, _thickness / 3f);
-                LinkArrow.SetColor(new SolidColorBrush(Code.GetRainbow(1023 / infos.Individual.Size() * i)));
+                double _normalizedNum = ((double)i).Remap(0, ((double)(segment_array.Length - 1)), 0d, 1d);
+                LinkArrow.SetColor(new SolidColorBrush(Code.GetRainbowColorNormalized(_normalizedNum)));
                 canvas.Children.Add(LinkArrow);
             }
         }

@@ -1,71 +1,96 @@
 ﻿using System;
 using System.Windows.Media;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using GeneticAlgorithms;
 
 namespace WPFVisualizer.Code
 {
-    public class VisualiserFuncs {
-        public Color GetRainbow(int index)
+    public static class GradientStopCollectionExtensions
+    {
+        public static Color GetRelativeColor(this GradientStopCollection gsc, double offset)
         {
-            int _index = index % 1023;
-            byte r = 0;
-            byte g = 0;
-            byte b = 0;
+            GradientStop[] stops = gsc.OrderBy(x => x.Offset).ToArray();
+            if (offset <= 0) return stops[0].Color;
+            if (offset >= 1) return stops[stops.Length - 1].Color;
 
-            if (_index >= 0 && _index < 170)
+            var GenerationAxis = Enumerable
+                .Range(0, stops.Length - 2)
+                .Select<int, (GradientStop start, GradientStop end)> (_i => (stops[_i], stops[_i + 1]))
+                .ToArray();
+
+            int first = 0;
+            int last = GenerationAxis.Length - 1;
+            int index = 0;
+
+            GradientStop before = stops[0];
+            GradientStop after = stops[stops.Length - 1];
+
+            while (first <= last)
             {
-                g = Convert.ToByte(1.5 * (_index - 0));
-            }
-            else if (_index >= 170 && _index < 511)
-            {
-                g = 255;
-            }
-            else if (_index >= 511 && _index < 682)
-            {
-                g = Convert.ToByte(1.5 * (682 - _index));
-            }
-            else if (_index >= 682 && _index < 1023)
-            {
-                g = 0;
+                index = first + ((last - first) / 2);
+                (GradientStop start, GradientStop end) choose = GenerationAxis[index];
+
+                if (choose.start.Offset > offset)
+                {
+                    //last change
+                    last = index - 1;
+                }
+                else if (choose.end.Offset <= offset)
+                {
+                    //first change
+                    first = index + 1;
+                }
+                else
+                {
+                    before = choose.start;
+                    after = choose.end;
+                    break;
+                }
             }
 
-            if (_index >= 0 && _index < 341)
-            {
-                b = 0;
-            }
-            else if (_index >= 341 && _index < 511)
-            {
-                b = Convert.ToByte(1.5 * (_index - 341));
-            }
-            else if (_index >= 511 && _index <= 852)
-            {
-                b = 255;
-            }
-            else if (_index > 852 && _index < 1023)
-            {
-                b = Convert.ToByte(1.5 * (1023 - _index));
-            }
+            var color = new Color();
 
-            if (_index >= 0 && _index < 170)
+            color.ScA = (float)((offset - before.Offset) * (after.Color.ScA - before.Color.ScA) / (after.Offset - before.Offset) + before.Color.ScA);
+            color.ScR = (float)((offset - before.Offset) * (after.Color.ScR - before.Color.ScR) / (after.Offset - before.Offset) + before.Color.ScR);
+            color.ScG = (float)((offset - before.Offset) * (after.Color.ScG - before.Color.ScG) / (after.Offset - before.Offset) + before.Color.ScG);
+            color.ScB = (float)((offset - before.Offset) * (after.Color.ScB - before.Color.ScB) / (after.Offset - before.Offset) + before.Color.ScB);
+
+            return color;
+        }
+    }
+
+    public class VisualiserFuncs {
+
+        GradientStopCollection _rainbow;
+
+        public VisualiserFuncs() 
+        {
+            _rainbow = new GradientStopCollection();
+
+            var _c = RainbowColors().ToArray();
+
+            foreach (var item in _c.Select((_color, _i) => (_color, (1d/(double)_c.Length)*(double)_i)))
             {
-                r = 255;
+                _rainbow.Add(new GradientStop(item._color, item.Item2));
             }
-            else if (_index >= 170 && _index < 341)
-            {
-                r = Convert.ToByte(1.5 * (341 - _index));
-            }
-            else if (_index >= 341 && _index < 682)
-            {
-                r = 0;
-            }
-            else if (_index >= 682 && _index < 852)
-            {
-                r = Convert.ToByte(1.5 * (_index - 682));
-            }
-            else if (_index >= 852 && _index < 1023)
-            {
-                r = 255;
-            }
-            return Color.FromRgb(r, g, b);
+        }
+
+        private IEnumerable<Color> RainbowColors() 
+        {
+            yield return Colors.Red;
+            yield return Colors.Orange;
+            yield return Colors.Yellow;
+            yield return Colors.Green;
+            yield return Colors.Blue;
+            yield return Colors.DarkBlue;
+            yield return Colors.Purple;
+        }
+
+        public Color GetRainbowColorNormalized(double num)
+        {
+            return _rainbow.GetRelativeColor(num);
         }
     }
 }
