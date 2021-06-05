@@ -144,12 +144,46 @@ namespace WPFVisualizer
                 canvas.Children.Add(segmentArrow);
             }
 
-            for (int i = 0; i < segment_array.Length - 1; i++)
+            var _intervals = GetDrawSegments(
+                                        segment_array
+                                            .SelectMany(_segment => LinqExtetions.FromParams(_segment.Start, _segment.End))
+                                    ).ToArray();
+
+            _intervals.ForEach((_data, i) =>
             {
-                Arrow LinkArrow = new Arrow(segment_array[i].End, segment_array[i + 1].Start, _thickness / 3f);
-                double _normalizedNum = ((double)i).Remap(0, ((double)(segment_array.Length - 1)), 0d, 1d);
+                Arrow LinkArrow = new Arrow(_data.Item1, _data.Item2, _thickness / 3f);
+                double _normalizedNum = ((double)i).Remap(0, ((double)(_intervals.Length-1)), 0d, 1d);
                 LinkArrow.SetColor(new SolidColorBrush(Code.GetRainbowColorNormalized(_normalizedNum)));
                 canvas.Children.Add(LinkArrow);
+            });
+
+            
+
+
+            //for (int i = 0; i < segment_array.Length - 1; i++)
+            //{
+            //    Arrow LinkArrow = new Arrow(segment_array[i].End, segment_array[i + 1].Start, _thickness / 3f);
+            //    double _normalizedNum = ((double)i).Remap(0, ((double)(segment_array.Length - 1)), 0d, 1d);
+            //    LinkArrow.SetColor(new SolidColorBrush(Code.GetRainbowColorNormalized(_normalizedNum)));
+            //    canvas.Children.Add(LinkArrow);
+            //}
+        }
+
+        public IEnumerable<(Vector2, Vector2)> GetDrawSegments(IEnumerable<Vector2> collection) 
+        {
+            Vector2? _last = default;
+
+            foreach (var item in collection)
+            {
+                if (_last.HasValue)
+                {
+                    if (!(_last.Value - item).Length().IsApproximatelyEqualTo(0)) 
+                    {
+                        yield return (_last.Value, item);
+                    }
+                }
+
+                _last = item;
             }
         }
 
@@ -164,11 +198,11 @@ namespace WPFVisualizer
             }
         }
 
-        private IEnumerable<SolidColorBrush> Colors() 
+        private IEnumerable<SolidColorBrush> Colors()
         {
             yield return new SolidColorBrush(Color.FromRgb(255, 0, 0));
             SolidColorBrush others = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-            while (true) 
+            while (true)
             {
                 yield return others;
             }
