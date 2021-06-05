@@ -1,8 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFVisualizer", "WPFVisualizer.csproj", "{40492ECA-DD7C-4EC7-9BAD-F29D728772C1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneticAlgorithms", "..\GeneticAlgoritms\GeneticAlgorithms.csproj", "{5D5D9B45-11B9-4715-B3A2-0928B1DEE812}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "..\UnitTests\UnitTests.csproj", "{5BA13C70-83BA-4C1B-ABEF-BF3C483B5450}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +23,15 @@ Global
 		{5D5D9B45-11B9-4715-B3A2-0928B1DEE812}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D5D9B45-11B9-4715-B3A2-0928B1DEE812}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D5D9B45-11B9-4715-B3A2-0928B1DEE812}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BA13C70-83BA-4C1B-ABEF-BF3C483B5450}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BA13C70-83BA-4C1B-ABEF-BF3C483B5450}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BA13C70-83BA-4C1B-ABEF-BF3C483B5450}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BA13C70-83BA-4C1B-ABEF-BF3C483B5450}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8243ECAD-E43A-445C-B52D-3EC8DA9BD34F}
 	EndGlobalSection
 EndGlobal
