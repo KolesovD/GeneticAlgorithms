@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Quaternion = System.Windows.Media.Media3D.Quaternion;
 
@@ -79,6 +80,16 @@ namespace WPFVisualizer.Extensions
         public static Vector3 ToVector3(this Vector2 vector3)
         {
             return new Vector3(vector3.X, vector3.Y, 0);
+        }
+
+        public static Transform GetTransformGroup(params Transform[] taransforms) 
+        {
+            var transformGroup = new TransformGroup();
+            foreach (var item in taransforms)
+            {
+                transformGroup.Children.Add(item);
+            }
+            return transformGroup;
         }
     }
 }

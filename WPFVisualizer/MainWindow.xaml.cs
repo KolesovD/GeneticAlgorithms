@@ -80,9 +80,11 @@ namespace WPFVisualizer
             CanvasDraw.Children.Clear();
             islandsCanvases = new Canvas[island_count];
 
-            double _circle = new Vector3D((GA.SizeX - GA.X), (GA.SizeY - GA.Y), 0).Length * island_count;
+            Vector3D _plateSize = new Vector3D((GA.SizeX), (GA.SizeY), 0);
+            Vector3D _iselandSize = new Vector3D((GA.SizeX-GA.X), (GA.SizeY-GA.Y), 0);
+            double _circle = _plateSize.Length * island_count;
 
-            Vector3D _startOffset = new Vector3D(_circle/(2 * Math.PI), 0f, 0f);
+            Vector3D _startOffset = new Vector3D(0f, -_circle / (2 * Math.PI), 0f);
             for (int i = 0; i < islandsCanvases.Length; i++)
             {
                 islandsCanvases[i] = new Canvas();
@@ -91,7 +93,17 @@ namespace WPFVisualizer
                 Quaternion quaternion = new Quaternion(new Vector3D(0,0,1), (360.0f / (float)island_count) * i);
                 Vector3D _offset = MathExtensions.RotateVector3(quaternion, _startOffset);
 
-                islandsCanvases[i].RenderTransform = new TranslateTransform(_offset.X, _offset.Y);
+                islandsCanvases[i].RenderTransform = MathExtensions
+                    .GetTransformGroup
+                    (
+                        new TranslateTransform(_offset.X, _offset.Y),
+                        new TranslateTransform(-_plateSize.X/2f, -_plateSize.Y/2f)
+                    );
+
+                Vector3D _offsetNormal = _offset;
+                _offsetNormal.Normalize();
+
+                AddText(_offset - (_offsetNormal* _iselandSize.Length/2f), $"Island {i}", new SolidColorBrush(Color.FromRgb(0, 0, 0)), CanvasDraw);
             }
 
             GA.Start();
@@ -115,6 +127,23 @@ namespace WPFVisualizer
             }
 
             
+        }
+
+        private void AddText(Vector3D position, string text, Brush color, Canvas canvas)
+        {
+            TextBlock textBlock = new TextBlock();
+            textBlock.Text = text;
+            textBlock.Foreground = color;
+
+            canvas.Children.Add(textBlock);
+
+            var transformGroup = MathExtensions.GetTransformGroup
+                (
+                    new ScaleTransform(0.1f, 0.1f),
+                    new TranslateTransform(position.X, position.Y)
+                );
+
+            textBlock.RenderTransform = transformGroup;
         }
 
         private void Draw(Info infos, Canvas canvas, int countLeft) 
