@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Media3D;
+using Quaternion = System.Windows.Media.Media3D.Quaternion;
 
 namespace WPFVisualizer.Extensions
 {
@@ -44,6 +47,38 @@ namespace WPFVisualizer.Extensions
         {
             // Handle comparisons of floating point values that may not be exactly the same
             return (Math.Abs(initialValue - value) < maximumDifferenceAllowed);
+        }
+
+        public static Vector3D RotateVector3(Quaternion quaternion, Vector3D vector) 
+        {
+            //Quaternion qConjugate = Quaternion.Conjugate(quaternion);
+            //Quaternion qPoint = new Quaternion(vector.X, vector.Y, vector.Z, 0);
+            //Quaternion qRotatePoint = quaternion * qPoint * qConjugate;
+
+            //return new Vector3(qRotatePoint.X, qRotatePoint.Y, qRotatePoint.Z);
+
+            /* work
+            Matrix3D m = Matrix3D.Identity;
+            m.Rotate(quaternion);
+            return m.Transform(vector);
+            */
+
+            Quaternion qConjugate = quaternion;
+            qConjugate.Conjugate();
+            Quaternion qPoint = new Quaternion(vector.X, vector.Y, vector.Z, 0);
+            Quaternion qRotatePoint = quaternion * qPoint * qConjugate;
+
+            return new Vector3D(qRotatePoint.X, qRotatePoint.Y, qRotatePoint.Z);
+        }
+
+        public static Vector2 ToVector2(this Vector3 vector3) 
+        {
+            return new Vector2(vector3.X, vector3.Y);
+        }
+
+        public static Vector3 ToVector3(this Vector2 vector3)
+        {
+            return new Vector3(vector3.X, vector3.Y, 0);
         }
     }
 }

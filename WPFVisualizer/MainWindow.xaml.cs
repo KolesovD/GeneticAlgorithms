@@ -19,6 +19,8 @@ using System.Windows.Threading;
 using WPFVisualizer.Code;
 using System.Collections.Concurrent;
 using WPFVisualizer.Extensions;
+using System.Windows.Media.Media3D;
+using Quaternion = System.Windows.Media.Media3D.Quaternion;
 
 namespace WPFVisualizer
 {
@@ -77,17 +79,17 @@ namespace WPFVisualizer
 
             CanvasDraw.Children.Clear();
             islandsCanvases = new Canvas[island_count];
+
+            double _circle = new Vector3D((GA.SizeX - GA.X), (GA.SizeY - GA.Y), 0).Length * island_count;
+
+            Vector3D _startOffset = new Vector3D(_circle/(2 * Math.PI), 0f, 0f);
             for (int i = 0; i < islandsCanvases.Length; i++)
             {
                 islandsCanvases[i] = new Canvas();
-                int dimension = (int)Math.Sqrt(GA.IslandCount);
-
-                int row = (int)Math.Floor((float)i / (float)dimension);
-                int column = i % dimension;
-
-                Vector2 _offset = new Vector2(column * (GA.SizeX - GA.X) + space * column, row * (GA.SizeY - GA.Y) + space * row);
-
                 CanvasDraw.Children.Add(islandsCanvases[i]);
+
+                Quaternion quaternion = new Quaternion(new Vector3D(0,0,1), (360.0f / (float)island_count) * i);
+                Vector3D _offset = MathExtensions.RotateVector3(quaternion, _startOffset);
 
                 islandsCanvases[i].RenderTransform = new TranslateTransform(_offset.X, _offset.Y);
             }
@@ -156,17 +158,6 @@ namespace WPFVisualizer
                 LinkArrow.SetColor(new SolidColorBrush(Code.GetRainbowColorNormalized(_normalizedNum)));
                 canvas.Children.Add(LinkArrow);
             });
-
-            
-
-
-            //for (int i = 0; i < segment_array.Length - 1; i++)
-            //{
-            //    Arrow LinkArrow = new Arrow(segment_array[i].End, segment_array[i + 1].Start, _thickness / 3f);
-            //    double _normalizedNum = ((double)i).Remap(0, ((double)(segment_array.Length - 1)), 0d, 1d);
-            //    LinkArrow.SetColor(new SolidColorBrush(Code.GetRainbowColorNormalized(_normalizedNum)));
-            //    canvas.Children.Add(LinkArrow);
-            //}
         }
 
         public IEnumerable<(Vector2, Vector2)> GetDrawSegments(IEnumerable<Vector2> collection) 
@@ -188,7 +179,8 @@ namespace WPFVisualizer
         }
 
         private void VisualizeTimer(object sender, EventArgs e) {
-            if (Queue.Count == 0) {
+            if (Queue.Count == 0) 
+            {
                 return;
             }
             else {
