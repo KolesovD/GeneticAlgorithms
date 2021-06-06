@@ -9,18 +9,18 @@ namespace GeneticAlgorithms.Mutations
 {
     public class InvertDirectionMutation : IMutation
     {
-        public double mutationProbability { get; set; }
+        public double MutationProbability { get; set; }
 
         public InvertDirectionMutation(double mutationProbability)
         {
-            this.mutationProbability = mutationProbability;
+            MutationProbability = mutationProbability;
         }
 
         private void FlipRandomSegments(List<Segment> segmentListToFlip)
         {
             foreach (Segment segment in segmentListToFlip)
             {
-                if (MyRandom.rnd.NextDouble() < mutationProbability)
+                if (MyRandom.rnd.NextDouble() < MutationProbability)
                 {
                     segment.ReverseDirection();
                     return;

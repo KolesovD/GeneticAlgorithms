@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Linq;
@@ -20,7 +21,8 @@ namespace GeneticAlgorithms
         public float SizeY { get; private set; }
 
         private int _id;
-        private int generationSize;
+        private int _generationSize;
+        private int _smallGenerationSize;
         private Population population;
         private Roulette roulette;
 
@@ -34,6 +36,21 @@ namespace GeneticAlgorithms
         public bool allowParentsIntoNewGenerations = true;
         public int currentGenerationNumber { get; private set; } //Нулевое поколение - сгенерированное случайно
         //public double fractionOfNewIndividuals;
+        
+        private const int DEFAULT_STEP_COUNT = 100;
+        private int _currentStep = 0;
+
+        private bool _wasMutationProbabilityDoubled = false;
+        private bool _wasMutationProbabilityReverted = false;
+        private double _lastFitnessStepValue;
+
+        private double _lastFitnessBestValue;
+        private Population _lastPopulation;
+        private bool _wasLastPopulationCutted;
+        private List<double> _lastMotationProbabilities = new List<double>();
+
+        private bool _wasPopulationCutted = false;
+        private DateTime _lastDateTime;
 
         public AbstractIndividual bestIndividual
         {
@@ -56,11 +73,12 @@ namespace GeneticAlgorithms
             MigrationCount = 0;
             Repository = master;
             currentGenerationNumber = 0;
-            this.generationSize = generationSize;
+            this._generationSize = generationSize;
+            _smallGenerationSize = generationSize / 2;
             //this.fractionOfNewIndividuals = fractionOfNewIndividuals;
             population = new Population();
             population.CreateStartingPopulation(xml_path, generationSize);
-            roulette = new Roulette(this.generationSize);
+            roulette = new Roulette(this._generationSize);
             this.Read = Read;
             this.Write = Write;
 
@@ -85,6 +103,8 @@ namespace GeneticAlgorithms
 
             X = XGroupe.Min;
             Y = YGroupe.Min;
+
+            
         }
 
         //private void roullete_task(int start, int count, int[] target)
@@ -200,7 +220,7 @@ namespace GeneticAlgorithms
             Console.WriteLine($"read migrate {_id} IsEmpty = {Read.IsEmpty}");
             if (!Read.IsEmpty && Read.Count >= Repository.MigrationCount)
             {
-                if (population.GenerationSize < generationSize)
+                if (population.GenerationSize < _generationSize)
                 {
                     //условие окончания кольца 
                     ReadOperate();
@@ -226,21 +246,39 @@ namespace GeneticAlgorithms
             }
 
             int[] selectedIndexes = RouletteSelection();
-
-            if (crossoverList.Count > 1)
+            
+            if (_currentStep <= 0)
             {
-                float crossProb = (float)MyRandom.GetRandomDouble();
-                for (int i = 0; i < crossoverList.Count; i++)
+                //Меняем кроссинговер
+                if (crossoverList.Count > 1)
                 {
-                    crossProb -= crossoverList[i].Item1;
-                    if (crossProb <= 0 || i == crossoverList.Count - 1)
+                    float crossProb = (float)MyRandom.GetRandomDouble();
+                    for (int i = 0; i < crossoverList.Count; i++)
                     {
-                        population.SetCurrentCrossingover(crossoverList[i].Item2);
-                        break;
+                        crossProb -= crossoverList[i].Item1;
+                        if (crossProb <= 0 || i == crossoverList.Count - 1)
+                        {
+                            population.SetCurrentCrossingover(crossoverList[i].Item2);
+                            break;
+                        }
                     }
                 }
+                else population.SetCurrentCrossingover(crossoverList[0].Item2);
+
+                //Меняем количество особей в популяции
+                if (_lastDateTime != null && _wasPopulationCutted)
+                {
+                    DateTime currentDateTime = DateTime.Now;
+                    TimeSpan timeSpan = currentDateTime.Subtract(_lastDateTime);
+                    if (timeSpan.TotalMinutes > 1d)
+                    {
+                        roulette = new Roulette(_smallGenerationSize);
+                        _wasPopulationCutted = true;
+                    }
+                }
+                _lastDateTime = DateTime.Now;
             }
-            else population.SetCurrentCrossingover(crossoverList[0].Item2);
+
             population.PerformCrossover(selectedIndexes); //Кроссинговер
 
             float mutationProb = (float)MyRandom.GetRandomDouble();
@@ -253,10 +291,58 @@ namespace GeneticAlgorithms
                     population.PerformMutation(); //Мутация
                     break;
                 }
-            }
+            }            
 
             population.SwitchGenerations(); //Поменять поколения в популяции местами
             //Console.WriteLine("Лучший в поколении №" + currentGenerationNumber + "\n" + population.GetBestIndividual());
+
+            //Меняем параметры мутации
+            if (currentGenerationNumber > 50)
+            {
+                if (_currentStep == 0)
+                {
+                    double currentBestFitness = population.GetBestIndividual().FitnessFunction;
+
+                    if (!_wasMutationProbabilityDoubled)
+                    {
+                        double currentRatio = currentBestFitness / _lastFitnessStepValue;
+                        if (currentRatio <= 1.5d && currentRatio >= 0.5d)
+                        {
+                            _lastPopulation = population;
+                            for (int i = 0; i < mutatorList.Count; i++)
+                                _lastMotationProbabilities.Add(mutatorList[i].Item2.MutationProbability * 2d);
+                            _lastFitnessBestValue = currentBestFitness;
+                            _wasLastPopulationCutted = _wasPopulationCutted;
+                            _wasMutationProbabilityDoubled = true;
+                        }
+                    }
+                    else if (!_wasMutationProbabilityReverted)
+                    {
+                        if (currentBestFitness < _lastFitnessBestValue)
+                        {
+                            population = _lastPopulation;
+                            for (int i = 0; i < mutatorList.Count; i++)
+                                mutatorList[i].Item2.MutationProbability = _lastMotationProbabilities[i];
+                            if (_wasLastPopulationCutted != _wasPopulationCutted)
+                            {
+                                roulette = new Roulette(_wasLastPopulationCutted ? _smallGenerationSize : _generationSize);
+                                _wasPopulationCutted = _wasLastPopulationCutted;
+                            }
+                            _wasMutationProbabilityReverted = true;
+                        }
+                    }
+
+                    _lastFitnessStepValue = currentBestFitness;
+                }
+            }
+            else _lastFitnessStepValue = population.GetBestIndividual().FitnessFunction;
+
+            
+
+            _currentStep--;
+            if (_currentStep <= 0)
+                _currentStep = DEFAULT_STEP_COUNT;
+
             currentGenerationNumber++;
         }
     }

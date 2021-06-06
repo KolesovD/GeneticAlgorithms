@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace WPFVisualizer.Code
 {
-    public class VisualiserFuncs {
+    public class VisualiserFunctions {
         public Color GetRainbow(int index)
         {
             int _index = index % 1023;

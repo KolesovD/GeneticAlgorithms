@@ -9,12 +9,12 @@ namespace GeneticAlgorithms.Mutations
 {
     public class ReverseSegmentMutation : IMutation
     {
-        public double mutationProbability { get; set; }
+        public double MutationProbability { get; set; }
         public double maxCutoutPartLength;
 
         public ReverseSegmentMutation(double mutationProbability, double maxCutoutPartLength = 0.2)
         {
-            this.mutationProbability = mutationProbability;
+            MutationProbability = mutationProbability;
             this.maxCutoutPartLength = maxCutoutPartLength;
         }
 
@@ -34,18 +34,15 @@ namespace GeneticAlgorithms.Mutations
             {
                 Range = segments.GetRange(start - length, length);
                 start -= length;
-
             }
             else if (start - length < 0)
             {
                 Range = segments.GetRange(start, length);
-
             }
             else if (MyRandom.rnd.NextDouble() < 0.5)
             {
                 Range = segments.GetRange(start - length, length);
                 start -= length;
-
             }
             else
             {
@@ -63,7 +60,7 @@ namespace GeneticAlgorithms.Mutations
 
             for (int i = 0; i < segmentListToMutate.Count; i++)
             {
-                if (MyRandom.rnd.NextDouble() <= mutationProbability)
+                if (MyRandom.rnd.NextDouble() <= MutationProbability)
                 {
                     part_elems = (int)(max_part_elems * MyRandom.rnd.NextDouble());
 

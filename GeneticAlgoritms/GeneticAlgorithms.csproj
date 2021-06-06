@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\WPFVisualizer\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,8 +58,12 @@
     <Compile Include="Crossovers\ICrossover.cs" />
     <Compile Include="Crossovers\OrderedCrossover.cs" />
     <Compile Include="Crossovers\CyclicCrossover.cs" />
-    <Compile Include="Control\Delegates.cs" />
     <Compile Include="Control\MasterControl.cs" />
+    <Compile Include="Information\IUnloader.cs" />
+    <Compile Include="Information\ILoader.cs" />
+    <Compile Include="Information\GLoader.cs" />
+    <Compile Include="Information\JSONUnloader.cs" />
+    <Compile Include="Information\JSONLoader.cs" />
     <Compile Include="Mutations\IMutation.cs" />
     <Compile Include="Mutations\InvertDirectionMutation.cs" />
     <Compile Include="Mutations\ReverseSegmentMutation.cs" />
@@ -67,6 +74,7 @@
     <Compile Include="Interfaces\AbstractIndividual.cs" />
     <Compile Include="Interfaces\IPopulation.cs" />
     <Compile Include="Population\Individual\Plate.cs" />
+    <Compile Include="Population\Individual\OuterSegment.cs" />
     <Compile Include="Population\Population.cs" />
     <Compile Include="Population\Individual\Segment.cs" />
     <Compile Include="Program.cs" />

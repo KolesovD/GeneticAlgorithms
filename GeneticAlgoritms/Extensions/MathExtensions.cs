@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WPFVisualizer.Extensions
+namespace GeneticAlgorithms.Extensions
 {
     public static class MathExtensions
     {

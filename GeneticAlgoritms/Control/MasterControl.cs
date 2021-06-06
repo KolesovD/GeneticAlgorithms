@@ -130,10 +130,11 @@ namespace GeneticAlgorithms
                     previousIsland += populations_count;
 
                 Controls[iterator] = new Control(iterator, this, xml, generationSize, changebags[previousIsland], changebags[iterator]);
-                IslandTasks[iterator] = new Thread(() => TaskFunc(Controls[iterator], get_cross(iterator), get_mutate(iterator), onNewStep(iterator), token));
+                IslandTasks[iterator] = new Thread(() => TaskFunction(Controls[iterator], get_cross(iterator), get_mutate(iterator), onNewStep(iterator), token));
             }
             //Console.WriteLine();
         }
+
         public void Start()
         {
             foreach (Thread t in IslandTasks)
@@ -148,13 +149,14 @@ namespace GeneticAlgorithms
             stopper.Reset();//осановка
             IsRunning = false;
         }
+
         public void Continue() {
             if (IsRunning == true) { return; }
             stopper.Set();//запуск
             IsRunning = true;
         }
 
-        private void TaskFunc(
+        private void TaskFunction(
             Control c, 
             List<(float, ICrossover)> cross,
             List<(float, IMutation)> mutate, 

@@ -6,27 +6,34 @@ using System.Threading;
 using System.Threading.Tasks;
 using GeneticAlgorithms.Crossovers;
 using GeneticAlgorithms.Mutations;
+using GeneticAlgorithms.Information;
 
 namespace GeneticAlgorithms
 {
-    class Program
+    public class Program
     {
         private static MasterControl GA;
-        
-        static void Main(string[] args)
-        {
-            int generationSize = 2000;
-            int island_count = 4;
-            int migration_count = (int)(generationSize * 0.3f);
-            double migrationProbability = 1d;
-            int k = 20;
-            int g = k * island_count;
 
-            IMutation mutator = new ReverseSegmentMutation(mutationProbability: 0.01);
-            ICrossover crossover = new CyclicCrossover();
+        private const int GENERATION_DEFAULT_SIZE = 2000;
+        private const int ISLAND_DEFAULT_COUNT = 4;
+        private const double MIGRATION_DEFAULT_PROBABILITY = 1d;
+        private const string DEFAULT_FILE_PATH = "../../../Lines.xml";
+
+        public static void Main(string[] args)
+        {
+            int generationSize = args.Length > 0 ? int.Parse(args[0]) : GENERATION_DEFAULT_SIZE;
+            int island_count = args.Length > 1 ? int.Parse(args[1]) : ISLAND_DEFAULT_COUNT;
+            int migration_count = (int)(generationSize * 0.3f);
+            double migrationProbability = args.Length > 2 ? double.Parse(args[2]) : MIGRATION_DEFAULT_PROBABILITY;
+            string path = args.Length > 3 ? args[3] : DEFAULT_FILE_PATH;
+            //int k = 20;
+            //int g = k * island_count;
+
+            //IMutation mutator = new ReverseSegmentMutation(mutationProbability: 0.01);
+            //ICrossover crossover = new CyclicCrossover();
 
             Console.WriteLine("Start with generation size {0}", generationSize);
-            GA = new MasterControl(migration_count, island_count, "../../../Lines.xml", generationSize, migrationProbability,
+            GA = new MasterControl(migration_count, island_count, path, generationSize, migrationProbability,
                 (i) => {
                     List<(float, ICrossover)> crossoverList = new List<(float, ICrossover)>();
                     switch (i)
@@ -87,6 +94,8 @@ namespace GeneticAlgorithms
             Console.ReadKey();
             GA.Pause();
             Console.ReadKey();
+            Console.WriteLine(GetResult());
+            Console.ReadKey();
 
             //for (int i = 0; i <=6000; i++)
             //{
@@ -99,6 +108,16 @@ namespace GeneticAlgorithms
             //    }
             //}
 
+        }
+
+        public static string GetResult()
+        {
+            if (GA == null)
+                return null;
+
+            GA.Pause();
+            IUnloader unloader = new JSONUnloader(GA.GetBestIndividual());
+            return unloader.Parse();
         }
     }
 }

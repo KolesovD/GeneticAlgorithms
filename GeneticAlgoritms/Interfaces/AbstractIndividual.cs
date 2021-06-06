@@ -66,6 +66,17 @@ namespace GeneticAlgorithms
             return bd.ToString();
         }
 
-        //public abstract int Compare(AbstractIndividual x, AbstractIndividual y);
+        public string GetParsedSegmets()
+        {
+            return ToString();
+        }
+
+        public List<OuterSegment> GetSegmentsToSerialize()
+        {
+            List<OuterSegment> outerSegments = new List<OuterSegment>(_Segments.Count);
+            foreach (Segment segment in _Segments)
+                outerSegments.Add(new OuterSegment(segment));
+            return outerSegments;
+        }
     }
 }

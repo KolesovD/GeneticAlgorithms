@@ -11,7 +11,7 @@ using GeneticAlgorithms.Mutations;
 
 namespace GeneticAlgorithms
 {
-    class Population : IPopulation
+    public class Population : IPopulation
     {
         private List<AbstractIndividual> firstGeneration = new List<AbstractIndividual>();
         private List<AbstractIndividual> secondGeneration = new List<AbstractIndividual>();
@@ -41,7 +41,7 @@ namespace GeneticAlgorithms
         //ВНИМАНИЕ!!! Отладочный метод, использующий объекты класса Plate, а не интерфейсы
         public void CreateStartingPopulation(string XML_path, int count = 50)
         {
-            XMLLoader load = new XMLLoader(XML_path);
+            ILoader load = new XMLLoader(XML_path);
             Plate perfectPlate = load.Parse();
             //Создание стартовой популяции
             for (int i = 0; i < count; i++)
