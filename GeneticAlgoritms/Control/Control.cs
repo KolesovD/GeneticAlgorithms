@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Assets.MyRandoms;
+using GeneticAlgorithms.Information;
 
 namespace GeneticAlgorithms
 {
@@ -43,8 +44,8 @@ namespace GeneticAlgorithms
 
         public Control(
             int i,
-            MasterControl master, 
-            string xml_path, 
+            MasterControl master,
+            ILoader loader, 
             int generationSize,
             ConcurrentBag<AbstractIndividual> Write,
             ConcurrentBag<AbstractIndividual> Read
@@ -57,7 +58,7 @@ namespace GeneticAlgorithms
             this.generationSize = generationSize;
             //this.fractionOfNewIndividuals = fractionOfNewIndividuals;
             population = new Population();
-            population.CreateStartingPopulation(xml_path, generationSize);
+            population.CreateStartingPopulation(loader, generationSize);
             roulette = new Roulette(this.generationSize);
             this.Read = Read;
             this.Write = Write;

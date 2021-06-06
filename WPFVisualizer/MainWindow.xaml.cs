@@ -21,6 +21,8 @@ using System.Collections.Concurrent;
 using WPFVisualizer.Extensions;
 using System.Windows.Media.Media3D;
 using Quaternion = System.Windows.Media.Media3D.Quaternion;
+using GerberLibrary;
+using GeneticAlgorithms.Information;
 
 namespace WPFVisualizer
 {
@@ -41,7 +43,7 @@ namespace WPFVisualizer
         private float _thickness = 0.1f;
         private float space = 1;
 
-        private void GeneticAlgotithmFunc(string path = "../../../Lines.xml") 
+        private void GeneticAlgotithmFunc(ILoader plateLoader) 
         {
             CancellationTokenSource?.Cancel();
             CancellationTokenSource?.Dispose();
@@ -56,7 +58,7 @@ namespace WPFVisualizer
             int g = k * island_count;
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
 
-            GA = new MasterControl(migration_count, island_count, path, generationSize, migrationProbability,
+            GA = new MasterControl(migration_count, island_count, plateLoader, generationSize, migrationProbability,
                 (i) => {
                     return Crosser.CyclicCrossover;
                 }, 
@@ -346,7 +348,8 @@ namespace WPFVisualizer
             // Process open file dialog box results
             if (result.HasValue && result == true)
             {
-                GeneticAlgotithmFunc(dlg.FileName);
+                //GeneticAlgotithmFunc(dlg.FileName);
+                GeneticAlgotithmFunc(new XMLLoader(dlg.FileName));
             }
         }
 

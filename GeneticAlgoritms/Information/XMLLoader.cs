@@ -7,17 +7,21 @@ using System.Xml.Linq;
 
 namespace GeneticAlgorithms.Information
 {
-    class XMLLoader
+    public class XMLLoader : ILoader
     {
-        private XDocument resourse;
+        //private XDocument resourse;
+        private string _path;
 
         public XMLLoader(string path)
         {
-            resourse = XDocument.Load(path);
+            _path = path;
+            //resourse = XDocument.Load(path);
         }
 
         public Plate Parse()
         {
+            XDocument resourse = XDocument.Load(_path);
+
             List<Segment> _Segments = new List<Segment>();
             foreach (XElement el in resourse.Root.Elements())
             {

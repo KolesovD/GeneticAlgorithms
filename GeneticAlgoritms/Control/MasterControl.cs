@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Threading;
+using GeneticAlgorithms.Information;
 
 namespace GeneticAlgorithms
 {
@@ -95,8 +96,8 @@ namespace GeneticAlgorithms
 
         public MasterControl(
             int migration_count, 
-            int populations_count, 
-            string xml, 
+            int populations_count,
+            ILoader plateProvider, 
             int generationSize, 
             double migrationProbability,
             Func<int, Delegates.Crossover> get_cross, 
@@ -122,11 +123,11 @@ namespace GeneticAlgorithms
             Controls = new Control[populations_count];
             IslandTasks = new Thread[populations_count];
 
-            Controls[0] = new Control(0, this, xml, generationSize, changebags[populations_count - 1], changebags[0]);
+            Controls[0] = new Control(0, this, plateProvider, generationSize, changebags[populations_count - 1], changebags[0]);
             IslandTasks[0] = new Thread(() => TaskFunc(Controls[0], get_cross(0), get_mutate(0), onNewStep(0), token));
             for (int j = 1; j < populations_count; j++) {
                 int iterator = j;
-                Controls[iterator] = new Control(iterator, this, xml, generationSize, changebags[iterator - 1], changebags[iterator]);
+                Controls[iterator] = new Control(iterator, this, plateProvider, generationSize, changebags[iterator - 1], changebags[iterator]);
                 IslandTasks[iterator] = new Thread(() => TaskFunc(Controls[iterator], get_cross(iterator), get_mutate(iterator), onNewStep(iterator), token));
             }
             //Console.WriteLine();

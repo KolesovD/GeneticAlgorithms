@@ -34,10 +34,10 @@ namespace GeneticAlgorithms
 
         //Заполнение популяций особями
         //ВНИМАНИЕ!!! Отладочный метод, использующий объекты класса Plate, а не интерфейсы
-        public void CreateStartingPopulation(string XML_path, int count = 50)
+        public void CreateStartingPopulation(ILoader loader, int count = 50)
         {
-            XMLLoader load = new XMLLoader(XML_path);
-            Plate perfectPlate = load.Parse();
+            //XMLLoader load = new XMLLoader(XML_path);
+            Plate perfectPlate = loader.Parse();
             //Создание стартовой популяции
             for (int i = 0; i < count; i++)
             {

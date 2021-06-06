@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GeneticAlgorithms.Information;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,7 @@ namespace GeneticAlgorithms
             int g = k * island_count;
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
             Console.WriteLine("Start with generation size {0}", generationSize);
-            GA = new MasterControl(migration_count, island_count, "../../../Lines.xml", generationSize, migrationProbability,
+            GA = new MasterControl(migration_count, island_count, new XMLLoader("../../../Lines.xml"), generationSize, migrationProbability,
                 (i) => {
                     return Crosser.CyclicCrossover;
                 },
