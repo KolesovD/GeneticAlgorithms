@@ -13,7 +13,7 @@ namespace GeneticAlgorithms
         private static MasterControl GA;
         static void Main(string[] args)
         {
-            int generationSize = 2000;
+            int generationSize = 10;
             int island_count = 1;
             int migration_count = (int)(generationSize * 0.3f);
             double migrationProbability = 0d;
