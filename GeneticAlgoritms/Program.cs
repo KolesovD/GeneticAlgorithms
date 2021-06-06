@@ -14,14 +14,20 @@ namespace GeneticAlgorithms
         static void Main(string[] args)
         {
             int generationSize = 2000;
-            int island_count = 4;
+            int island_count = 1;
             int migration_count = (int)(generationSize * 0.3f);
-            double migrationProbability = 1d;
+            double migrationProbability = 0d;
             int k = 20;
             int g = k * island_count;
             Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
             Console.WriteLine("Start with generation size {0}", generationSize);
-            GA = new MasterControl(migration_count, island_count, new XMLLoader("../../../Lines.xml"), generationSize, migrationProbability,
+            GA = new MasterControl(
+                migration_count, 
+                island_count, 
+                new GerberLoader("../../../КНБТ.100.610.GBL") 
+                //new XMLLoader("../../../Lines.xml")
+                , 
+                generationSize, migrationProbability,
                 (i) => {
                     return Crosser.CyclicCrossover;
                 },

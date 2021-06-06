@@ -21,8 +21,8 @@ using System.Collections.Concurrent;
 using WPFVisualizer.Extensions;
 using System.Windows.Media.Media3D;
 using Quaternion = System.Windows.Media.Media3D.Quaternion;
-using GerberLibrary;
 using GeneticAlgorithms.Information;
+using System.Text.RegularExpressions;
 
 namespace WPFVisualizer
 {
@@ -50,8 +50,8 @@ namespace WPFVisualizer
             CancellationTokenSource = new CancellationTokenSource();
             CancellationToken token = CancellationTokenSource.Token;
 
-            int generationSize = 5000;
-            int island_count = 6;
+            int generationSize = 5;
+            int island_count = 2;
             int migration_count = (int)(generationSize * 0.3f);
             double migrationProbability = 0.1f;
             int k = 5;
@@ -68,7 +68,7 @@ namespace WPFVisualizer
                 (i) => {
 
                     return (c) => {
-                        if (g > 0) { g--; return; }
+                        //if (g > 0) { g--; return; }
 
                         AbstractIndividual best = c.bestIndividual;
                         Queue.Enqueue(new Info(best.GetCopy(), c.currentGenerationNumber, i, c.MigrationCount));
@@ -339,8 +339,8 @@ namespace WPFVisualizer
         {
             Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
             //dlg.FileName = "Document"; // Default file name
-            dlg.DefaultExt = ".xml"; // Default file extension
-            dlg.Filter = "Xml documents (.xml)|*.xml"; // Filter files by extension
+            //dlg.DefaultExt = ".xml"; // Default file extension
+            dlg.Filter = "Plate documents (.xml)|*.xml|Gerber documents (*.GTL)|*.GTL|Gerber documents (*.GBL)|*.GBL";
 
             // Show open file dialog box
             bool? result = dlg.ShowDialog();
@@ -348,8 +348,19 @@ namespace WPFVisualizer
             // Process open file dialog box results
             if (result.HasValue && result == true)
             {
-                //GeneticAlgotithmFunc(dlg.FileName);
-                GeneticAlgotithmFunc(new XMLLoader(dlg.FileName));
+                Regex xml = new Regex(@"xml", RegexOptions.IgnoreCase);
+                Regex gerber = new Regex(@"(GTL)|(GBL)", RegexOptions.IgnoreCase);
+
+                var _extensions = System.IO.Path.GetExtension(dlg.FileName);
+
+                if (xml.IsMatch(_extensions))
+                {
+                    GeneticAlgotithmFunc(new XMLLoader(dlg.FileName));
+                }
+                else if (gerber.IsMatch(_extensions)) 
+                {
+                    GeneticAlgotithmFunc(new GerberLoader(dlg.FileName));
+                }
             }
         }
 

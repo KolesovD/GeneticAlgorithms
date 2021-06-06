@@ -38,4 +38,18 @@ public static class LinqExtetions
 
         return result;
     }
+
+    public static IEnumerable<LinkedListNode<T>> GetAllNodes<T>(this LinkedList<T> data) 
+    {
+        if (data.Count == 0) yield break;
+
+        LinkedListNode<T> _temp = data.First;
+
+        do
+        {
+            yield return _temp;
+            _temp = _temp.Next;
+        }
+        while (_temp.Next != default);
+    }
 }

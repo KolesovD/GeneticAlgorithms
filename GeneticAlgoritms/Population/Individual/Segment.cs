@@ -73,6 +73,13 @@ namespace GeneticAlgorithms
             Point2 = new Vector2(X2, Y2);
             Direction = _direction;
         }
+        public Segment(int ID, double X1, double Y1, double X2, double Y2, bool _direction)
+        {
+            this.ID = ID;
+            Point1 = new Vector2((float)X1, (float)Y1);
+            Point2 = new Vector2((float)X2, (float)Y2);
+            Direction = _direction;
+        }
 
         public void SetDataFromSegment(Segment newSegment)
         {
