@@ -71,7 +71,7 @@
     </Compile>
     <Compile Include="Arrow.cs" />
     <Compile Include="Code\Info.cs" />
-    <Compile Include="Code\VisualiserFuncs.cs" />
+    <Compile Include="Code\VisualiserFunctions.cs" />
     <Compile Include="Extensions\LinqExtetions.cs" />
     <Compile Include="Extensions\MathExtensions.cs" />
     <Compile Include="MainWindow.xaml.cs">

@@ -13,11 +13,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GeneticAlgorithms;
+using GeneticAlgorithms.Crossovers;
+using GeneticAlgorithms.Mutations;
 using System.Threading;
 using System.Numerics;
 using System.Windows.Threading;
-using WPFVisualizer.Code;
 using System.Collections.Concurrent;
+using WPFVisualizer.Code;
 using WPFVisualizer.Extensions;
 using System.Windows.Media.Media3D;
 using Quaternion = System.Windows.Media.Media3D.Quaternion;
@@ -33,7 +35,7 @@ namespace WPFVisualizer
     {
         private CancellationTokenSource CancellationTokenSource;
 
-        private VisualiserFuncs Code;
+        private VisualiserFunctions Code;
         private ConcurrentQueue<Info> Queue = new ConcurrentQueue<Info>();
         private DispatcherTimer dispatcherTimer;
         private Canvas[] islandsCanvases;
@@ -50,21 +52,82 @@ namespace WPFVisualizer
             CancellationTokenSource = new CancellationTokenSource();
             CancellationToken token = CancellationTokenSource.Token;
 
-            int generationSize = 5;
-            int island_count = 2;
+            int generationSize = 2500;
+            int island_count = 6;
             int migration_count = (int)(generationSize * 0.3f);
             double migrationProbability = 0.1f;
             int k = 5;
             int g = k * island_count;
-            Mutator mutator = new Mutator(segmentFlipProbability: 0.01, mutationProbability: 0.01);
 
-            GA = new MasterControl(migration_count, island_count, plateLoader, generationSize, migrationProbability,
+            //IMutation mutator = new ReverseSegmentMutation(mutationProbability: 0.01);
+            //ICrossover crossover = new CyclicCrossover();
+
+            GA = new MasterControl(
+                migration_count, 
+                island_count, 
+                plateLoader, 
+                generationSize, 
+                migrationProbability,
                 (i) => {
-                    return Crosser.CyclicCrossover;
-                }, 
+                    List<(float, ICrossover)> crossoverList = new List<(float, ICrossover)>();
+                    switch (i)
+                    {
+                        /*case 1:
+                            crossoverList.Add((0.75f, new CyclicCrossover()));
+                            crossoverList.Add((0.25f, new OrderedCrossover()));
+                            break;
+                        case 2:
+                            crossoverList.Add((0.25f, new CyclicCrossover()));
+                            crossoverList.Add((0.75f, new OrderedCrossover()));
+                            break;
+                        case 3:
+                            crossoverList.Add((0.1f, new CyclicCrossover()));
+                            crossoverList.Add((0.9f, new OrderedCrossover()));
+                            break;
+                        case 4:
+                            crossoverList.Add((1f, new OrderedCrossover()));
+                            break;
+                        case 5:
+                            crossoverList.Add((0.77f, new CyclicCrossover()));
+                            crossoverList.Add((0.23f, new OrderedCrossover()));
+                            break;
+                        case 6:*/
+                        default:
+                            crossoverList.Add((1f, new CyclicCrossover()));
+                            break;
+                    }
+                    
+                    return crossoverList;
+                },
                 (i) => {
-                    return mutator.ReverseSegmentMutation;
-                }, 
+                    List<(float, IMutation)> mutationList = new List<(float, IMutation)>();
+                    switch (i)
+                    {
+                        /*case 1:
+                            mutationList.Add((1f, new ReverseSegmentMutation(mutationProbability: 0.2f)));
+                            break;
+                        case 2:
+                            mutationList.Add((0.1f, new ReverseSegmentMutation(mutationProbability: 0.1f)));
+                            break;
+                        case 3:
+                            mutationList.Add((0.4f, new InvertDirectionMutation(mutationProbability: 0.6f)));
+                            mutationList.Add((0.4f, new ReverseSegmentMutation(mutationProbability: 0.6f)));
+                            break;
+                        case 4:
+                            mutationList.Add((0.4f, new ReverseSegmentMutation(mutationProbability: 0.6f)));
+                            break;
+                        case 5:
+                            mutationList.Add((1f, new InvertDirectionMutation(mutationProbability: 0.25f)));
+                            break;
+                        case 6:*/
+                        default:
+                            mutationList.Add((0.95f, new ReverseSegmentMutation(mutationProbability: 0.01f)));
+                            mutationList.Add((0.05f, new InvertDirectionMutation(mutationProbability: 0.1f)));
+                            break;
+                    }
+
+                    return mutationList;
+                },
                 (i) => {
 
                     return (c) => {
@@ -233,7 +296,7 @@ namespace WPFVisualizer
 
         public MainWindow()
         {
-            Code = new VisualiserFuncs();
+            Code = new VisualiserFunctions();
             InitializeComponent();
 
             last_pos = new Point();
@@ -282,7 +345,7 @@ namespace WPFVisualizer
         {
             Point mousePoint = e.GetPosition(CanvasDraw);
 
-            double _scale =  MathExtensions.Clamp(e.Delta/1000f + 1f, 0.1f, float.PositiveInfinity);
+            double _scale = MathExtensions.Clamp(e.Delta/1000f + 1f, 0.1f, float.PositiveInfinity);
 
             CanvasDraw.RenderTransform = new MatrixTransform(Matrix.Multiply(new ScaleTransform(_scale, _scale, mousePoint.X, mousePoint.Y).Value, CanvasDraw.RenderTransform.Value));
         }

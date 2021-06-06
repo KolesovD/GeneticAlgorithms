@@ -61,11 +61,11 @@ namespace WPFVisualizer.Code
         }
     }
 
-    public class VisualiserFuncs {
+    public class VisualiserFunctions {
 
         GradientStopCollection _rainbow;
 
-        public VisualiserFuncs() 
+        public VisualiserFunctions() 
         {
             _rainbow = new GradientStopCollection();
 

@@ -74,7 +74,7 @@ namespace GeneticAlgorithms
         }
 
         public override string ToString() {
-            return string.Format("idle line: {0} {1}", CalcSumIdlingLine() ,base.ToString());
+            return string.Format("idle line: {0} {1}", CalcSumIdlingLine(), base.ToString());
         }
 
         //public override int Compare(AbstractIndividual x, AbstractIndividual y) {

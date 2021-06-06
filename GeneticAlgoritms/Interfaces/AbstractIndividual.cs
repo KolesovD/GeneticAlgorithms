@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GeneticAlgorithms.Mutations;
 
 namespace GeneticAlgorithms
 {
@@ -45,9 +46,9 @@ namespace GeneticAlgorithms
             }
         }
 
-        public void Mutate(Delegates.Mutator mutator)
+        public void Mutate(IMutation mutator)
         {
-            mutator(_Segments);
+            mutator.PerformMutation(_Segments);
         }
 
         public override string ToString()
@@ -65,6 +66,17 @@ namespace GeneticAlgorithms
             return bd.ToString();
         }
 
-        //public abstract int Compare(AbstractIndividual x, AbstractIndividual y);
+        public string GetParsedSegmets()
+        {
+            return ToString();
+        }
+
+        public List<OuterSegment> GetSegmentsToSerialize()
+        {
+            List<OuterSegment> outerSegments = new List<OuterSegment>(_Segments.Count);
+            foreach (Segment segment in _Segments)
+                outerSegments.Add(new OuterSegment(segment));
+            return outerSegments;
+        }
     }
 }

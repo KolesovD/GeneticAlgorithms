@@ -6,16 +6,21 @@ using System.Text;
 using System.Threading.Tasks;
 using Assets.MyRandoms;
 using GeneticAlgorithms.Information;
+using GeneticAlgorithms.Crossovers;
+using GeneticAlgorithms.Mutations;
 
 namespace GeneticAlgorithms
 {
-    class Population : IPopulation
+    public class Population : IPopulation
     {
         private List<AbstractIndividual> firstGeneration = new List<AbstractIndividual>();
         private List<AbstractIndividual> secondGeneration = new List<AbstractIndividual>();
         private bool currentGenerationFlag = true; //true = первая популяция является текущей
         
         public int currentGenerationNumber { get; private set; }
+
+        private ICrossover _currentCrossover;
+        private IMutation _currentMutator;
 
         public Population()
         {
@@ -91,14 +96,19 @@ namespace GeneticAlgorithms
             return AnotherGeneration[index];
         }
 
-        public void PerformMutation(Delegates.Mutator mutator)
+        public void SetCurrentMutation(IMutation mutator)
+        {
+            _currentMutator = mutator;
+        }
+
+        public void PerformMutation()
         {
             AbstractIndividual bestOne = GetBestIndividual();
             Parallel.ForEach<AbstractIndividual>(CurrentGeneration, (individual) =>
             {
                 if (individual != bestOne)
                 {
-                    individual.Mutate(mutator);
+                    individual.Mutate(_currentMutator);
                 }
             });
             //foreach (AbstractIndividual individual in CurrentGeneration)
@@ -108,7 +118,12 @@ namespace GeneticAlgorithms
             //}
         }
 
-        public void PerformCrossingover(Delegates.Crossover crossover, int[] indexesForCrossover)
+        public void SetCurrentCrossingover(ICrossover crossover)
+        {
+            _currentCrossover = crossover;
+        }
+
+        public void PerformCrossover(int[] indexesForCrossover)
         {
             double average = AnotherGeneration.AsParallel().Sum((i) => i.FitnessFunction); //Среднее значение фитнес-функции
             average = average / AnotherGeneration.Count();
@@ -138,14 +153,14 @@ namespace GeneticAlgorithms
                 //Для создания двух разных потомков
                 //Скрещиваем 1 особь со 2 особъю
                 if (i >= k) { break; }
-                crossover(
+                _currentCrossover.PerformCrossover(
                     CurrentGeneration[indexesForCrossover[i]],
                     CurrentGeneration[indexesForCrossover[i + 1]],
                     AnotherGeneration[badIndexes[i]]
                     );
                 //Скрещиваем 2 особь с 1 особъю
                 if (i + 1 >= k) { break; }
-                crossover(
+                _currentCrossover.PerformCrossover(
                     CurrentGeneration[indexesForCrossover[i + 1]],
                     CurrentGeneration[indexesForCrossover[i]],
                     AnotherGeneration[badIndexes[i + 1]]
@@ -154,7 +169,7 @@ namespace GeneticAlgorithms
 
             if (badIndexes.Length % 2 != 0)
             {
-                crossover(
+                _currentCrossover.PerformCrossover(
                     CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 2]],
                     CurrentGeneration[indexesForCrossover[indexesForCrossover.Count() - 1]],
                     AnotherGeneration[badIndexes[badIndexes.Length - 1]]

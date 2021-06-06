@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFVisualizer", "WPFVisuali
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneticAlgorithms", "..\GeneticAlgoritms\GeneticAlgorithms.csproj", "{5D5D9B45-11B9-4715-B3A2-0928B1DEE812}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "..\UnitTests\UnitTests.csproj", "{5BA13C70-83BA-4C1B-ABEF-BF3C483B5450}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GeneticAlgorithmsTests", "..\GeneticAlgorithmsTests\GeneticAlgorithmsTests.csproj", "{C685AED7-DAC8-49D3-B55F-334090DCD108}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,15 +23,15 @@ Global
 		{5D5D9B45-11B9-4715-B3A2-0928B1DEE812}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D5D9B45-11B9-4715-B3A2-0928B1DEE812}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D5D9B45-11B9-4715-B3A2-0928B1DEE812}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5BA13C70-83BA-4C1B-ABEF-BF3C483B5450}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5BA13C70-83BA-4C1B-ABEF-BF3C483B5450}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5BA13C70-83BA-4C1B-ABEF-BF3C483B5450}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5BA13C70-83BA-4C1B-ABEF-BF3C483B5450}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C685AED7-DAC8-49D3-B55F-334090DCD108}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C685AED7-DAC8-49D3-B55F-334090DCD108}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C685AED7-DAC8-49D3-B55F-334090DCD108}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C685AED7-DAC8-49D3-B55F-334090DCD108}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {8243ECAD-E43A-445C-B52D-3EC8DA9BD34F}
+		SolutionGuid = {E1FC9D11-0E42-410D-820B-F6E521ABB223}
 	EndGlobalSection
 EndGlobal

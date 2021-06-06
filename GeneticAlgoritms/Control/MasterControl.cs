@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Threading;
+using GeneticAlgorithms.Crossovers;
+using GeneticAlgorithms.Mutations;
 using GeneticAlgorithms.Information;
 
 namespace GeneticAlgorithms
@@ -100,8 +102,8 @@ namespace GeneticAlgorithms
             ILoader plateProvider, 
             int generationSize, 
             double migrationProbability,
-            Func<int, Delegates.Crossover> get_cross, 
-            Func<int, Delegates.Mutator> get_mutate, 
+            Func<int, List<(float, ICrossover)>> get_cross, 
+            Func<int, List<(float, IMutation)>> get_mutate, 
             Func<int, Action<Control>> onNewStep,
             CancellationToken token
             )
@@ -116,22 +118,26 @@ namespace GeneticAlgorithms
 
             ConcurrentBag<AbstractIndividual>[] changebags = new ConcurrentBag<AbstractIndividual>[populations_count];
             for (int i = 0; i < populations_count; i++) 
-            {
                 changebags[i] = new ConcurrentBag<AbstractIndividual>();
-            }
 
             Controls = new Control[populations_count];
             IslandTasks = new Thread[populations_count];
 
             Controls[0] = new Control(0, this, plateProvider, generationSize, changebags[populations_count - 1], changebags[0]);
-            IslandTasks[0] = new Thread(() => TaskFunc(Controls[0], get_cross(0), get_mutate(0), onNewStep(0), token));
-            for (int j = 1; j < populations_count; j++) {
-                int iterator = j;
-                Controls[iterator] = new Control(iterator, this, plateProvider, generationSize, changebags[iterator - 1], changebags[iterator]);
-                IslandTasks[iterator] = new Thread(() => TaskFunc(Controls[iterator], get_cross(iterator), get_mutate(iterator), onNewStep(iterator), token));
+            IslandTasks[0] = new Thread(() => TaskFunction(Controls[0], get_cross(0), get_mutate(0), onNewStep(0), token));
+            for (int j = 0; j < populations_count; j++)
+            {
+                int iterator = j; //need save for Treading
+                int previousIsland = j - 1;
+                if (previousIsland < 0)
+                    previousIsland += populations_count;
+
+                Controls[iterator] = new Control(iterator, this, plateProvider, generationSize, changebags[previousIsland], changebags[iterator]);
+                IslandTasks[iterator] = new Thread(() => TaskFunction(Controls[iterator], get_cross(iterator), get_mutate(iterator), onNewStep(iterator), token));
             }
             //Console.WriteLine();
         }
+
         public void Start()
         {
             foreach (Thread t in IslandTasks)
@@ -146,16 +152,17 @@ namespace GeneticAlgorithms
             stopper.Reset();//осановка
             IsRunning = false;
         }
+
         public void Continue() {
             if (IsRunning == true) { return; }
             stopper.Set();//запуск
             IsRunning = true;
         }
 
-        private void TaskFunc(
+        private void TaskFunction(
             Control c, 
-            Delegates.Crossover cross, 
-            Delegates.Mutator mutate, 
+            List<(float, ICrossover)> cross,
+            List<(float, IMutation)> mutate, 
             Action<Control> onNewStep,
             CancellationToken token
             )
@@ -181,6 +188,18 @@ namespace GeneticAlgorithms
 
                 onNewStep(c);
             }
+        }
+
+        public AbstractIndividual GetBestIndividual()
+        {
+            AbstractIndividual bestInd = Controls[0].bestIndividual;
+            for (int i = 0; i < Controls.Length; i++)
+            {
+                AbstractIndividual nextInd = Controls[i].bestIndividual;
+                if (nextInd.FitnessFunction > bestInd.FitnessFunction)
+                    bestInd = nextInd;
+            }
+            return bestInd;
         }
     }
 }
