@@ -92,5 +92,10 @@ namespace WPFVisualizer.Code
         {
             return _rainbow.GetRelativeColor(num);
         }
+
+        public Brush GetBrushRainbow() 
+        {
+            return new LinearGradientBrush(_rainbow);
+        }
     }
 }

@@ -25,6 +25,8 @@ using System.Windows.Media.Media3D;
 using Quaternion = System.Windows.Media.Media3D.Quaternion;
 using GeneticAlgorithms.Information;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
+using WPFVisualizer.VisualControlls;
 
 namespace WPFVisualizer
 {
@@ -52,8 +54,8 @@ namespace WPFVisualizer
             CancellationTokenSource = new CancellationTokenSource();
             CancellationToken token = CancellationTokenSource.Token;
 
-            int generationSize = 2500;
-            int island_count = 6;
+            int generationSize = 5;
+            int island_count = 2;
             int migration_count = (int)(generationSize * 0.3f);
             double migrationProbability = 0.1f;
             int k = 5;
@@ -149,7 +151,7 @@ namespace WPFVisualizer
             Vector3D _iselandSize = new Vector3D((GA.SizeX-GA.X), (GA.SizeY-GA.Y), 0);
             double _circle = _plateSize.Length * island_count;
 
-            Vector3D _startOffset = new Vector3D(0f, -_circle / (2 * Math.PI), 0f);
+            Vector3D _startOffset = new Vector3D(0f, -Math.Max(_iselandSize.Length, _circle / (2 * Math.PI)), 0f);
             for (int i = 0; i < islandsCanvases.Length; i++)
             {
                 islandsCanvases[i] = new Canvas();
@@ -210,9 +212,9 @@ namespace WPFVisualizer
 
             textBlock.RenderTransform = transformGroup;
         }
-
-        private void Draw(Info infos, Canvas canvas, int countLeft) 
+        private async void Draw(Info infos, Canvas canvas, int countLeft) 
         {
+
             textBox.Clear();
 
             //int c = 0;
@@ -229,29 +231,76 @@ namespace WPFVisualizer
                 $"{infos}\n" +
                 $"Лучший в поколении: {infos.Individual}");
 
-            IEnumerator<SolidColorBrush> _colors = Colors().GetEnumerator();
-            Segment[] segment_array = infos.Individual.Segments.ToArray();
 
-            for (int i = 0; i < segment_array.Length; i++)
-            {
-                _colors.MoveNext();
-                Arrow segmentArrow = new Arrow(segment_array[i].Start, segment_array[i].End, _thickness);
-                segmentArrow.SetColor(_colors.Current);
-                canvas.Children.Add(segmentArrow);
-            }
+            SolidColorBrush others = new SolidColorBrush(Color.FromRgb(0, 0, 0));
 
-            var _intervals = GetDrawSegments(
-                                        segment_array
-                                            .SelectMany(_segment => LinqExtetions.FromParams(_segment.Start, _segment.End))
-                                    ).ToArray();
+            //await Task.WhenAll(
+            //    infos
+            //        .Individual
+            //        .Segments
+            //        .Select(async _segment =>
+            //        {
+            //            await Task.Yield();
+            //            Arrow segmentArrow = new Arrow(_segment.Start, _segment.End, _thickness);
+            //            segmentArrow.SetColor(others);
+            //            canvas.Children.Add(segmentArrow);
+            //        })
+            //    );
 
-            _intervals.ForEach((_data, i) =>
-            {
-                Arrow LinkArrow = new Arrow(_data.Item1, _data.Item2, _thickness / 3f);
-                double _normalizedNum = ((double)i).Remap(0, ((double)(_intervals.Length-1)), 0d, 1d);
-                LinkArrow.SetColor(new SolidColorBrush(Code.GetRainbowColorNormalized(_normalizedNum)));
-                canvas.Children.Add(LinkArrow);
-            });
+            var shape = new PlateShape();
+            shape.SetSegments(infos.Individual.Segments, _thickness);
+            shape.SetColor(others);
+            canvas.Children.Add(shape);
+
+            //var _path = PlateShape.SetPath(infos.Individual.Segments, _thickness / 3f);
+            ////_path.Stroke = Code.GetBrushRainbow();
+            //canvas.Children.Add(_path);
+
+            //IEnumerator<SolidColorBrush> _colors = Colors().GetEnumerator();
+            //Segment[] segment_array = infos.Individual.Segments.ToArray();
+            //StringBuilder stringBuilder = new StringBuilder();
+
+            //for (int i = 0; i<segment_array.Length; i++)
+            //{
+            //    stringBuilder.Clear();
+            //    var timer = new Stopwatch();
+
+            //    timer.Start();
+            //    _colors.MoveNext();
+            //    timer.Stop();
+            //    stringBuilder.AppendLine($"_colors.MoveNext(); {timer.ElapsedTicks}Ticks");
+
+            //    timer.Start();
+            //    Arrow segmentArrow = new Arrow(segment_array[i].Start, segment_array[i].End, _thickness);
+            //    timer.Stop();
+            //    stringBuilder.AppendLine($"create arrow {timer.ElapsedTicks}Ticks");
+
+            //    timer.Start();
+            //    segmentArrow.SetColor(_colors.Current);
+            //    timer.Stop();
+            //    stringBuilder.AppendLine($"set arrow collor {timer.ElapsedTicks}Ticks");
+
+            //    timer.Start();
+            //    canvas.Children.Add(segmentArrow);
+            //    timer.Stop();
+            //    stringBuilder.AppendLine($"add arrow to canvas {timer.ElapsedTicks}Ticks");
+
+            //    string _result = stringBuilder.ToString();
+            //}
+
+            //var _intervals = GetDrawSegments(
+            //                            infos.Individual.Segments
+            //                                .SelectMany(_segment => LinqExtetions.FromParams(_segment.Start, _segment.End))
+            //                        ).ToArray();
+
+            //_intervals.ForEach((_data, i) =>
+            //{
+            //    Arrow LinkArrow = new Arrow(_data.Item1, _data.Item2, _thickness / 3f);
+            //    double _normalizedNum = ((double)i).Remap(0, ((double)(_intervals.Length - 1)), 0d, 1d);
+            //    LinkArrow.SetColor(new SolidColorBrush(Code.GetRainbowColorNormalized(_normalizedNum)));
+            //    canvas.Children.Add(LinkArrow);
+            //});
+
         }
 
         public IEnumerable<(Vector2, Vector2)> GetDrawSegments(IEnumerable<Vector2> collection) 

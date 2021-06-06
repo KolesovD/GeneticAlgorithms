@@ -61,6 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="VisualControlls\PlateShape.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -69,7 +70,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Arrow.cs" />
+    <Compile Include="VisualControlls\Arrow.cs" />
     <Compile Include="Code\Info.cs" />
     <Compile Include="Code\VisualiserFunctions.cs" />
     <Compile Include="Extensions\LinqExtetions.cs" />

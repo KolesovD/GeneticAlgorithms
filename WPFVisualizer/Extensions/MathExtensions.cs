@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using Quaternion = System.Windows.Media.Media3D.Quaternion;
@@ -77,9 +78,34 @@ namespace WPFVisualizer.Extensions
             return new Vector2(vector3.X, vector3.Y);
         }
 
+
+
+
+        public static Point ToPoint(this Vector2 vector2)
+        {
+            return new Point(vector2.X, vector2.Y);
+        }
+
         public static Vector3 ToVector3(this Vector2 vector3)
         {
             return new Vector3(vector3.X, vector3.Y, 0);
+        }
+
+        public static Vector3D ToVector3D(this Vector2 vector2)
+        {
+            return new Vector3D(vector2.X, vector2.Y, 0);
+        }
+
+
+
+        public static Point ToPoint(this Vector3D vector3)
+        {
+            return new Point(vector3.X, vector3.Y);
+        }
+
+        public static Vector2 ToVector2(this Vector3D vector3)
+        {
+            return new Vector2((float)vector3.X, (float)vector3.Y);
         }
 
         public static Transform GetTransformGroup(params Transform[] taransforms) 
