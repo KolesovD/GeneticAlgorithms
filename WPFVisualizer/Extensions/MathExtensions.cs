@@ -73,6 +73,14 @@ namespace WPFVisualizer.Extensions
             return new Vector3D(qRotatePoint.X, qRotatePoint.Y, qRotatePoint.Z);
         }
 
+        public static Vector2 ToVector2(this Point point)
+        {
+            return new Vector2((float)point.X, (float)point.Y);
+        }
+
+
+
+
         public static Vector2 ToVector2(this Vector3 vector3) 
         {
             return new Vector2(vector3.X, vector3.Y);

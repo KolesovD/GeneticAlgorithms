@@ -36,8 +36,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Direct2D">
+      <HintPath>..\Libs\Direct2D.dll</HintPath>
+    </Reference>
     <Reference Include="GerberLibrary">
       <HintPath>..\Libs\GerberLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.DirectX">
+      <HintPath>..\Libs\Microsoft.WindowsAPICodePack.DirectX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -61,7 +67,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Extensions\VisualHost.cs" />
     <Compile Include="VisualControlls\PlateShape.cs" />
+    <Compile Include="VisualControlls\VisualPlateControll.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

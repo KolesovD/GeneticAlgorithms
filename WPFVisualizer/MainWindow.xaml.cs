@@ -247,10 +247,10 @@ namespace WPFVisualizer
             //        })
             //    );
 
-            var shape = new PlateShape();
-            shape.SetSegments(infos.Individual.Segments, _thickness);
-            shape.SetColor(others);
-            canvas.Children.Add(shape);
+            //var shape = new PlateShape();
+            //shape.SetSegments(infos.Individual.Segments, _thickness);
+            //shape.SetColor(others);
+            //canvas.Children.Add(shape);
 
             //var _path = PlateShape.SetPath(infos.Individual.Segments, _thickness / 3f);
             ////_path.Stroke = Code.GetBrushRainbow();
@@ -258,38 +258,18 @@ namespace WPFVisualizer
 
             //IEnumerator<SolidColorBrush> _colors = Colors().GetEnumerator();
             //Segment[] segment_array = infos.Individual.Segments.ToArray();
-            //StringBuilder stringBuilder = new StringBuilder();
 
-            //for (int i = 0; i<segment_array.Length; i++)
+            //for (int i = 0; i < segment_array.Length; i++)
             //{
-            //    stringBuilder.Clear();
-            //    var timer = new Stopwatch();
 
-            //    timer.Start();
             //    _colors.MoveNext();
-            //    timer.Stop();
-            //    stringBuilder.AppendLine($"_colors.MoveNext(); {timer.ElapsedTicks}Ticks");
-
-            //    timer.Start();
             //    Arrow segmentArrow = new Arrow(segment_array[i].Start, segment_array[i].End, _thickness);
-            //    timer.Stop();
-            //    stringBuilder.AppendLine($"create arrow {timer.ElapsedTicks}Ticks");
-
-            //    timer.Start();
             //    segmentArrow.SetColor(_colors.Current);
-            //    timer.Stop();
-            //    stringBuilder.AppendLine($"set arrow collor {timer.ElapsedTicks}Ticks");
-
-            //    timer.Start();
             //    canvas.Children.Add(segmentArrow);
-            //    timer.Stop();
-            //    stringBuilder.AppendLine($"add arrow to canvas {timer.ElapsedTicks}Ticks");
-
-            //    string _result = stringBuilder.ToString();
             //}
 
             //var _intervals = GetDrawSegments(
-            //                            infos.Individual.Segments
+            //                            segment_array
             //                                .SelectMany(_segment => LinqExtetions.FromParams(_segment.Start, _segment.End))
             //                        ).ToArray();
 
@@ -301,6 +281,26 @@ namespace WPFVisualizer
             //    canvas.Children.Add(LinkArrow);
             //});
 
+            try
+            {
+                Pen drawingpen = new Pen(Brushes.Black, _thickness);
+                DrawingVisual visual = new DrawingVisual();
+                using (DrawingContext dc = visual.RenderOpen())
+                {
+                    foreach (var item in infos.Individual.Segments)
+                    {
+                        VisualPlateControll.DrawArrow(dc, item.Start, item.End, drawingpen);
+                    }
+                }
+
+                canvas.Children.Add(visual.Wrap());
+            }
+            catch (Exception err) 
+            {
+                Console.WriteLine(err);
+            }
+
+            
         }
 
         public IEnumerable<(Vector2, Vector2)> GetDrawSegments(IEnumerable<Vector2> collection) 
